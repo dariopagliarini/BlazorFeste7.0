@@ -1,0 +1,30 @@
+﻿@using BlazorFeste.Classes;
+@using BlazorFeste.Services;
+
+@inject ClientInformationService _clientInfo;
+
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p role="alert">Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+
+@code {
+    [Parameter]
+    public InitialClientState InitialState { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _clientInfo.IPAddress = InitialState.IPAddress;
+        _clientInfo.WebPage = InitialState.WebPage;
+
+        base.OnInitialized();
+    }
+}

@@ -1,0 +1,285 @@
+﻿@page "/GestioneLista/{IdLista:int}"
+
+<style type="text/css">
+  div {
+    --cardGridHeaderHeight: 107px; /* 54 */
+    --cardGridHeaderCaptionHeight:  60px; /* 54 */
+  }
+
+  .header-label,
+  .header-label > b {
+    font-size: 24px;
+  }
+
+  .toolbar-label,
+  .toolbar-label > b {
+    font-size: 14px;
+  }
+
+  .dx-toolbar {
+    background-color: transparent;
+  }
+
+  /* Switch view/edit */
+  #toolbar .dx-switch-container {
+    height: 100%;
+  }
+
+  #toolbar .dx-switch-handle {
+    height: 90%;
+  }
+
+  #toolbar .dx-switch-on, .dx-switch-off {
+    align-self: center;
+    font-size: 14px;
+    font-weight: 400;
+    color: black;
+  }
+
+  #switchConteggio .dx-switch-handle:before {  
+    background-color: red!important;  
+  }  
+
+  #switchConteggio.dx-switch-on-value .dx-switch-handle:before {  
+    background-color: #FFC107!important;  
+  }  
+
+  #switchVisualizzazione .dx-switch-handle:before {  
+    background-color: green!important;  
+  }  
+
+  #switchVisualizzazione.dx-switch-on-value .dx-switch-handle:before {  
+    background-color: #FFC107!important;  
+  }  
+
+  #switchEvasioneParziale .dx-switch-handle:before {  
+    background-color: green!important;  
+  }  
+
+  #switchEvasioneParziale.dx-switch-on-value .dx-switch-handle:before {  
+    background-color: #FFC107!important;  
+  }  
+
+/*#region myGridHeader - DataGrid */
+  .cardGridHeader {
+    position: relative;
+    height: var(--cardGridHeaderHeight);
+  }
+
+  #myGridHeader .dx-datagrid .dx-row > td {
+    padding: 1px 1px 1px 1px;
+    vertical-align: middle;
+  }
+  
+  #myGridHeader .dx-datagrid-headers .dx-header-row {  
+    height: var(--cardGridHeaderCaptionHeight);
+    color: #28484f;
+/*    background-color : rgb(227, 233, 238);*/
+    background-color: whitesmoke;
+  }    
+
+  #myGridHeader .dx-header-row > td[role="columnheader"] > div.dx-datagrid-text-content {
+    font-size: 11px;
+    font-weight: bold;
+    font-family: Calibri,Verdana, Geneva, sans-serif;
+
+    vertical-align: middle;
+    text-align: center !important;
+  }
+
+  #myGridHeader td[role=columnheader] {
+    text-align: center !important
+  }
+
+  #myGridHeader .status_0 {
+    color: #dc3545;
+    background: black;
+    font-size: 24px;
+    font-weight: bold;
+    font-family: Verdana, Geneva, sans-serif;
+    vertical-align: middle;
+    text-align: center !important;
+  }
+
+  #myGridHeader .status_1 {
+    color: #ffc107;
+    background: black;
+    font-size: 24px;
+    font-weight: bold;
+    font-family: Verdana, Geneva, sans-serif;
+    vertical-align: middle;
+    text-align: center !important;
+  }
+
+
+/*  #myGridHeader span::before {
+    content: "\a";
+    white-space: pre;
+  }
+*/
+
+/*#endregion*/
+
+/*#region myGridOrdini - DataGrid */
+  .cardGridOrdini {
+    position: relative;
+    height: calc(100vh - var(--cardGridHeaderHeight) - 113px);
+  }
+
+  #myGridOrdini .dx-datagrid .dx-row > td {
+    font-size: 24px;
+    font-family: Verdana, Geneva, sans-serif;
+    padding: 1px 1px 1px 1px;
+    vertical-align: middle;
+  }
+
+  #myGridOrdini .dx-header-row > td[role="columnheader"] > div.dx-datagrid-text-content .status_0 {
+    color: #dc3545;
+  }
+
+  #myGridOrdini .dx-header-row > td[role="columnheader"] > div.dx-datagrid-text-content .status_1 {
+    color: #ffc107;
+  }
+
+  #myGridOrdini .dx-header-row > td[role="columnheader"] > div.dx-datagrid-text-content {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: Verdana, Geneva, sans-serif;
+
+    vertical-align: middle;
+    text-align: center !important;
+
+    background-color: #000000;
+
+    margin-left: 0;
+    border-width: 0;
+    border-style: solid;
+    border-color: #d3dbe1;
+    cursor: default;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    box-sizing: border-box;
+    width: 100%;
+    color: white;
+  }
+/*#endregion*/
+
+  /* Scontrino */
+  .scontrino table {
+    width: 100%; /* Optional */
+  }
+
+  .scontrino table {
+    border-collapse: collapse;
+  }
+
+  .scontrino table,
+  .scontrino th,
+  .scontrino td {
+    border: 1px solid silver;
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+
+  .EvadiOrdine {
+    width: 41px;
+    font-size: 24px;
+    margin: 3px 3px 3px 3px;
+
+    text-align: center;
+    vertical-align: middle;
+    text-decoration: none;
+    display: block;
+    border-radius: 4px;
+    background-color: #28a745;
+    color: #000000;
+  }
+
+  .EvadiOrdine:hover {
+    background-color: #00ff21;
+  }
+
+  .PrendiInCaricoOrdine {
+    width: 41px;
+    font-size: 24px;
+    margin: 3px 3px 3px 3px;
+
+    text-align: center;
+    vertical-align: middle;
+    text-decoration: none;
+    display: block;
+    border-radius: 4px;
+    background-color: #ffc107;
+    color: #000000;
+  }
+
+  .PrendiInCaricoOrdine:hover {
+    background-color: #ff6a00;
+  }
+
+  .CambiaStatoOrdine {
+    width: 41px;
+    font-size: 24px;
+    margin: 3px 3px 3px 3px;
+
+    text-align: center;
+    vertical-align: middle;
+    text-decoration: none;
+    display: block;
+    border-radius: 4px;
+    background-color: #ff6a00;
+    color: #000000;
+  }
+
+  .CambiaStatoOrdine:hover {
+    background-color: #ffc107;
+  }
+
+  .count-notif {
+    color:#000000;
+    vertical-align: top;
+    float: right;
+    margin-right: 3px;
+    margin-top: 3px;
+    font-size: 12px;
+  }
+
+  .badge-success {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  .child_top_right {
+      position: absolute;
+      bottom: -2px;
+      right: 1px;
+      font-size: 12px;
+      color: #FFC107;
+  }
+</style>
+
+<div id="myEditOrdinePopup"></div>
+
+<div class="row m-0">
+  <div class="col-12 p-1">
+    <div class="card">
+      <div class="card-header p-1 text-white bg-info" >
+        <div id="toolbar"></div>
+      </div>
+      <div class="card-body p-1 cardGridHeader" style="padding-bottom:0px !important">
+        <div id="myGridHeader"></div>
+      </div>
+      <div class="card-body p-1 cardGridOrdini" style="padding-top:0px !important">
+        <div id="myGridOrdini"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+
+}

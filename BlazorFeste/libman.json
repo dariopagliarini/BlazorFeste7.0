@@ -1,0 +1,60 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "devextreme@22.2.5",
+      "destination": "wwwroot/lib/devextreme/"
+    },
+    {
+      "library": "devextreme-quill@1.6.1",
+      "destination": "wwwroot/lib/devextreme-quill/"
+    },
+    {
+      "library": "html2pdf.js@0.10.1",
+      "destination": "wwwroot/lib/html2pdf/"
+    },
+    {
+      "library": "exceljs@4.3.0",
+      "destination": "wwwroot/lib/exceljs/"
+    },
+    {
+      "library": "FileSaver.js@2.0.5",
+      "destination": "wwwroot/lib/FileSaver.js/"
+    },
+    {
+      "library": "Chart.js@4.2.1",
+      "destination": "wwwroot/lib/Chart.js/"
+    },
+    {
+      "library": "chartjs-adapter-moment@1.0.1",
+      "destination": "wwwroot/lib/Chart.js/"
+    },
+    {
+      "library": "chartjs-plugin-annotation@2.2.1",
+      "destination": "wwwroot/lib/Chart.js/plugin/"
+    },
+    //{
+    //  "library": "chartjs-plugin-streaming@2.0.0",
+    //  "destination": "wwwroot/lib/Chart.js/plugin/"
+    //},
+    {
+      "library": "chartjs-plugin-datalabels@2.2.0",
+      "destination": "wwwroot/lib/Chart.js/plugin/"
+    },
+    {
+      "library": "moment.js@2.29.4",
+      "destination": "wwwroot/lib/moment.js/",
+      "files": [
+        "moment.min.js",
+        "moment-with-locales.min.js",
+        "moment-with-locales.min.js.map",
+        "moment.min.js.map"
+      ]
+    },
+    {
+      "library": "jquery@3.6.4",
+      "destination": "wwwroot/lib/jquery/"
+    }
+  ]
+}

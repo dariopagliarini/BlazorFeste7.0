@@ -1,0 +1,19 @@
+﻿@inherits LayoutComponentBase
+  
+<style>
+  .fullscreen-body-container {
+    width: 100vw;
+    height: 100vh;
+  }
+  </style>
+
+<div class="fullscreen-body-container bg-black">
+  @Body
+</div>
+
+<BlazoredToasts Position="Blazored.Toast.Configuration.ToastPosition.TopRight"
+                Timeout="5"
+                IconType="Blazored.Toast.Configuration.IconType.FontAwesome"
+                SuccessClass="success-toast-override"
+                SuccessIcon="fa fa-thumbs-up"
+                ErrorIcon="fa fa-bug" />

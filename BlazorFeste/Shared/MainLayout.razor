@@ -1,0 +1,39 @@
+﻿@inherits LayoutComponentBase
+
+@using Blazored.Toast.Configuration
+
+<style>
+    .padre {
+        display: flex;
+        justify-content: space-between;
+        margin-left: 0px !important;
+        padding-left: 0px !important;
+    }
+</style>
+
+<div class="page">
+    <main>
+        <div class="top-row px-1 mx-0">
+            <div class="padre">
+                <div>
+                    <TopBar></TopBar>
+                </div>
+                <div>
+                    <Clock></Clock>
+                </div>
+            </div>
+        </div>
+        <article class="content p-0 m-0">
+            @Body
+        </article>
+    </main>
+</div>
+
+<BlazoredToasts Position="ToastPosition.TopRight"
+                Timeout="5"
+                IconType="IconType.FontAwesome"
+                SuccessClass="success-toast-override"
+                SuccessIcon="fa fa-thumbs-up"
+                ErrorIcon="fa fa-bug" />
+
+

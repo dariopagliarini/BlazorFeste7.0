@@ -1,0 +1,35 @@
+﻿@page "/ElencoOrdini"
+
+<style>
+  .cardGridOrdini {
+    position: relative;
+    height: calc(100vh - 108px);
+  }
+</style>
+
+<div class="row m-0">
+  <div class="col-7 p-1">
+    <div class="card">
+      <div class="card-header p-2 text-white bg-info">
+        <h5 class="m-0">Elenco Ordini</h5>
+      </div>
+      <div class="card-body p-1 cardGridOrdini">
+        <div id="myGridOrdini"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-5 p-1">
+    <div class="card">
+      <div class="card-header p-2 text-white bg-info">
+        <h5 class="m-0">Composizione Ordine</h5>
+      </div>
+      <div class="card-body p-1 cardGridOrdini">
+        <div id="myGridRighe"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+
+}

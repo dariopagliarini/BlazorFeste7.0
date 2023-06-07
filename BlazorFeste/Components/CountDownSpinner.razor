@@ -1,0 +1,40 @@
+﻿<style>
+  .timerBorder {
+    border-top: 2px solid #5bc0de;
+    animation: 1s linear infinite timer-slide-lt;
+    border-radius: 50%;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+  }
+  .timerAnimationPaused {
+    animation-play-state: paused;
+  }
+  .timer {
+    font-size: 50%;
+    position: relative;
+    top: -90%;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    z-index: 1000;
+  }
+
+  @@keyframes timer-slide-lt {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
+<div style="width: @Size; height: @Size; font-size: @Size;">
+  <div class="@timerBorderClass"></div>
+  <div id="@counterDivId" class="timer">@counter</div>
+</div>
+
+@code {
+
+}

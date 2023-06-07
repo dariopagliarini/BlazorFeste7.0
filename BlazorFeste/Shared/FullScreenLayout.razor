@@ -1,0 +1,37 @@
+﻿@inherits LayoutComponentBase
+  
+<style>
+/*  :root {
+    --layout-top-space: 0px;
+    --layout-right-space: 0px;
+    --layout-bottom-space: 0px;
+    --layout-left-space: 0px;
+
+    --layout-top-padding: 0px;
+    --layout-right-padding: 0px;
+    --layout-bottom-padding: 0px;
+    --layout-left-padding: 0px;
+  }
+*/
+  .fullscreen-body-container {
+    width: 100vw;
+    height: 100vh;
+/*
+    padding-top: var(--layout-top-padding);
+    padding-right: var(--layout-right-padding);
+    padding-bottom: var(--layout-bottom-padding);
+    padding-left: var(--layout-left-padding);
+*/  
+  }
+  </style>
+
+<div class="fullscreen-body-container">
+  @Body
+</div>
+
+<BlazoredToasts Position="Blazored.Toast.Configuration.ToastPosition.TopRight"
+    Timeout="5"
+    IconType="Blazored.Toast.Configuration.IconType.FontAwesome"
+    SuccessClass="success-toast-override"
+    SuccessIcon="fa fa-thumbs-up"
+    ErrorIcon="fa fa-bug" />

@@ -1,0 +1,59 @@
+﻿<style type="text/css">
+  .cardGridCasse {
+    position: relative;
+    height: calc(100vh - 226px);
+  }
+
+  #gridCasse .dx-datagrid {
+    font-family: Tahoma, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+  }
+
+  .dx-datagrid .dx-row > td {
+    font-size: 13px;
+    font-weight: bold;
+    font-family: Tahoma, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    padding: 5px 2px 5px 2px;
+    vertical-align: middle;
+  }
+
+  .dx-row-focused {
+    font-weight: bold;
+  }
+
+  .dx-datagrid-headers .dx-header-row {  
+    background-color : rgb(227, 233, 238);
+  }    
+
+  .dx-header-row > td[role="columnheader"] > div.dx-datagrid-text-content {
+    font-size: 11px;
+    font-weight: bold;
+    font-family: Tahoma, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    vertical-align: middle;
+    text-align: center !important;
+  }
+
+  td[role=columnheader] {
+    text-align: center !important
+  }
+</style>
+
+<div class="row m-0">
+  <div class="col-8 p-1 ">
+    <div class="card">
+      <div class="card-header p-2 text-white bg-info">
+        <div class="row">
+          <div class="col-6">
+            <h5 class="m-0">Anagrafica Casse</h5>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-1 cardGridCasse" >
+        <div id="myGridCasse"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+
+}

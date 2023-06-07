@@ -1,0 +1,120 @@
+﻿@page "/Rapporti"
+
+<style type="text/css">
+  .cardToolbar {
+    position: relative;
+    height: 48px;
+  }
+
+  .cardGridGiornate {
+    position: relative;
+    height: calc(100vh - 388px);
+  }
+
+  .cardGridOrdini {
+    position: relative;
+    height: calc(100vh - 108px);
+  }
+
+  .dx-datagrid .dx-row > td {
+    font-size: 11px;
+    font-family: Verdana, Geneva, sans-serif;
+    padding: 5px 2px 5px 2px;
+    vertical-align: middle;
+  }
+
+  .dx-row-focused {
+    font-weight: bold;
+  }
+
+  .dx-datagrid-headers .dx-header-row {  
+    background-color : rgb(227, 233, 238);
+  }    
+
+  .dx-header-row > td[role="columnheader"] > div.dx-datagrid-text-content {
+    font-size: 12px;
+    font-weight: bold;
+    font-family: Verdana, Geneva, sans-serif;
+    vertical-align: middle;
+    text-align: center !important;
+  }
+
+  td[role=columnheader] {
+    text-align: center !important
+  }
+
+  #Rapporti_toolbar .toolbar-label, #Rapporti_toolbar .toolbar-label > b {
+    font-size: 20px;
+  }
+
+  #Rapporti_toolbar, .dx-toolbar .dx-toolbar-items-container {
+    height: 40px;
+  }
+</style>
+
+<div id="LoadPanelContainer"></div>
+
+<div class="row m-0">
+  <div class="col-4 p-1">
+    <div class="card">
+      <div class="card-header p-1 text-white bg-info">
+        <h5 class="m-0">Feste in Archivio</h5>
+      </div>
+      <div class="card-body p-1">
+        <div id="Rapporti_myGridFeste"></div>      
+      </div>
+    </div>
+    <div class="card mt-1">
+      <div class="card-header p-1 text-white bg-info">
+        <h5 class="m-0">Elenco Giornate</h5>
+      </div>
+      <div class="card-body p-1 cardGridGiornate">
+        <div>
+          <div id="Rapporti_myGridGiornate"></div>
+        </div>
+      </div>
+      <div class="card-body p-1 cardToolbar">
+        <div>
+          <div id="Rapporti_toolbar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-8 p-1 ">
+    <div class="card">
+      <div class="card-header p-1 text-white bg-info">
+        <h5 class="m-0">Consuntivo Giornate Selezionate</h5>
+      </div>
+      <div class="card-body p-1 cardGridOrdini" >
+        <div id="Rapporti_myGridOrdini"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+  //<div class="col-4 p-1">
+  //  <div class="card">
+  //    <div class="card-header p-1 text-white bg-info">
+  //      <h5 class="m-0">Feste in Archivio</h5>
+  //    </div>
+  //    <div class="card-body p-1">
+  //      <div id="Rapporti_myGridFeste"></div>      
+  //    </div>
+  //  </div>
+  //  <div class="card mt-1">
+  //    <div class="card-header p-1 text-white bg-info">
+  //      <h5 class="m-0">Elenco Giornate</h5>
+  //    </div>
+  //    <div class="card-body p-1">
+  //      <div>
+  //        <div id="Rapporti_myGridGiornate"></div>
+  //        <div id="Rapporti_toolbar"></div>
+  //      </div>
+  //    </div>
+  //  </div>
+  //</div>
+
+}
+

@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorFeste", "BlazorFeste\BlazorFeste.csproj", "{18EBF9CE-9DCD-4094-AFBA-8612F2789930}"
+	ProjectSection(ProjectDependencies) = postProject
+		{10D5C7DD-6339-444D-AA14-71A73934380C} = {10D5C7DD-6339-444D-AA14-71A73934380C}
+		{C8F53088-615D-487D-848A-17DD9D53743A} = {C8F53088-615D-487D-848A-17DD9D53743A}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorFeste.Data", "BlazorFeste.Data\BlazorFeste.Data.csproj", "{10D5C7DD-6339-444D-AA14-71A73934380C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorFeste.Util", "BlazorFeste.Util\BlazorFeste.Util.csproj", "{C8F53088-615D-487D-848A-17DD9D53743A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{A92E2CB4-524D-4AEE-B43C-3307E5C5A0FB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrinterServerAPI", "PrinterServerAPI\PrinterServerAPI.csproj", "{B93EDF8C-7CD4-4C60-9BC8-4715C5307126}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{0C859514-9FE2-4851-B7E1-1D351BC4BC2B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{18EBF9CE-9DCD-4094-AFBA-8612F2789930}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18EBF9CE-9DCD-4094-AFBA-8612F2789930}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18EBF9CE-9DCD-4094-AFBA-8612F2789930}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18EBF9CE-9DCD-4094-AFBA-8612F2789930}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10D5C7DD-6339-444D-AA14-71A73934380C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10D5C7DD-6339-444D-AA14-71A73934380C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10D5C7DD-6339-444D-AA14-71A73934380C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10D5C7DD-6339-444D-AA14-71A73934380C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8F53088-615D-487D-848A-17DD9D53743A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8F53088-615D-487D-848A-17DD9D53743A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8F53088-615D-487D-848A-17DD9D53743A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8F53088-615D-487D-848A-17DD9D53743A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B93EDF8C-7CD4-4C60-9BC8-4715C5307126}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B93EDF8C-7CD4-4C60-9BC8-4715C5307126}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B93EDF8C-7CD4-4C60-9BC8-4715C5307126}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B93EDF8C-7CD4-4C60-9BC8-4715C5307126}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{10D5C7DD-6339-444D-AA14-71A73934380C} = {A92E2CB4-524D-4AEE-B43C-3307E5C5A0FB}
+		{C8F53088-615D-487D-848A-17DD9D53743A} = {A92E2CB4-524D-4AEE-B43C-3307E5C5A0FB}
+		{B93EDF8C-7CD4-4C60-9BC8-4715C5307126} = {0C859514-9FE2-4851-B7E1-1D351BC4BC2B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1133DBD2-32CD-4932-9E0A-1909C20FBD6A}
+	EndGlobalSection
+EndGlobal

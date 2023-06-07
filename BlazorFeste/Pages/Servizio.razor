@@ -1,0 +1,69 @@
+﻿@page "/Servizio"
+
+<style>
+  .tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+  }
+
+  .tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+  }
+
+  .tab button:hover {
+    background-color: #ddd;
+  }
+
+  .tabcontent {
+    padding: 6px 12px;
+    border: 1px solid black;
+    border-top: none;
+  }
+</style>
+
+<table>
+  <tr>
+    <td>
+      <div id="ServizioToolbar"></div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+    <div class="tab">
+      <button style="@(tab1?"background-color:#808080;color:white;":"")" @onclick="(x => DisplayTab(1))">Prodotti</button>
+      <button style="@(tab2?"background-color:#808080;color:white;":"")" @onclick="(x => DisplayTab(2))">Liste</button>
+      <button style="@(tab3?"background-color:#808080;color:white;":"")" @onclick="(x => DisplayTab(3))">Casse</button>
+      </div>
+      @if (tab1)
+      {
+        <div class="tabcontent">
+          <GestioneAnagrProdotti></GestioneAnagrProdotti>
+        </div>
+      }
+      @if (tab2)
+      {
+        <div class="tabcontent">
+          <GestioneAnagrListe></GestioneAnagrListe>
+        </div>
+      }
+      @if (tab3)
+      {
+        <div class="tabcontent">
+          <GestioneAnagrCasse></GestioneAnagrCasse>
+        </div>
+      }
+    </td>
+  </tr>
+</table>
+
+@code {
+
+}

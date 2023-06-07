@@ -1,0 +1,29 @@
+﻿@page "/StatoProdotto/{IdProdotto:int}"
+
+@layout FullScreenLayout_BgBlack
+
+<div class="row m-0">
+  <div class="col-12 p-0">
+    <div class="card">
+      <div class="card-header p-2" style="background-color:  #ffd500; color: #005bbb">
+        <h5 class="m-0" style="font-size: 10vh; font-weight:bold; text-align: center !important;">@Prodotto.NomeProdotto.CR_to_Space()</h5>
+      </div>
+      <div class="card-body p-0">
+        <div class="card mt-0">
+          <div class="p-4" style="background-color:  #005bbb; color: #ffd500">
+            <h5 class="m-0" style="font-size: 5vh;">Stiamo preparando il numero</h5>
+          </div>
+          <div class="card-body p-0" style="background-color:  #005bbb; color: #ffd500">
+            <div>
+              <h1 class="m-0" style="font-size: 50vh; font-weight:bold; text-align: center !important; ">#@(Prodotto.EvasoCumulativo + 1)</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+
+}

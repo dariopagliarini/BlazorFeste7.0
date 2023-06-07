@@ -1,0 +1,14 @@
+﻿<div>Measure Latency</div>
+
+@if (latency is null)
+{
+  <span>Calculating...</span>
+}
+else
+{
+  <span>@(latency.Value.TotalMilliseconds)ms</span>
+}
+
+@code {
+
+}
