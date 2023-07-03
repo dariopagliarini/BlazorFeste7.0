@@ -19,7 +19,6 @@ export var GestioneAnagrListeObj = {
       dataSource: _anagrListe,
       height: "100%",
       width: "100%",
-//      keyExpr: ["idListino", "idLista"],
       keyExpr: "idPrimaryKey",
       editing: {
         mode: 'batch',
@@ -29,6 +28,18 @@ export var GestioneAnagrListeObj = {
         startEditAction: 'click',
       },
       columns: [
+        {
+          type: "buttons",
+          buttons: [{
+            icon: 'print',
+            text: 'Stampa Consumi',
+            hint: "Stampa Consumi",
+            onClick: function (e) {
+              _objRef.invokeMethodAsync("OnPrintRequest_ConsumiLista", e.row.data)
+                .catch(err => console.error(err.toString()));
+            }
+          }]
+        },
         {
           caption: "Id. Lista", dataField: "idLista", alignment: "center",
           allowEditing: false,
@@ -186,6 +197,24 @@ export var GestioneAnagrListeObj = {
           );
         }
       },
+      //toolbar: {
+      //  items: [
+      //    {
+      //      location: 'before',
+      //      widget: 'dxButton',
+      //      options: {
+      //        icon: 'print',
+      //        text: 'Stampa Consumi Giornalieri',
+      //        hint: "Stampa Consumi per Lista",
+      //        onClick(e) {
+      //          _objRef.invokeMethodAsync("OnPrintRequest_Consumi")
+      //            .catch(err => console.error(err.toString()));
+      //        },
+      //      },
+      //    }
+      //  ],
+      //},
+
     });
   },
 

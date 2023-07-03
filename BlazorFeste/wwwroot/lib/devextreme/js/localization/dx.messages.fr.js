@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.fr.js)
-* Version: 22.2.5
-* Build date: Mon Mar 27 2023
+* Version: 22.2.7
+* Build date: Mon Jun 19 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -124,6 +124,7 @@
             "dxDataGrid-filterRowOperationBetween": "Entre",
             "dxDataGrid-filterRowOperationBetweenStartText": "D\xe9but",
             "dxDataGrid-filterRowOperationBetweenEndText": "Fin",
+            "dxDataGrid-ariaSearchBox": "Search box",
             "dxDataGrid-applyFilterText": "Filtrer le texte",
             "dxDataGrid-trueText": "Vrai",
             "dxDataGrid-falseText": "Faux",
@@ -151,8 +152,8 @@
             "dxDataGrid-exporting": "Exporter...",
             "dxDataGrid-excelFormat": "Fichier Excel",
             "dxDataGrid-selectedRows": "Lignes s\xe9lectionn\xe9es",
-            "dxDataGrid-exportSelectedRows": "Exporter les lignes s\xe9lectionn\xe9es",
-            "dxDataGrid-exportAll": "Exporter tout",
+            "dxDataGrid-exportSelectedRows": "Exporter les lignes s\xe9lectionn\xe9es vers {0}",
+            "dxDataGrid-exportAll": "Exporter tout vers {0}",
             "dxDataGrid-headerFilterLabel": "Filter options",
             "dxDataGrid-headerFilterIndicatorLabel": "Show filter options for column '{0}'",
             "dxDataGrid-headerFilterEmptyValue": "(aucune valeur)",
@@ -180,11 +181,14 @@
             "dxTreeList-editingAddRowToNode": "Ajouter",
             "dxPager-infoText": "Page {0} sur {1} ({2} \xe9lements)",
             "dxPager-pagesCountText": "sur",
+            "dxPager-pageSize": "Items per page: {0}",
             "dxPager-pageSizesAllText": "Tous",
             "dxPager-page": "Page {0}",
             "dxPager-prevPage": "Previous Page",
             "dxPager-nextPage": "Next Page",
             "dxPager-ariaLabel": "Page Navigation",
+            "dxPager-ariaPageSize": "Page size",
+            "dxPager-ariaPageNumber": "Page number",
             "dxPivotGrid-grandTotal": "Total g\xe9n\xe9ral",
             "dxPivotGrid-total": "Total {0}",
             "dxPivotGrid-fieldChooserTitle": "Liste des champs",
@@ -250,6 +254,7 @@
             "dxScheduler-moreAppointments": "{0} en plus",
             "dxCalendar-todayButtonText": "Aujourd'hui",
             "dxCalendar-ariaWidgetName": "Calendrier",
+            "dxCalendar-ariaHotKeysInfo": "To navigate between views, press Control, and then Left Arrow or Right Arrow. To zoom in on a view, press Control, and then Down Arrow. To zoom out, press Control, and then Up Arrow.",
             "dxColorView-ariaRed": "Rouge",
             "dxColorView-ariaGreen": "Vert",
             "dxColorView-ariaBlue": "Bleu",

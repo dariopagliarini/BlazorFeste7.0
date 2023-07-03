@@ -14,7 +14,7 @@
       cancellationToken = stoppingToken;
       while (!cancellationToken.IsCancellationRequested)
       {
-        _userInterfaceService.OnDataOraServer(DateTime.Now);
+        _userInterfaceService.OnNotifyDataOraServer(DateTime.Now);
         await Task.Delay(TimeSpan.FromMilliseconds(_runTime), stoppingToken);
       }
     }

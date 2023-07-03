@@ -1,10 +1,12 @@
 ﻿using BlazorFeste.Data.Models;
-using PrinterServerAPI.lib;
+
+using RJCP.IO.Ports;
+
 using Serilog;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO.Ports;
 using System.Linq;
 
 namespace PrinterServerAPI.Services
@@ -20,8 +22,11 @@ namespace PrinterServerAPI.Services
 
     public void RescanSerialPorts(bool LogEnabled)
     {
-      // Get a list of serial port names.
-      string[] ports = SerialPort.GetPortNames();
+      string[] ports;
+      using (SerialPortStream printerPort = new SerialPortStream())
+      {
+        ports = printerPort.GetPortNames();
+      }
 
       rawDataBlockingCollections.Clear();
       if (ports.Length == 0)
@@ -56,6 +61,10 @@ namespace PrinterServerAPI.Services
           Consuma(rawDataBlockingCollection);
           rawDataBlockingCollection.StampaInCorso = false;
         }
+        else
+        {
+          Log.Information($"  StampaInCorso - {stampaOrdine}");
+        }
         return true;
       }
       Log.Information($"Porta {stampaOrdine.Stampante} non disponibile");
@@ -68,15 +77,15 @@ namespace PrinterServerAPI.Services
       {
         //var s = Stopwatch.StartNew();
         Stampa_RawData(localItem);
-        //Log.Information($"Id: {localItem.Ordine.ProgressivoSerata} - Consuma       - Elapsed {s.ElapsedMilliseconds}");
+        //Log.Information($"Consuma - {localItem.DebugText} - Elapsed {s.ElapsedMilliseconds} ({rawDataBlockingCollection.Bc.Count})");
       }
     }
     private void Stampa_RawData(StampaOrdine_RawData stampaOrdine)
     {
       //Serial port init
-      using (SerialPort printerPort = new SerialPort(stampaOrdine.Stampante, 38400))
+      using (SerialPortStream printerPort = new SerialPortStream(stampaOrdine.Stampante, 38400))
       {
-        // Log.Information($"printerPort - {Cassa.Stampante}");
+        //Log.Information($"printerPort - {Cassa.Stampante}");
         if (printerPort != null)
         {
           // Log.Information("printerPort - Port OK");
@@ -97,16 +106,23 @@ namespace PrinterServerAPI.Services
           return;
         }
 
-        //Printer init
-        ThermalPrinter printer = new ThermalPrinter(printerPort, 4, 80, 2);
-        printer.WakeUp();
-        for (int i = 0; i < stampaOrdine.rawData.Length; i++)
+        try
         {
-          printerPort.Write(stampaOrdine.rawData, i, 1);
+          printerPort.Write(stampaOrdine.rawData, 0, stampaOrdine.rawData.Length);
+          printerPort.Flush();
+          //for (int i = 0; i < stampaOrdine.rawData.Length; i++)
+          //{
+          //  printerPort.Write(stampaOrdine.rawData, i, 1);
+          //}
         }
-        printer.Sleep();
+        catch (Exception ex)
+        {
+          Log.Fatal(ex, $"printerPort.Write - I/O error");
+          return;
+        }
         printerPort.Close();
-        //Log.Information($"Stampa scontrino OK");
+
+        //Log.Information($"Stampa_RawData - Stampa scontrino OK - {stampaOrdine.rawData.Length} bytes");
       }
     }
 

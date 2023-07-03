@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.de.js)
-* Version: 22.2.5
-* Build date: Mon Mar 27 2023
+* Version: 22.2.7
+* Build date: Mon Jun 19 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -78,9 +78,9 @@
             "dxFileUploader-Gb": "Gb",
             "dxFileUploader-upload": "Hochladen",
             "dxFileUploader-uploaded": "Hochgeladen",
-            "dxFileUploader-readyToUpload": "Bereit zum hochladen",
+            "dxFileUploader-readyToUpload": "Bereit zum Hochladen",
             "dxFileUploader-uploadAbortedMessage": "Upload abgebrochen",
-            "dxFileUploader-uploadFailedMessage": "Fehler beim hochladen",
+            "dxFileUploader-uploadFailedMessage": "Fehler beim Hochladen",
             "dxFileUploader-invalidFileExtension": "Unzul\xe4ssiger Dateityp",
             "dxFileUploader-invalidMaxFileSize": "Datei ist zu gro\xdf",
             "dxFileUploader-invalidMinFileSize": "Datei ist zu klein",
@@ -124,6 +124,7 @@
             "dxDataGrid-filterRowOperationBetween": "Zwischen",
             "dxDataGrid-filterRowOperationBetweenStartText": "Anfang",
             "dxDataGrid-filterRowOperationBetweenEndText": "Ende",
+            "dxDataGrid-ariaSearchBox": "Search box",
             "dxDataGrid-applyFilterText": "Filter anwenden",
             "dxDataGrid-trueText": "wahr",
             "dxDataGrid-falseText": "falsch",
@@ -165,7 +166,7 @@
             "dxDataGrid-ariaFilterCell": "Filterzelle",
             "dxDataGrid-ariaCollapse": "Zusammenklappen",
             "dxDataGrid-ariaExpand": "Aufklappen",
-            "dxDataGrid-ariaDataGrid": "Datentabelle",
+            "dxDataGrid-ariaDataGrid": "Datentabelle mit {0} Zeilen und {1} Spalten",
             "dxDataGrid-ariaSearchInGrid": "Suchen in der Datentabelle",
             "dxDataGrid-ariaSelectAll": "Alle ausw\xe4hlen",
             "dxDataGrid-ariaSelectRow": "Zeile ausw\xe4hlen",
@@ -186,6 +187,8 @@
             "dxPager-prevPage": "Vorherige Seite",
             "dxPager-nextPage": "N\xe4chste Seite",
             "dxPager-ariaLabel": "Seitennavigation",
+            "dxPager-ariaPageSize": "Seitenl\xe4nge",
+            "dxPager-ariaPageNumber": "Seitennummer",
             "dxPivotGrid-grandTotal": "Gesamt",
             "dxPivotGrid-total": "{0} Gesamt",
             "dxPivotGrid-fieldChooserTitle": "Feldauswahl",
@@ -251,6 +254,7 @@
             "dxScheduler-moreAppointments": "{0} weitere",
             "dxCalendar-todayButtonText": "Heute",
             "dxCalendar-ariaWidgetName": "Kalendar",
+            "dxCalendar-ariaHotKeysInfo": "To navigate between views, press Control, and then Left Arrow or Right Arrow. To zoom in on a view, press Control, and then Down Arrow. To zoom out, press Control, and then Up Arrow.",
             "dxColorView-ariaRed": "Rot",
             "dxColorView-ariaGreen": "Gr\xfcn",
             "dxColorView-ariaBlue": "Blau",

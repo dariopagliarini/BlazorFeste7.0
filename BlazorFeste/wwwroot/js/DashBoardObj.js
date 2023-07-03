@@ -241,6 +241,51 @@ export var DashBoardObj = {
         if (_qryStatoOrdini.length > 0) {
           DashBoardObj.gridOrdini.beginUpdate();
 
+          var actColumnCount = _qryStatoOrdini[0].statoCassa.length + 4;
+          if (DashBoardObj.gridOrdini.columnCount() != actColumnCount) {
+            let totalItems = [
+              { column: 'quantità', summaryType: 'sum', valueFormat: { type: "fixedPoint", precision: 0 }, displayFormat: "{0}" },
+              { column: 'importo', summaryType: 'sum', valueFormat: { type: "currency", currency: "EUR", precision: 2 }, displayFormat: "{0}" },
+            ];
+            let colonne = [
+              {
+                caption: "#", dataField: "idProdotto", alignment: "center", width: 30,
+              },
+              {
+                caption: "Prodotto", dataField: "nomeProdotto", alignment: "left", name: "nomeProdotto",
+              },
+              {
+                caption: "Qtà", dataField: "quantità", width: 50,
+              },
+              {
+                caption: "Importo", dataField: "importo", format: { type: "currency", currency: "EUR", precision: 2 }, width: 80,
+              },
+            ];
+
+            let idx = 0;
+            _qryStatoOrdini[0].statoCassa.forEach(cassa => {
+              let _cassa = DashBoardObj.anagrCasse.find(({ idCassa }) => idCassa === cassa.idCassa);
+
+              let colonneCassa = [
+                { caption: "Qtà", name: "c" + idx + "_Qta", dataField: 'statoCassa[' + idx + '].quantitàProdotto', format: { type: "fixedPoint", precision: 0 }, width: 50, },
+                { caption: "Importo", name: "c" + idx + "_Imp", dataField: 'statoCassa[' + idx + '].importo', format: { type: "currency", currency: "EUR", precision: 2 }, width: 80, },
+              ];
+
+              if (_cassa) {
+                colonne.push({ caption: _cassa.cassa, name: "cassa" + idx, visible: true, alignment: "center", columns: colonneCassa });
+              } else {
+                colonne.push({ caption: "Cassa #" + idx, name: "cassa" + idx, visible: true, alignment: "center", columns: colonneCassa });
+              }
+
+              totalItems.push({ column: 'c' + idx + '_Qta', summaryType: 'sum', valueFormat: { type: "fixedPoint", precision: 0 }, displayFormat: "{0}" });
+              totalItems.push({ column: 'c' + idx + '_Imp', summaryType: 'sum', valueFormat: { type: "currency", currency: "EUR", precision: 2 }, displayFormat: "{0}" });
+
+              idx++;
+            });
+            DashBoardObj.gridOrdini.option("columns", colonne);
+            DashBoardObj.gridOrdini.option("summary.totalItems", totalItems);
+          }
+/*
           var ds = DashBoardObj.gridOrdini.option("dataSource");
           if (ds.length > 0) {
             var actColumnCount = ds[0].statoCassa.length + 4;
@@ -289,6 +334,7 @@ export var DashBoardObj = {
               DashBoardObj.gridOrdini.option("summary.totalItems", totalItems);
             }
           }
+*/
           DashBoardObj.gridOrdini.option("dataSource", _qryStatoOrdini);
           DashBoardObj.gridOrdini.endUpdate();
         }

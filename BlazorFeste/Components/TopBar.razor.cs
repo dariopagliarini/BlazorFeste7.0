@@ -36,8 +36,9 @@ namespace BlazorFeste.Components
       if (firstRender)
       {
         List<string> SuperUsers = new List<string>();
-        SuperUsers.Add("192.168.1.45");
+        SuperUsers.Add("192.168.1.25");
         SuperUsers.Add("192.168.100.1");
+        SuperUsers.Add("192.168.100.199");
         SuperUsers.Add("localhost");
 
         objRef = DotNetObjectReference.Create(this);

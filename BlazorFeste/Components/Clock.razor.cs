@@ -2,6 +2,8 @@
 using BlazorFeste.Util;
 using Microsoft.AspNetCore.Components;
 
+using Serilog;
+
 namespace BlazorFeste.Components
 {
   public partial class Clock : IDisposable
@@ -21,7 +23,7 @@ namespace BlazorFeste.Components
     #region LifeCycle
     protected override async Task OnInitializedAsync()
     {
-      _UserInterfaceService.DataOraServer += OnDataOraServerChanged;
+      _UserInterfaceService.NotifyDataOraServer += OnNotifyDataOraServer;
 
       await base.OnInitializedAsync();
     }
@@ -37,28 +39,27 @@ namespace BlazorFeste.Components
 
     public void Dispose()
     {
-      _UserInterfaceService.DataOraServer -= OnDataOraServerChanged;
+      _UserInterfaceService.NotifyDataOraServer -= OnNotifyDataOraServer;
     }
 
     #endregion
 
     #region Eventi
-    async void OnDataOraServerChanged(object sender, DateTime adesso)
+    async void OnNotifyDataOraServer(object sender, DateTime adesso)
     {
-      strOra = adesso.ToString("HH:mm:ss");
-      strData = adesso.ToString("dddd dd MMM yyyy").FirstCharToUpper();
-
-//      strOra = CultureInfo.CurrentCulture.ToString();
-
       try
       {
+        strOra = adesso.ToString("HH:mm:ss");
+        strData = adesso.ToString("dddd dd MMM yyyy").FirstCharToUpper();
+
         await InvokeAsync(StateHasChanged);
       }
-      catch
+      catch (TaskCanceledException tEx) { _ = tEx; }
+      catch (Exception ex)
       {
+        Log.Error(ex, "Code Exception");
       }
     }
-
     #endregion
   }
 }

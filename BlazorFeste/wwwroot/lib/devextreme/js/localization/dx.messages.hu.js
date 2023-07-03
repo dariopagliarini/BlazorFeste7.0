@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.hu.js)
-* Version: 22.2.5
-* Build date: Mon Mar 27 2023
+* Version: 22.2.7
+* Build date: Mon Jun 19 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -124,6 +124,7 @@
             "dxDataGrid-filterRowOperationBetween": "K\xf6z\xf6tt",
             "dxDataGrid-filterRowOperationBetweenStartText": "Kezdete",
             "dxDataGrid-filterRowOperationBetweenEndText": "V\xe9ge",
+            "dxDataGrid-ariaSearchBox": "Search box",
             "dxDataGrid-applyFilterText": "Sz\u0171r\u0151 alkalmaz\xe1sa",
             "dxDataGrid-trueText": "igaz",
             "dxDataGrid-falseText": "hamis",
@@ -180,11 +181,14 @@
             "dxTreeList-editingAddRowToNode": "Hozz\xe1ad\xe1s",
             "dxPager-infoText": "Oldal: {0}/{1} ({2} elem)",
             "dxPager-pagesCountText": "/",
+            "dxPager-pageSize": "Items per page: {0}",
             "dxPager-pageSizesAllText": "Mind",
             "dxPager-page": "Page {0}",
             "dxPager-prevPage": "Previous Page",
             "dxPager-nextPage": "Next Page",
             "dxPager-ariaLabel": "Page Navigation",
+            "dxPager-ariaPageSize": "Page size",
+            "dxPager-ariaPageNumber": "Page number",
             "dxPivotGrid-grandTotal": "Teljes \xf6sszeg",
             "dxPivotGrid-total": "{0} \xd6sszeg",
             "dxPivotGrid-fieldChooserTitle": "Mez\u0151v\xe1laszt\xf3",
@@ -250,6 +254,7 @@
             "dxScheduler-moreAppointments": "{0} t\xf6bb",
             "dxCalendar-todayButtonText": "Ma",
             "dxCalendar-ariaWidgetName": "Napt\xe1r",
+            "dxCalendar-ariaHotKeysInfo": "To navigate between views, press Control, and then Left Arrow or Right Arrow. To zoom in on a view, press Control, and then Down Arrow. To zoom out, press Control, and then Up Arrow.",
             "dxColorView-ariaRed": "Piros",
             "dxColorView-ariaGreen": "Z\xf6ld",
             "dxColorView-ariaBlue": "K\xe9k",

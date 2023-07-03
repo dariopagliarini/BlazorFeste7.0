@@ -24,19 +24,23 @@ export var GestioneAnagrProdottiObj = {
           caption: "Id. Prodotto", dataField: "idProdotto", alignment: "center",
           allowEditing: false,
           allowFiltering: false,
+          showInColumnChooser: false,
           width: 70,
         },
         {
           caption: "Prodotto", dataField: "nomeProdotto", alignment: "left",
+          showInColumnChooser: false,
         },
         {
           caption: "Prezzo Unitario", dataField: "prezzoUnitario", alignment: "right", format: { type: "currency", currency: "EUR", precision: 2 },
           allowFiltering: false,
+          showInColumnChooser: false,
           width: 80,
         },
         {
           caption: "Stato", dataField: "stato", alignment: "center",
           width: 80,
+          showInColumnChooser: false,
           dataType: "boolean",
         },
         {
@@ -52,33 +56,38 @@ export var GestioneAnagrProdottiObj = {
           caption: "Magazzino", dataField: "magazzino", alignment: "right",
           width: 100,
         },
-
         {
           caption: "Consumo",
           columns: [
             {
               caption: "Prodotto", dataField: "consumo", alignment: "right",
               allowFiltering: false,
+              allowEditing: false,
+              visible:false,
               width: 60,
             },
             {
               caption: "Cumul.", dataField: "consumoCumulativo", alignment: "right",
               allowFiltering: false,
+              allowEditing: false,
               width: 60,
             },
           ]
         },
         {
           caption: "Evaso",
+          visible: false,
           columns: [
             {
               caption: "Prodotto", dataField: "evaso", alignment: "right",
               allowFiltering: false,
+              allowEditing: false,
               width: 60,
             },
             {
               caption: "Cumul.", dataField: "evasoCumulativo", alignment: "right",
               allowFiltering: false,
+              allowEditing: false,
               width: 60,
             },
           ]
@@ -88,7 +97,18 @@ export var GestioneAnagrProdottiObj = {
           width: 100,
         },
         {
+          caption: "Stampa Ticket Coda", dataField: "printQueueTicket", alignment: "center",
+          dataType: "boolean",
+          width: 90,
+        },
+        {
+          caption: "Etichetta 'Da  Evadere'", dataField: "viewLableDaEvadere", alignment: "center",
+          dataType: "boolean",
+          width: 90,
+        },
+        {
           caption: "Colore",
+          visible: false,
           columns: [
             {
               caption: "Sfondo", dataField: "backColor", alignment: "center",
@@ -99,16 +119,6 @@ export var GestioneAnagrProdottiObj = {
               width: 120,
             },
           ]
-        },
-        {
-          dataType: "boolean",
-          caption: "Stampa Ticket Coda", dataField: "printQueueTicket", alignment: "center",
-          width: 90,
-        },
-        {
-          dataType: "boolean",
-          caption: "Etichetta 'Da  Evadere'", dataField: "viewLableDaEvadere", alignment: "center",
-          width: 90,
         },
       ],
       noDataText: "Nessun Dato Disponibile",
@@ -131,7 +141,25 @@ export var GestioneAnagrProdottiObj = {
       columnChooser: {
         enabled: true,
         mode: 'select',
+        position: {
+          my: 'right top',
+          at: 'right bottom',
+          of: '.dx-datagrid-column-chooser-button',
+        },
+        search: {
+          enabled: true,
+          editorOptions: { placeholder: 'Search column' },
+        },
+        selection: {
+          recursive: true,
+          selectByClick: true,
+          allowSelectAll: true,
+        },
       },
+      //columnChooser: {
+      //  enabled: true,
+      //  mode: 'select',
+      //},
       onInitialized(e) {
         GestioneAnagrProdottiObj.gridProdotti = e.component;
       },
@@ -143,32 +171,6 @@ export var GestioneAnagrProdottiObj = {
       },
       toolbar: {
         items: [
-          {
-            location: 'center',
-            widget: 'dxButton',
-            options: {
-              icon: 'fa-solid fa-dolly',
-              type: 'default',
-              text: 'Reset Consumi',
-              hint: "Reset Consumi",
-              onClick() {
-                var result = DevExpress.ui.dialog.confirm("<i>Confermi l'operazione?</i>", "Reset Consumi");
-                result.done(function (dialogResult) {
-                  if (dialogResult) {
-                    _objRef.invokeMethodAsync('ResetConsumi')
-                      .then(_anagrProdotti => {
-                        GestioneAnagrProdottiObj.anagrProdotti = _anagrProdotti;
-
-                        GestioneAnagrProdottiObj.gridProdotti.beginUpdate();
-                        GestioneAnagrProdottiObj.gridProdotti.option("dataSource", _anagrProdotti);
-                        GestioneAnagrProdottiObj.gridProdotti.endUpdate();
-                      })
-                      .catch(err => console.error(err.toString()));
-                  }
-                });
-              },
-            },
-          },
           {
             location: 'after',
             name: 'saveButton',

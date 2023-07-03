@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.tr.js)
-* Version: 22.2.5
-* Build date: Mon Mar 27 2023
+* Version: 22.2.7
+* Build date: Mon Jun 19 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -124,6 +124,7 @@
             "dxDataGrid-filterRowOperationBetween": "Aras\u0131nda",
             "dxDataGrid-filterRowOperationBetweenStartText": "Ba\u015fla",
             "dxDataGrid-filterRowOperationBetweenEndText": "Biti\u015f",
+            "dxDataGrid-ariaSearchBox": "Search box",
             "dxDataGrid-applyFilterText": "Filtre uygula",
             "dxDataGrid-trueText": "evet",
             "dxDataGrid-falseText": "hay\u0131r",
@@ -180,11 +181,14 @@
             "dxTreeList-editingAddRowToNode": "Ekle",
             "dxPager-infoText": "Sayfa {0} / {1} ({2} veri)",
             "dxPager-pagesCountText": "aras\u0131nda",
+            "dxPager-pageSize": "Items per page: {0}",
             "dxPager-pageSizesAllText": "T\xfcm\xfc",
             "dxPager-page": "Page {0}",
             "dxPager-prevPage": "Previous Page",
             "dxPager-nextPage": "Next Page",
             "dxPager-ariaLabel": "Page Navigation",
+            "dxPager-ariaPageSize": "Page size",
+            "dxPager-ariaPageNumber": "Page number",
             "dxPivotGrid-grandTotal": "Genel Toplam",
             "dxPivotGrid-total": "{0} Toplam",
             "dxPivotGrid-fieldChooserTitle": "Alan Se\xe7ici",
@@ -250,6 +254,7 @@
             "dxScheduler-moreAppointments": "{0} daha",
             "dxCalendar-todayButtonText": "Bug\xfcn",
             "dxCalendar-ariaWidgetName": "Takvim",
+            "dxCalendar-ariaHotKeysInfo": "To navigate between views, press Control, and then Left Arrow or Right Arrow. To zoom in on a view, press Control, and then Down Arrow. To zoom out, press Control, and then Up Arrow.",
             "dxColorView-ariaRed": "K\u0131rm\u0131z\u0131",
             "dxColorView-ariaGreen": "Ye\u015fil",
             "dxColorView-ariaBlue": "Mavi",

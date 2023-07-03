@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.sv.js)
-* Version: 22.2.5
-* Build date: Mon Mar 27 2023
+* Version: 22.2.7
+* Build date: Mon Jun 19 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -124,6 +124,7 @@
             "dxDataGrid-filterRowOperationBetween": "Mellan",
             "dxDataGrid-filterRowOperationBetweenStartText": "Start",
             "dxDataGrid-filterRowOperationBetweenEndText": "Slut",
+            "dxDataGrid-ariaSearchBox": "Search box",
             "dxDataGrid-applyFilterText": "Anv\xe4nd filter",
             "dxDataGrid-trueText": "sant",
             "dxDataGrid-falseText": "falskt",
@@ -180,11 +181,14 @@
             "dxTreeList-editingAddRowToNode": "L\xe4gg till",
             "dxPager-infoText": "Sida {0} av {1} ({2} uppgifter)",
             "dxPager-pagesCountText": "av",
+            "dxPager-pageSize": "Items per page: {0}",
             "dxPager-pageSizesAllText": "Allt",
             "dxPager-page": "Page {0}",
             "dxPager-prevPage": "Previous Page",
             "dxPager-nextPage": "Next Page",
             "dxPager-ariaLabel": "Page Navigation",
+            "dxPager-ariaPageSize": "Page size",
+            "dxPager-ariaPageNumber": "Page number",
             "dxPivotGrid-grandTotal": "Totalsumma",
             "dxPivotGrid-total": "{0} Summa",
             "dxPivotGrid-fieldChooserTitle": "F\xe4ltv\xe4ljare",
@@ -250,6 +254,7 @@
             "dxScheduler-moreAppointments": "{0} mer",
             "dxCalendar-todayButtonText": "I dag",
             "dxCalendar-ariaWidgetName": "Kalender",
+            "dxCalendar-ariaHotKeysInfo": "To navigate between views, press Control, and then Left Arrow or Right Arrow. To zoom in on a view, press Control, and then Down Arrow. To zoom out, press Control, and then Up Arrow.",
             "dxColorView-ariaRed": "R\xf6d",
             "dxColorView-ariaGreen": "Gr\xf6n",
             "dxColorView-ariaBlue": "Bl\xe5",

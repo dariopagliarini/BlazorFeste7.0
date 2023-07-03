@@ -426,11 +426,10 @@ namespace BlazorFeste.lib
     {
       if (length > 0)
       {
-        if (length > 42)
-        {
-          length = 42;
-        }
-
+//        if (length > 48)
+//        {
+//          length = 48;
+//        }
         for (int i = 0; i < length; i++)
         {
           WriteByte(0xC4);

@@ -1,11 +1,11 @@
 /*!
-* chartjs-plugin-annotation v2.2.1
+* chartjs-plugin-annotation v3.0.1
 * https://www.chartjs.org/chartjs-plugin-annotation/index
  * (c) 2023 chartjs-plugin-annotation Contributors
  * Released under the MIT License
  */
 import { Element, defaults, Animations, Chart } from 'chart.js';
-import { distanceBetweenPoints, isObject, valueOrDefault, defined, callback, isFunction, toRadians, isArray, toFont, addRoundedRectPath, toTRBLCorners, QUARTER_PI, PI, HALF_PI, TWO_THIRDS_PI, TAU, isNumber, RAD_PER_DEG, toPadding, isFinite, toDegrees, clipArea, unclipArea } from 'chart.js/helpers';
+import { distanceBetweenPoints, defined, isFunction, callback, isObject, valueOrDefault, toRadians, isArray, toFont, addRoundedRectPath, toTRBLCorners, QUARTER_PI, PI, HALF_PI, TWO_THIRDS_PI, TAU, isNumber, RAD_PER_DEG, toPadding, isFinite, toDegrees, clipArea, unclipArea } from 'chart.js/helpers';
 
 /**
  * @typedef { import("chart.js").ChartEvent } ChartEvent
@@ -210,9 +210,20 @@ const isPercentString = (s) => typeof s === 'string' && s.endsWith('%');
 const toPercent = (s) => parseFloat(s) / 100;
 const toPositivePercent = (s) => clamp(toPercent(s), 0, 1);
 
+const boxAppering = (x, y) => ({x, y, x2: x, y2: y, width: 0, height: 0});
+const defaultInitAnimation = {
+  box: (properties) => boxAppering(properties.centerX, properties.centerY),
+  ellipse: (properties) => ({centerX: properties.centerX, centerY: properties.centerX, radius: 0, width: 0, height: 0}),
+  label: (properties) => boxAppering(properties.centerX, properties.centerY),
+  line: (properties) => boxAppering(properties.x, properties.y),
+  point: (properties) => ({centerX: properties.centerX, centerY: properties.centerY, radius: 0, width: 0, height: 0}),
+  polygon: (properties) => boxAppering(properties.centerX, properties.centerY)
+};
+
 /**
  * @typedef { import("chart.js").Chart } Chart
  * @typedef { import('../../types/element').AnnotationBoxModel } AnnotationBoxModel
+ * @typedef { import('../../types/element').AnnotationElement } AnnotationElement
  * @typedef { import('../../types/options').AnnotationPointCoordinates } AnnotationPointCoordinates
  * @typedef { import('../../types/label').CoreLabelOptions } CoreLabelOptions
  * @typedef { import('../../types/label').LabelPositionObject } LabelPositionObject
@@ -298,17 +309,16 @@ function isBoundToPoint(options) {
  * @param {Chart} chart
  * @param {AnnotationBoxModel} properties
  * @param {CoreAnnotationOptions} options
- * @param {boolean} [centerBased=false]
- * @returns {AnnotationBoxModel}
+ * @returns {AnnotationElement}
  */
-function initAnimationProperties(chart, properties, options, centerBased = false) {
+function initAnimationProperties(chart, properties, options) {
   const initAnim = options.init;
   if (!initAnim) {
     return;
   } else if (initAnim === true) {
-    return applyDefault(properties, centerBased);
+    return applyDefault(properties, options);
   }
-  return checkCallbackResult(properties, centerBased, callback(initAnim, [{chart, properties, options}]));
+  return execCallback(chart, properties, options);
 }
 
 /**
@@ -330,16 +340,15 @@ function loadHooks(options, hooks, hooksContainer) {
   return activated;
 }
 
-function applyDefault({centerX, centerY}, centerBased) {
-  if (centerBased) {
-    return {centerX, centerY, radius: 0, width: 0, height: 0};
-  }
-  return {x: centerX, y: centerY, x2: centerX, y2: centerY, width: 0, height: 0};
+function applyDefault(properties, options) {
+  const type = options.type || 'line';
+  return defaultInitAnimation[type](properties);
 }
 
-function checkCallbackResult(properties, centerBased, result) {
+function execCallback(chart, properties, options) {
+  const result = callback(options.init, [{chart, properties, options}]);
   if (result === true) {
-    return applyDefault(properties, centerBased);
+    return applyDefault(properties, options);
   } else if (isObject(result)) {
     return result;
   }
@@ -848,9 +857,9 @@ function resolveLineProperties(chart, options) {
  * @param {boolean} [centerBased=false]
  * @returns {AnnotationBoxModel}
  */
-function resolveBoxAndLabelProperties(chart, options, centerBased) {
+function resolveBoxAndLabelProperties(chart, options) {
   const properties = resolveBoxProperties(chart, options);
-  properties.initProperties = initAnimationProperties(chart, properties, options, centerBased);
+  properties.initProperties = initAnimationProperties(chart, properties, options);
   properties.elements = [{
     type: 'label',
     optionScope: 'label',
@@ -2098,7 +2107,7 @@ class EllipseAnnotation extends Element {
   }
 
   resolveElementProperties(chart, options) {
-    return resolveBoxAndLabelProperties(chart, options, true);
+    return resolveBoxAndLabelProperties(chart, options);
   }
 
 }
@@ -2195,7 +2204,7 @@ class PointAnnotation extends Element {
 
   resolveElementProperties(chart, options) {
     const properties = resolvePointProperties(chart, options);
-    properties.initProperties = initAnimationProperties(chart, properties, options, true);
+    properties.initProperties = initAnimationProperties(chart, properties, options);
     return properties;
   }
 }
@@ -2548,7 +2557,7 @@ function resyncElements(elements, annotations) {
   return elements;
 }
 
-var version = "2.2.1";
+var version = "3.0.1";
 
 const chartStates = new Map();
 const hooks = eventHooks.concat(elementHooks);
@@ -2559,7 +2568,7 @@ var annotation = {
   version,
 
   beforeRegister() {
-    requireVersion('chart.js', '3.7', Chart.version);
+    requireVersion('chart.js', '4.0', Chart.version);
   },
 
   afterRegister() {

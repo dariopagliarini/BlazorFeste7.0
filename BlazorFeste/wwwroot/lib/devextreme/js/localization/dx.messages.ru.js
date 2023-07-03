@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.ru.js)
-* Version: 22.2.5
-* Build date: Mon Mar 27 2023
+* Version: 22.2.7
+* Build date: Mon Jun 19 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -124,6 +124,7 @@
             "dxDataGrid-filterRowOperationBetween": "\u0412 \u0434\u0438\u0430\u043f\u0430\u0437\u043e\u043d\u0435",
             "dxDataGrid-filterRowOperationBetweenStartText": "\u041d\u0430\u0447\u0430\u043b\u043e",
             "dxDataGrid-filterRowOperationBetweenEndText": "\u041a\u043e\u043d\u0435\u0446",
+            "dxDataGrid-ariaSearchBox": "Search box",
             "dxDataGrid-applyFilterText": "\u041f\u0440\u0438\u043c\u0435\u043d\u0438\u0442\u044c \u0444\u0438\u043b\u044c\u0442\u0440",
             "dxDataGrid-trueText": "\u0414\u0430",
             "dxDataGrid-falseText": "\u041d\u0435\u0442",
@@ -165,7 +166,7 @@
             "dxDataGrid-ariaFilterCell": "\u0424\u0438\u043b\u044c\u0442\u0440",
             "dxDataGrid-ariaCollapse": "\u0421\u0432\u0435\u0440\u043d\u0443\u0442\u044c",
             "dxDataGrid-ariaExpand": "\u0420\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c",
-            "dxDataGrid-ariaDataGrid": "\u0422\u0430\u0431\u043b\u0438\u0446\u0430 \u0434\u0430\u043d\u043d\u044b\u0445",
+            "dxDataGrid-ariaDataGrid": "\u0422\u0430\u0431\u043b\u0438\u0446\u0430 \u0434\u0430\u043d\u043d\u044b\u0445 \u0441 {0} \u0441\u0442\u0440\u043e\u043a\u0430\u043c\u0438 \u0438 {1} \u043a\u043e\u043b\u043e\u043d\u043a\u0430\u043c\u0438",
             "dxDataGrid-ariaSearchInGrid": "\u0418\u0441\u043a\u0430\u0442\u044c \u0432 \u0442\u0430\u0431\u043b\u0438\u0446\u0435 \u0434\u0430\u043d\u043d\u044b\u0445",
             "dxDataGrid-ariaSelectAll": "\u0412\u044b\u0431\u0440\u0430\u0442\u044c \u0432\u0441\u0451",
             "dxDataGrid-ariaSelectRow": "\u0412\u044b\u0431\u0440\u0430\u0442\u044c \u0441\u0442\u0440\u043e\u043a\u0443",
@@ -186,6 +187,8 @@
             "dxPager-prevPage": "\u041f\u0440\u0435\u0434\u044b\u0434\u0443\u0449\u0430\u044f \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0430",
             "dxPager-nextPage": "\u0421\u043b\u0435\u0434\u0443\u044e\u0449\u0430\u044f \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0430",
             "dxPager-ariaLabel": "\u041d\u0430\u0432\u0438\u0433\u0430\u0446\u0438\u044f \u043f\u043e \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0430\u043c",
+            "dxPager-ariaPageSize": "\u0420\u0430\u0437\u043c\u0435\u0440 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u044b",
+            "dxPager-ariaPageNumber": "\u041d\u043e\u043c\u0435\u0440 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u044b",
             "dxPivotGrid-grandTotal": "\u0418\u0442\u043e\u0433\u043e",
             "dxPivotGrid-total": "{0} \u0412\u0441\u0435\u0433\u043e",
             "dxPivotGrid-fieldChooserTitle": "\u0412\u044b\u0431\u043e\u0440 \u043f\u043e\u043b\u0435\u0439",
@@ -251,6 +254,7 @@
             "dxScheduler-moreAppointments": "\u0438 \u0435\u0449\u0435 {0}",
             "dxCalendar-todayButtonText": "\u0421\u0435\u0433\u043e\u0434\u043d\u044f",
             "dxCalendar-ariaWidgetName": "\u041a\u0430\u043b\u0435\u043d\u0434\u0430\u0440\u044c",
+            "dxCalendar-ariaHotKeysInfo": "To navigate between views, press Control, and then Left Arrow or Right Arrow. To zoom in on a view, press Control, and then Down Arrow. To zoom out, press Control, and then Up Arrow.",
             "dxColorView-ariaRed": "\u041a\u0440\u0430\u0441\u043d\u044b\u0439",
             "dxColorView-ariaGreen": "\u0417\u0435\u043b\u0435\u043d\u044b\u0439",
             "dxColorView-ariaBlue": "\u0421\u0438\u043d\u0438\u0439",

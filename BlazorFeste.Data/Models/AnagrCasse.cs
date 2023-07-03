@@ -30,6 +30,7 @@ namespace BlazorFeste.Data.Models
     public long idUltimoOrdine { get; set; }
     [Computed]
     public long OrdiniDellaCassa { get; set; }
+
     [Computed]
     public IEnumerable<int> prodottiVisibili
     {

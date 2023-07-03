@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.fi.js)
-* Version: 22.2.5
-* Build date: Mon Mar 27 2023
+* Version: 22.2.7
+* Build date: Mon Jun 19 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -124,6 +124,7 @@
             "dxDataGrid-filterRowOperationBetween": "V\xe4lill\xe4",
             "dxDataGrid-filterRowOperationBetweenStartText": "Alkaa",
             "dxDataGrid-filterRowOperationBetweenEndText": "Loppu",
+            "dxDataGrid-ariaSearchBox": "Search box",
             "dxDataGrid-applyFilterText": "K\xe4yt\xe4 suodatinta",
             "dxDataGrid-trueText": "tosi",
             "dxDataGrid-falseText": "ep\xe4tosi",
@@ -180,11 +181,14 @@
             "dxTreeList-editingAddRowToNode": "Lis\xe4\xe4",
             "dxPager-infoText": "Sivu {0}/{1} ({2} kohdetta)",
             "dxPager-pagesCountText": "/",
+            "dxPager-pageSize": "Items per page: {0}",
             "dxPager-pageSizesAllText": "Kaikki",
             "dxPager-page": "Page {0}",
             "dxPager-prevPage": "Previous Page",
             "dxPager-nextPage": "Next Page",
             "dxPager-ariaLabel": "Page Navigation",
+            "dxPager-ariaPageSize": "Page size",
+            "dxPager-ariaPageNumber": "Page number",
             "dxPivotGrid-grandTotal": "Loppusumma",
             "dxPivotGrid-total": "{0} Summa",
             "dxPivotGrid-fieldChooserTitle": "Kent\xe4n valitseminen",
@@ -250,6 +254,7 @@
             "dxScheduler-moreAppointments": "{0} lis\xe4\xe4",
             "dxCalendar-todayButtonText": "T\xe4n\xe4\xe4n",
             "dxCalendar-ariaWidgetName": "Kalenteri",
+            "dxCalendar-ariaHotKeysInfo": "To navigate between views, press Control, and then Left Arrow or Right Arrow. To zoom in on a view, press Control, and then Down Arrow. To zoom out, press Control, and then Up Arrow.",
             "dxColorView-ariaRed": "Punainen",
             "dxColorView-ariaGreen": "Vihre\xe4",
             "dxColorView-ariaBlue": "Sininen",

@@ -92,7 +92,8 @@ export var TopBarObj = {
   },
 };
 
-function resyncSelectBox (id) {
-  $("#listaSelectBox").dxSelectBox("instance").option('value', id);
+function resyncSelectBox(id) {
+  if ($("#listaSelectBox")?.dxSelectBox("instance")?.option() != undefined)
+    $("#listaSelectBox")?.dxSelectBox("instance")?.option('value', id);
 };
 export { resyncSelectBox };

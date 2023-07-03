@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.ro.js)
-* Version: 22.2.5
-* Build date: Mon Mar 27 2023
+* Version: 22.2.7
+* Build date: Mon Jun 19 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -124,6 +124,7 @@
             "dxDataGrid-filterRowOperationBetween": "\xcentre",
             "dxDataGrid-filterRowOperationBetweenStartText": "\xcencepe",
             "dxDataGrid-filterRowOperationBetweenEndText": "Sf\xe2r\u0219it",
+            "dxDataGrid-ariaSearchBox": "Search box",
             "dxDataGrid-applyFilterText": "Aplica filtre",
             "dxDataGrid-trueText": "adev\u0103rat",
             "dxDataGrid-falseText": "fals",
@@ -180,11 +181,14 @@
             "dxTreeList-editingAddRowToNode": "Adaug\u0103",
             "dxPager-infoText": "Pagina {0} de {1} ({2} obiecte)",
             "dxPager-pagesCountText": "de",
+            "dxPager-pageSize": "Items per page: {0}",
             "dxPager-pageSizesAllText": "Tot",
             "dxPager-page": "Page {0}",
             "dxPager-prevPage": "Previous Page",
             "dxPager-nextPage": "Next Page",
             "dxPager-ariaLabel": "Page Navigation",
+            "dxPager-ariaPageSize": "Page size",
+            "dxPager-ariaPageNumber": "Page number",
             "dxPivotGrid-grandTotal": "Total general",
             "dxPivotGrid-total": "{0} Total",
             "dxPivotGrid-fieldChooserTitle": "Selector de C\xe2mp",
@@ -250,6 +254,7 @@
             "dxScheduler-moreAppointments": "{0} mai mult",
             "dxCalendar-todayButtonText": "Ast\u0103zi",
             "dxCalendar-ariaWidgetName": "Calendar",
+            "dxCalendar-ariaHotKeysInfo": "To navigate between views, press Control, and then Left Arrow or Right Arrow. To zoom in on a view, press Control, and then Down Arrow. To zoom out, press Control, and then Up Arrow.",
             "dxColorView-ariaRed": "Ro\u0219u",
             "dxColorView-ariaGreen": "Verde",
             "dxColorView-ariaBlue": "Albastru",

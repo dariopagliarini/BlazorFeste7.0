@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.nb.js)
-* Version: 22.2.5
-* Build date: Mon Mar 27 2023
+* Version: 22.2.7
+* Build date: Mon Jun 19 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -124,6 +124,7 @@
             "dxDataGrid-filterRowOperationBetween": "Mellom",
             "dxDataGrid-filterRowOperationBetweenStartText": "Start",
             "dxDataGrid-filterRowOperationBetweenEndText": "Slutt",
+            "dxDataGrid-ariaSearchBox": "Search box",
             "dxDataGrid-applyFilterText": "Bruk filter",
             "dxDataGrid-trueText": "sant",
             "dxDataGrid-falseText": "usant",
@@ -180,11 +181,14 @@
             "dxTreeList-editingAddRowToNode": "Legg til",
             "dxPager-infoText": "Side {0} av {1} ({2} punkter)",
             "dxPager-pagesCountText": "av",
+            "dxPager-pageSize": "Items per page: {0}",
             "dxPager-pageSizesAllText": "Alle",
             "dxPager-page": "Page {0}",
             "dxPager-prevPage": "Previous Page",
             "dxPager-nextPage": "Next Page",
             "dxPager-ariaLabel": "Page Navigation",
+            "dxPager-ariaPageSize": "Page size",
+            "dxPager-ariaPageNumber": "Page number",
             "dxPivotGrid-grandTotal": "Totalsum",
             "dxPivotGrid-total": "{0} Totalt",
             "dxPivotGrid-fieldChooserTitle": "Feltvelger",
@@ -250,6 +254,7 @@
             "dxScheduler-moreAppointments": "{0} mer",
             "dxCalendar-todayButtonText": "I dag",
             "dxCalendar-ariaWidgetName": "Kalender",
+            "dxCalendar-ariaHotKeysInfo": "To navigate between views, press Control, and then Left Arrow or Right Arrow. To zoom in on a view, press Control, and then Down Arrow. To zoom out, press Control, and then Up Arrow.",
             "dxColorView-ariaRed": "R\xf8d",
             "dxColorView-ariaGreen": "Gr\xf8nn",
             "dxColorView-ariaBlue": "Bl\xe5",

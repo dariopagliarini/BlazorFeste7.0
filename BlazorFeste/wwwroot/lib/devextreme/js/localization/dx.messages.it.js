@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.it.js)
-* Version: 22.2.5
-* Build date: Mon Mar 27 2023
+* Version: 22.2.7
+* Build date: Mon Jun 19 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -124,6 +124,7 @@
             "dxDataGrid-filterRowOperationBetween": "Compreso",
             "dxDataGrid-filterRowOperationBetweenStartText": "Inizio",
             "dxDataGrid-filterRowOperationBetweenEndText": "Fine",
+            "dxDataGrid-ariaSearchBox": "Search box",
             "dxDataGrid-applyFilterText": "Applica filtro",
             "dxDataGrid-trueText": "vero",
             "dxDataGrid-falseText": "falso",
@@ -180,11 +181,14 @@
             "dxTreeList-editingAddRowToNode": "Aggiungi",
             "dxPager-infoText": "Pagina {0} di {1} ({2} elementi)",
             "dxPager-pagesCountText": "di",
+            "dxPager-pageSize": "Items per page: {0}",
             "dxPager-pageSizesAllText": "Tutti",
             "dxPager-page": "Pagina {0}",
             "dxPager-prevPage": "Pagina precedente",
             "dxPager-nextPage": "Pagina successiva",
             "dxPager-ariaLabel": "Navigazione pagine",
+            "dxPager-ariaPageSize": "Page size",
+            "dxPager-ariaPageNumber": "Page number",
             "dxPivotGrid-grandTotal": "Totale",
             "dxPivotGrid-total": "{0} Totale",
             "dxPivotGrid-fieldChooserTitle": "Selezione campi",
@@ -250,6 +254,7 @@
             "dxScheduler-moreAppointments": "{0} ancora",
             "dxCalendar-todayButtonText": "Oggi",
             "dxCalendar-ariaWidgetName": "Calendario",
+            "dxCalendar-ariaHotKeysInfo": "To navigate between views, press Control, and then Left Arrow or Right Arrow. To zoom in on a view, press Control, and then Down Arrow. To zoom out, press Control, and then Up Arrow.",
             "dxColorView-ariaRed": "Rosso",
             "dxColorView-ariaGreen": "Verde",
             "dxColorView-ariaBlue": "Blu",

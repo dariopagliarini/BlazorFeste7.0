@@ -271,7 +271,7 @@ namespace BlazorFeste.Pages
         }
         catch (Exception ex)
         {
-          Log.Error($"CreaFoglio - {ex.Message}");
+          Log.Error($"CreaFoglio - {ex}");
         }
       }
 

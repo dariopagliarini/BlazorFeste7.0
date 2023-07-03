@@ -1,5 +1,5 @@
 /*!
- * DevExtreme-Quill Editor v.1.6.1
+ * DevExtreme-Quill Editor v.1.6.2
  * https://js.devexpress.com/
  * Copyright (c) 2020, Developer Express Inc.
  * Copyright (c) 2017, Slab
@@ -1021,6 +1021,7 @@ Inline.order = ['cursor', 'inline',
 /* harmony import */ var _block__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6446);
 /* harmony import */ var _break__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6192);
 /* harmony import */ var _container__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3553);
+/* harmony import */ var _formats_table__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1969);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -1040,6 +1041,7 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 
 
 
@@ -1103,13 +1105,13 @@ var Scroll = /*#__PURE__*/function (_ScrollBlot) {
         last = _this$line4[0];
       _get(_getPrototypeOf(Scroll.prototype), "deleteAt", this).call(this, index, length);
       if (last != null && first !== last && offset > 0) {
-        if (first instanceof _block__WEBPACK_IMPORTED_MODULE_2__/* .BlockEmbed */ .i2 || last instanceof _block__WEBPACK_IMPORTED_MODULE_2__/* .BlockEmbed */ .i2) {
-          this.optimize();
-          return;
+        var isCrossCellDelete = (first instanceof _formats_table__WEBPACK_IMPORTED_MODULE_5__/* .CellLine */ .zW || last instanceof _formats_table__WEBPACK_IMPORTED_MODULE_5__/* .CellLine */ .zW) && first.parent !== last.parent;
+        var includesEmbedBlock = first instanceof _block__WEBPACK_IMPORTED_MODULE_2__/* .BlockEmbed */ .i2 || last instanceof _block__WEBPACK_IMPORTED_MODULE_2__/* .BlockEmbed */ .i2;
+        if (!includesEmbedBlock && !isCrossCellDelete) {
+          var ref = last.children.head instanceof _break__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z ? null : last.children.head;
+          first.moveChildren(last, ref);
+          first.remove();
         }
-        var ref = last.children.head instanceof _break__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z ? null : last.children.head;
-        first.moveChildren(last, ref);
-        first.remove();
       }
       this.optimize();
     }
@@ -1599,7 +1601,7 @@ var Editor = /*#__PURE__*/function () {
         _this$scroll$line4 = _slicedToArray(_this$scroll$line3, 2),
         line = _this$scroll$line4[0],
         lineOffset = _this$scroll$line4[1];
-      if (line.length() >= lineOffset + length) {
+      if (line.length() > lineOffset + length) {
         return convertHTML(line, lineOffset, length, true);
       }
       return convertHTML(this.scroll, index, length, true);
@@ -2069,6 +2071,7 @@ Module.DEFAULTS = {};
 /* harmony import */ var _instances__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(2598);
 /* harmony import */ var _logger__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(3122);
 /* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(1690);
+/* harmony import */ var _utils_is_defined__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(5874);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -2080,6 +2083,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
 
 
 
@@ -2318,6 +2322,9 @@ var Quill = /*#__PURE__*/function () {
     value: function getFormat() {
       var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.getSelection(true);
       var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+      if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_11__/* ["default"] */ .Z)(index)) {
+        return {};
+      }
       if (typeof index === 'number') {
         return this.editor.getFormat(index, length);
       }
@@ -2584,7 +2591,7 @@ Quill.DEFAULTS = {
 Quill.events = _emitter__WEBPACK_IMPORTED_MODULE_5__/* ["default"].events */ .Z.events;
 Quill.sources = _emitter__WEBPACK_IMPORTED_MODULE_5__/* ["default"].sources */ .Z.sources;
 // eslint-disable-next-line no-undef
-Quill.version =  false ? 0 : "1.6.1";
+Quill.version =  false ? 0 : "1.6.2";
 Quill.imports = {
   delta: (quill_delta__WEBPACK_IMPORTED_MODULE_0___default()),
   parchment: parchment__WEBPACK_IMPORTED_MODULE_3__,
@@ -2913,10 +2920,10 @@ var Selection = /*#__PURE__*/function () {
         leaf = _this$scroll$leaf2[0],
         offset = _this$scroll$leaf2[1];
       if (leaf == null) return null;
-      var _leaf$position = leaf.position(offset, true);
-      var _leaf$position2 = _slicedToArray(_leaf$position, 2);
-      node = _leaf$position2[0];
-      offset = _leaf$position2[1];
+      var _this$getPositionData = this.getPositionData(leaf, offset, true);
+      var _this$getPositionData2 = _slicedToArray(_this$getPositionData, 2);
+      node = _this$getPositionData2[0];
+      offset = _this$getPositionData2[1];
       var range = document.createRange();
       if (length > 0) {
         range.setStart(node, offset);
@@ -2925,10 +2932,10 @@ var Selection = /*#__PURE__*/function () {
         leaf = _this$scroll$leaf4[0];
         offset = _this$scroll$leaf4[1];
         if (leaf == null) return null;
-        var _leaf$position3 = leaf.position(offset, true);
-        var _leaf$position4 = _slicedToArray(_leaf$position3, 2);
-        node = _leaf$position4[0];
-        offset = _leaf$position4[1];
+        var _this$getPositionData3 = this.getPositionData(leaf, offset, true);
+        var _this$getPositionData4 = _slicedToArray(_this$getPositionData3, 2);
+        node = _this$getPositionData4[0];
+        offset = _this$getPositionData4[1];
         range.setEnd(node, offset);
         return range.getBoundingClientRect();
       }
@@ -2960,7 +2967,9 @@ var Selection = /*#__PURE__*/function () {
   }, {
     key: "getNativeRange",
     value: function getNativeRange() {
-      var selection = document.getSelection();
+      var _ownerDocument$getSel, _ownerDocument$getSel2;
+      var ownerDocument = this.root.getRootNode();
+      var selection = (_ownerDocument$getSel = (_ownerDocument$getSel2 = ownerDocument.getSelection) === null || _ownerDocument$getSel2 === void 0 ? void 0 : _ownerDocument$getSel2.call(ownerDocument)) !== null && _ownerDocument$getSel !== void 0 ? _ownerDocument$getSel : document.getSelection();
       if (selection == null || selection.rangeCount <= 0) return null;
       var nativeRange = selection.getRangeAt(0);
       if (nativeRange == null) return null;
@@ -2979,7 +2988,8 @@ var Selection = /*#__PURE__*/function () {
   }, {
     key: "hasFocus",
     value: function hasFocus() {
-      return document.activeElement === this.root || contains(this.root, document.activeElement);
+      var ownerDocument = this.root.getRootNode();
+      return ownerDocument.activeElement === this.root || contains(this.root, ownerDocument.activeElement);
     }
   }, {
     key: "normalizedToRange",
@@ -3064,16 +3074,24 @@ var Selection = /*#__PURE__*/function () {
           _this5$scroll$leaf2 = _slicedToArray(_this5$scroll$leaf, 2),
           leaf = _this5$scroll$leaf2[0],
           leafOffset = _this5$scroll$leaf2[1];
-        var _leaf$position5 = leaf.position(leafOffset, i !== 0),
-          _leaf$position6 = _slicedToArray(_leaf$position5, 2),
-          node = _leaf$position6[0],
-          offset = _leaf$position6[1];
+        var _this5$getPositionDat = _this5.getPositionData(leaf, leafOffset, i !== 0),
+          _this5$getPositionDat2 = _slicedToArray(_this5$getPositionDat, 2),
+          node = _this5$getPositionDat2[0],
+          offset = _this5$getPositionDat2[1];
         args.push(node, offset);
       });
       if (args.length < 2) {
         return args.concat(args);
       }
       return args;
+    }
+  }, {
+    key: "getPositionData",
+    value: function getPositionData(leaf, offset, inclusive) {
+      if (leaf instanceof parchment__WEBPACK_IMPORTED_MODULE_0__.LeafBlot) {
+        return leaf.position(offset, inclusive);
+      }
+      return [leaf.domNode, offset];
     }
   }, {
     key: "scrollIntoView",
@@ -3741,7 +3759,7 @@ var CELL_ATTRIBUTORS = [].concat(_toConsumableArray(TABLE_CELL_ATTR_ATTRIBUTORS)
 /* harmony export */ });
 var cellConfig = {
   name: 'cell',
-  allowedTags: ['TH', 'TD']
+  allowedTags: ['TH', 'TD', 'TR']
 };
 var TABLE_CELL_ATTRIBUTES = ['height', 'width'];
 var TABLE_CELL_STYLES = ['height', 'width', 'vertical-align', 'text-align', 'background-color', 'border', 'border-style', 'border-width', 'border-color', 'padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left'];
@@ -3884,6 +3902,756 @@ function getId() {
 
 /***/ }),
 
+/***/ 1969:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "KA": () => (/* binding */ TableHeaderRow),
+/* harmony export */   "Lv": () => (/* binding */ tableId),
+/* harmony export */   "RM": () => (/* binding */ TableBody),
+/* harmony export */   "SC": () => (/* binding */ TableRow),
+/* harmony export */   "iD": () => (/* binding */ HeaderCellLine),
+/* harmony export */   "pj": () => (/* binding */ TableCell),
+/* harmony export */   "xD": () => (/* binding */ TableHeader),
+/* harmony export */   "xJ": () => (/* binding */ TableContainer),
+/* harmony export */   "xs": () => (/* binding */ TableHeaderCell),
+/* harmony export */   "zW": () => (/* binding */ CellLine)
+/* harmony export */ });
+/* unused harmony export TABLE_TAGS */
+/* harmony import */ var _blots_block__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6446);
+/* harmony import */ var _blots_break__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6192);
+/* harmony import */ var _blots_container__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3553);
+/* harmony import */ var _utils_is_defined__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5874);
+/* harmony import */ var _attributors_cell__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1342);
+/* harmony import */ var _attributors_table__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(319);
+/* harmony import */ var _get_id__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(8536);
+/* harmony import */ var _toggle_attribute__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(2795);
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+
+
+
+
+
+var CELL_IDENTITY_KEYS = ['row', 'cell'];
+var TABLE_TAGS = (/* unused pure expression or super */ null && (['TD', 'TH', 'TR', 'TBODY', 'THEAD', 'TABLE']));
+var DATA_PREFIX = 'data-table-';
+function deleteChildrenAt(children, index, length) {
+  children.forEachAt(index, length, function (child, offset, childLength) {
+    child.deleteAt(offset, childLength);
+  });
+}
+var CellLine = /*#__PURE__*/function (_Block) {
+  _inherits(CellLine, _Block);
+  var _super = _createSuper(CellLine);
+  function CellLine() {
+    _classCallCheck(this, CellLine);
+    return _super.apply(this, arguments);
+  }
+  _createClass(CellLine, [{
+    key: "optimize",
+    value: function optimize() {
+      var _get2;
+      var rowId = this.domNode.getAttribute("".concat(DATA_PREFIX, "row"));
+      if (this.statics.requiredContainer && !(this.parent instanceof this.statics.requiredContainer)) {
+        var domNode = this.domNode;
+        var formats = {
+          row: rowId
+        };
+        Object.keys(_attributors_cell__WEBPACK_IMPORTED_MODULE_3__/* .CELL_FORMATS */ .Du).forEach(function (format) {
+          var value = domNode.dataset[format.toLowerCase()];
+          if (value) {
+            formats[format] = value;
+          }
+        });
+        this.wrap(this.statics.requiredContainer.blotName, formats);
+      }
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+      (_get2 = _get(_getPrototypeOf(CellLine.prototype), "optimize", this)).call.apply(_get2, [this].concat(args));
+    }
+  }, {
+    key: "format",
+    value: function format(name, value) {
+      var isCellLine = name === 'tableCellLine';
+      if (isCellLine && value === null) {
+        value = this.formats().tableCellLine;
+      }
+      var isCell = CELL_IDENTITY_KEYS.indexOf(name) > -1;
+      if (isCell || _attributors_table__WEBPACK_IMPORTED_MODULE_4__/* .TABLE_FORMATS */ .li[name] || _attributors_cell__WEBPACK_IMPORTED_MODULE_3__/* .CELL_FORMATS */ .Du[name]) {
+        var attrName = "data-".concat(isCell ? 'table-' : '').concat(name.toLowerCase());
+        (0,_toggle_attribute__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .Z)(this.domNode, attrName, value);
+        if (_attributors_cell__WEBPACK_IMPORTED_MODULE_3__/* .CELL_FORMATS */ .Du[name]) {
+          var _this$cell;
+          (_this$cell = this.cell()) === null || _this$cell === void 0 ? void 0 : _this$cell.format(name, value);
+        }
+        if (_attributors_table__WEBPACK_IMPORTED_MODULE_4__/* .TABLE_FORMATS */ .li[name]) {
+          var _this$cell2, _this$cell2$table;
+          (_this$cell2 = this.cell()) === null || _this$cell2 === void 0 ? void 0 : (_this$cell2$table = _this$cell2.table()) === null || _this$cell2$table === void 0 ? void 0 : _this$cell2$table.format(name, value);
+        }
+      } else {
+        _get(_getPrototypeOf(CellLine.prototype), "format", this).call(this, name, value);
+      }
+    }
+  }, {
+    key: "cell",
+    value: function cell() {
+      return 'row' in this.parent ? this.parent : null;
+    }
+  }], [{
+    key: "create",
+    value: function create(value) {
+      var node = _get(_getPrototypeOf(CellLine), "create", this).call(this, value);
+      CELL_IDENTITY_KEYS.forEach(function (key) {
+        var _value$key;
+        var identityMarker = key === 'row' ? tableId : cellId;
+        node.setAttribute("".concat(DATA_PREFIX).concat(key), (_value$key = value === null || value === void 0 ? void 0 : value[key]) !== null && _value$key !== void 0 ? _value$key : identityMarker());
+      });
+      return node;
+    }
+  }, {
+    key: "formats",
+    value: function formats(domNode) {
+      return CELL_IDENTITY_KEYS.reduce(function (formats, attribute) {
+        var attrName = "".concat(DATA_PREFIX).concat(attribute);
+        if (domNode.hasAttribute(attrName)) {
+          formats[attribute] = domNode.getAttribute(attrName) || undefined;
+        }
+        return formats;
+      }, {});
+    }
+  }]);
+  return CellLine;
+}(_blots_block__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .ZP);
+CellLine.blotName = 'tableCellLine';
+CellLine.className = 'ql-table-cell-line';
+CellLine.tagName = 'P';
+var HeaderCellLine = /*#__PURE__*/function (_CellLine) {
+  _inherits(HeaderCellLine, _CellLine);
+  var _super2 = _createSuper(HeaderCellLine);
+  function HeaderCellLine() {
+    _classCallCheck(this, HeaderCellLine);
+    return _super2.apply(this, arguments);
+  }
+  return _createClass(HeaderCellLine);
+}(CellLine);
+HeaderCellLine.blotName = 'tableHeaderCellLine';
+HeaderCellLine.className = 'ql-table-header-cell-line';
+var BaseCell = /*#__PURE__*/function (_Container) {
+  _inherits(BaseCell, _Container);
+  var _super3 = _createSuper(BaseCell);
+  function BaseCell() {
+    _classCallCheck(this, BaseCell);
+    return _super3.apply(this, arguments);
+  }
+  _createClass(BaseCell, [{
+    key: "format",
+    value: function format(name, value) {
+      var _CELL_FORMATS$name;
+      (_CELL_FORMATS$name = _attributors_cell__WEBPACK_IMPORTED_MODULE_3__/* .CELL_FORMATS */ .Du[name]) === null || _CELL_FORMATS$name === void 0 ? void 0 : _CELL_FORMATS$name.add(this.domNode, value);
+    }
+  }, {
+    key: "checkMerge",
+    value: function checkMerge() {
+      if (_get(_getPrototypeOf(BaseCell.prototype), "checkMerge", this).call(this) && this.next.children.head != null) {
+        var thisHead = this.children.head.formats()[this.children.head.statics.blotName];
+        var thisTail = this.children.tail.formats()[this.children.tail.statics.blotName];
+        var nextHead = this.next.children.head.formats()[this.next.children.head.statics.blotName];
+        var nextTail = this.next.children.tail.formats()[this.next.children.tail.statics.blotName];
+        return thisHead.cell === thisTail.cell && thisHead.cell === nextHead.cell && thisHead.cell === nextTail.cell;
+      }
+      return false;
+    }
+  }, {
+    key: "formats",
+    value: function formats() {
+      return BaseCell.cellFormats(this.domNode);
+    }
+  }, {
+    key: "cellOffset",
+    value: function cellOffset() {
+      if (this.parent) {
+        return this.parent.children.indexOf(this);
+      }
+      return -1;
+    }
+  }, {
+    key: "row",
+    value: function row() {
+      return 'table' in this.parent ? this.parent : null;
+    }
+  }, {
+    key: "rowOffset",
+    value: function rowOffset() {
+      if (this.row()) {
+        return this.row().rowOffset();
+      }
+      return -1;
+    }
+  }, {
+    key: "table",
+    value: function table() {
+      var _this$row;
+      return (_this$row = this.row()) === null || _this$row === void 0 ? void 0 : _this$row.table();
+    }
+  }, {
+    key: "optimize",
+    value: function optimize() {
+      var _this$domNode$getAttr, _get3;
+      var rowId = (_this$domNode$getAttr = this.domNode.getAttribute("".concat(DATA_PREFIX, "row"))) !== null && _this$domNode$getAttr !== void 0 ? _this$domNode$getAttr : this.domNode.getAttribute("".concat(DATA_PREFIX, "header-row"));
+      if (this.statics.requiredContainer && !(this.parent instanceof this.statics.requiredContainer)) {
+        this.wrap(this.statics.requiredContainer.blotName, {
+          row: rowId
+        });
+      }
+      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
+      }
+      (_get3 = _get(_getPrototypeOf(BaseCell.prototype), "optimize", this)).call.apply(_get3, [this].concat(args));
+    }
+  }, {
+    key: "deleteAt",
+    value: function deleteAt(index, length) {
+      deleteChildrenAt(this.children, index, length);
+    }
+  }], [{
+    key: "create",
+    value: function create(value) {
+      var node = _get(_getPrototypeOf(BaseCell), "create", this).call(this, value);
+      if (value) {
+        Object.keys(value).forEach(function (format) {
+          var _CELL_FORMATS$format;
+          (_CELL_FORMATS$format = _attributors_cell__WEBPACK_IMPORTED_MODULE_3__/* .CELL_FORMATS */ .Du[format]) === null || _CELL_FORMATS$format === void 0 ? void 0 : _CELL_FORMATS$format.add(node, value[format]);
+        });
+      }
+      return node;
+    }
+  }, {
+    key: "cellFormats",
+    value: function cellFormats(domNode) {
+      var formats = {};
+      if (domNode.hasAttribute("".concat(DATA_PREFIX, "row")) || domNode.hasAttribute("".concat(DATA_PREFIX, "header-row"))) {
+        var _domNode$getAttribute;
+        formats.row = (_domNode$getAttribute = domNode.getAttribute("".concat(DATA_PREFIX, "row"))) !== null && _domNode$getAttribute !== void 0 ? _domNode$getAttribute : domNode.getAttribute("".concat(DATA_PREFIX, "header-row"));
+      }
+      Object.keys(_attributors_cell__WEBPACK_IMPORTED_MODULE_3__/* .CELL_FORMATS */ .Du).forEach(function (format) {
+        var _domNode$firstElement;
+        var value = (_domNode$firstElement = domNode.firstElementChild) === null || _domNode$firstElement === void 0 ? void 0 : _domNode$firstElement.dataset[format.toLowerCase()];
+        if (value) {
+          formats[format] = value;
+        }
+      });
+      return formats;
+    }
+  }]);
+  return BaseCell;
+}(_blots_container__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z);
+BaseCell.tagName = ['TD', 'TH'];
+var TableCell = /*#__PURE__*/function (_BaseCell) {
+  _inherits(TableCell, _BaseCell);
+  var _super4 = _createSuper(TableCell);
+  function TableCell() {
+    _classCallCheck(this, TableCell);
+    return _super4.apply(this, arguments);
+  }
+  _createClass(TableCell, [{
+    key: "format",
+    value: function format(name, value) {
+      if (name === 'row') {
+        this.domNode.setAttribute("".concat(DATA_PREFIX).concat(name), value);
+        this.children.forEach(function (child) {
+          child.format(name, value);
+        });
+      } else {
+        _get(_getPrototypeOf(TableCell.prototype), "format", this).call(this, name, value);
+      }
+    }
+  }], [{
+    key: "create",
+    value: function create(value) {
+      var node = _get(_getPrototypeOf(TableCell), "create", this).call(this, value);
+      var attrName = "".concat(DATA_PREFIX, "row");
+      if (value !== null && value !== void 0 && value.row) {
+        node.setAttribute(attrName, value.row);
+      }
+      return node;
+    }
+  }]);
+  return TableCell;
+}(BaseCell);
+TableCell.blotName = 'tableCell';
+TableCell.className = 'ql-table-data-cell';
+TableCell.dataAttribute = "".concat(DATA_PREFIX, "row");
+TableCell.defaultChild = CellLine;
+var TableHeaderCell = /*#__PURE__*/function (_BaseCell2) {
+  _inherits(TableHeaderCell, _BaseCell2);
+  var _super5 = _createSuper(TableHeaderCell);
+  function TableHeaderCell() {
+    _classCallCheck(this, TableHeaderCell);
+    return _super5.apply(this, arguments);
+  }
+  _createClass(TableHeaderCell, [{
+    key: "format",
+    value: function format(name, value) {
+      if (name === 'row') {
+        this.domNode.setAttribute("".concat(DATA_PREFIX).concat(name), value);
+        this.children.forEach(function (child) {
+          child.format(name, value);
+        });
+      } else {
+        _get(_getPrototypeOf(TableHeaderCell.prototype), "format", this).call(this, name, value);
+      }
+    }
+  }], [{
+    key: "create",
+    value: function create(value) {
+      var node = _get(_getPrototypeOf(TableHeaderCell), "create", this).call(this, value);
+      var attrName = "".concat(DATA_PREFIX, "header-row");
+      if (value && value.row) {
+        node.setAttribute(attrName, value.row);
+      }
+      return node;
+    }
+  }]);
+  return TableHeaderCell;
+}(BaseCell);
+TableHeaderCell.tagName = ['TH', 'TD'];
+TableHeaderCell.className = 'ql-table-header-cell';
+TableHeaderCell.blotName = 'tableHeaderCell';
+TableHeaderCell.dataAttribute = "".concat(DATA_PREFIX, "header-row");
+TableHeaderCell.defaultChild = HeaderCellLine;
+var BaseRow = /*#__PURE__*/function (_Container2) {
+  _inherits(BaseRow, _Container2);
+  var _super6 = _createSuper(BaseRow);
+  function BaseRow() {
+    _classCallCheck(this, BaseRow);
+    return _super6.apply(this, arguments);
+  }
+  _createClass(BaseRow, [{
+    key: "checkMerge",
+    value: function checkMerge() {
+      if (_get(_getPrototypeOf(BaseRow.prototype), "checkMerge", this).call(this) && (0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(this.next.children.head)) {
+        var formatName = 'row';
+        var thisHead = this.children.head.formats();
+        var thisTail = this.children.tail.formats();
+        var nextHead = this.next.children.head.formats();
+        var nextTail = this.next.children.tail.formats();
+        return thisHead[formatName] === thisTail[formatName] && thisHead[formatName] === nextHead[formatName] && thisHead[formatName] === nextTail[formatName];
+      }
+      return false;
+    }
+  }, {
+    key: "optimize",
+    value: function optimize() {
+      var _get4,
+        _this = this;
+      for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        args[_key3] = arguments[_key3];
+      }
+      (_get4 = _get(_getPrototypeOf(BaseRow.prototype), "optimize", this)).call.apply(_get4, [this].concat(args));
+      var formatName = this.childFormatName;
+      this.children.forEach(function (child) {
+        if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(child.next)) {
+          return;
+        }
+        var childFormats = child.formats();
+        var nextFormats = child.next.formats();
+        if (childFormats[formatName] !== nextFormats[formatName]) {
+          var next = _this.splitAfter(child);
+          if (next) {
+            next.optimize();
+          }
+          if (_this.prev) {
+            _this.prev.optimize();
+          }
+        }
+      });
+    }
+  }, {
+    key: "rowOffset",
+    value: function rowOffset() {
+      if (this.parent) {
+        return this.parent.children.indexOf(this);
+      }
+      return -1;
+    }
+  }, {
+    key: "table",
+    value: function table() {
+      var _this$parent;
+      return (_this$parent = this.parent) === null || _this$parent === void 0 ? void 0 : _this$parent.parent;
+    }
+  }, {
+    key: "formats",
+    value: function formats() {
+      var formats = {};
+      var attrName = "".concat(DATA_PREFIX, "row");
+      if (this.domNode.hasAttribute(attrName)) {
+        formats[attrName] = this.domNode.getAttribute(attrName);
+      }
+      return formats;
+    }
+  }], [{
+    key: "create",
+    value: function create(value) {
+      var node = _get(_getPrototypeOf(BaseRow), "create", this).call(this, value);
+      if (value !== null && value !== void 0 && value.row) {
+        node.setAttribute("".concat(DATA_PREFIX, "row"), value.row);
+      }
+      return node;
+    }
+  }]);
+  return BaseRow;
+}(_blots_container__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z);
+BaseRow.tagName = 'TR';
+var TableRow = /*#__PURE__*/function (_BaseRow) {
+  _inherits(TableRow, _BaseRow);
+  var _super7 = _createSuper(TableRow);
+  function TableRow(scroll, domNode) {
+    var _this2;
+    _classCallCheck(this, TableRow);
+    _this2 = _super7.call(this, scroll, domNode);
+    _this2.childFormatName = 'table';
+    return _this2;
+  }
+  _createClass(TableRow, [{
+    key: "deleteAt",
+    value: function deleteAt(index, length) {
+      deleteChildrenAt(this.children, index, length);
+    }
+  }]);
+  return TableRow;
+}(BaseRow);
+TableRow.blotName = 'tableRow';
+var TableHeaderRow = /*#__PURE__*/function (_BaseRow2) {
+  _inherits(TableHeaderRow, _BaseRow2);
+  var _super8 = _createSuper(TableHeaderRow);
+  function TableHeaderRow(scroll, domNode) {
+    var _this3;
+    _classCallCheck(this, TableHeaderRow);
+    _this3 = _super8.call(this, scroll, domNode);
+    _this3.childFormatName = 'tableHeaderCell';
+    return _this3;
+  }
+  return _createClass(TableHeaderRow);
+}(BaseRow);
+TableHeaderRow.blotName = 'tableHeaderRow';
+var RowContainer = /*#__PURE__*/function (_Container3) {
+  _inherits(RowContainer, _Container3);
+  var _super9 = _createSuper(RowContainer);
+  function RowContainer() {
+    _classCallCheck(this, RowContainer);
+    return _super9.apply(this, arguments);
+  }
+  _createClass(RowContainer, [{
+    key: "optimize",
+    value: function optimize() {
+      var _get5;
+      if (this.statics.requiredContainer && !(this.parent instanceof this.statics.requiredContainer)) {
+        var domNode = this.children.head.children.head.children.head.domNode;
+        var formats = {};
+        Object.keys(_attributors_table__WEBPACK_IMPORTED_MODULE_4__/* .TABLE_FORMATS */ .li).forEach(function (format) {
+          var value = domNode.dataset[format.toLowerCase()];
+          if (value) {
+            formats[format] = value;
+          }
+        });
+        this.wrap(this.statics.requiredContainer.blotName, formats);
+      }
+      for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        args[_key4] = arguments[_key4];
+      }
+      (_get5 = _get(_getPrototypeOf(RowContainer.prototype), "optimize", this)).call.apply(_get5, [this].concat(args));
+    }
+  }]);
+  return RowContainer;
+}(_blots_container__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z);
+var TableBody = /*#__PURE__*/function (_RowContainer) {
+  _inherits(TableBody, _RowContainer);
+  var _super10 = _createSuper(TableBody);
+  function TableBody() {
+    _classCallCheck(this, TableBody);
+    return _super10.apply(this, arguments);
+  }
+  return _createClass(TableBody);
+}(RowContainer);
+TableBody.blotName = 'tableBody';
+TableBody.tagName = 'TBODY';
+var TableHeader = /*#__PURE__*/function (_RowContainer2) {
+  _inherits(TableHeader, _RowContainer2);
+  var _super11 = _createSuper(TableHeader);
+  function TableHeader() {
+    _classCallCheck(this, TableHeader);
+    return _super11.apply(this, arguments);
+  }
+  return _createClass(TableHeader);
+}(RowContainer);
+TableHeader.blotName = 'tableHeader';
+TableHeader.tagName = 'THEAD';
+var TableContainer = /*#__PURE__*/function (_Container4) {
+  _inherits(TableContainer, _Container4);
+  var _super12 = _createSuper(TableContainer);
+  function TableContainer() {
+    _classCallCheck(this, TableContainer);
+    return _super12.apply(this, arguments);
+  }
+  _createClass(TableContainer, [{
+    key: "balanceCells",
+    value: function balanceCells() {
+      var headerRows = this.descendants(TableHeaderRow);
+      var bodyRows = this.descendants(TableRow);
+      var maxColCount = this.getMaxTableColCount(headerRows, bodyRows);
+      this.balanceRows(maxColCount, headerRows, TableHeaderCell);
+      this.balanceRows(maxColCount, bodyRows, TableCell);
+    }
+  }, {
+    key: "getMaxTableColCount",
+    value: function getMaxTableColCount(headerRows, bodyRows) {
+      return Math.max(this.getMaxRowColCount(headerRows), this.getMaxRowColCount(bodyRows));
+    }
+  }, {
+    key: "getMaxRowColCount",
+    value: function getMaxRowColCount(rows) {
+      return Math.max.apply(Math, _toConsumableArray(rows.map(function (row) {
+        return row.children.length;
+      })));
+    }
+  }, {
+    key: "balanceRows",
+    value: function balanceRows(maxColCount, rows, CellClass) {
+      var _this4 = this;
+      rows.forEach(function (row) {
+        new Array(maxColCount - row.children.length).fill(0).forEach(function () {
+          var value;
+          if ((0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(row.children.head)) {
+            value = CellClass.cellFormats(row.children.head.domNode);
+          }
+          var blot = _this4.scroll.create(CellClass.blotName, value);
+          var cellLine = _this4.scroll.create(CellClass.allowedChildren[0].blotName, value);
+          blot.appendChild(cellLine);
+          row.appendChild(blot);
+          blot.optimize(); // Add break blot
+        });
+      });
+    }
+  }, {
+    key: "cells",
+    value: function cells(column) {
+      return this.rows().map(function (row) {
+        return row.children.at(column);
+      });
+    }
+  }, {
+    key: "deleteColumn",
+    value: function deleteColumn(index) {
+      var _this5 = this;
+      [TableHeader, TableBody].forEach(function (blot) {
+        var _this5$descendants = _this5.descendants(blot),
+          _this5$descendants2 = _slicedToArray(_this5$descendants, 1),
+          tablePart = _this5$descendants2[0];
+        if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(tablePart) || !(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(tablePart.children.head)) {
+          return;
+        }
+        tablePart.children.forEach(function (row) {
+          var cell = row.children.at(index);
+          if ((0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(cell)) {
+            cell.remove();
+          }
+        });
+      });
+    }
+  }, {
+    key: "insertColumn",
+    value: function insertColumn(index) {
+      var _this6 = this;
+      [TableHeader, TableBody].forEach(function (blot) {
+        var _this6$descendants = _this6.descendants(blot),
+          _this6$descendants2 = _slicedToArray(_this6$descendants, 1),
+          tablePart = _this6$descendants2[0];
+        if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(tablePart) || !(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(tablePart.children.head)) {
+          return;
+        }
+        var CellBlot = blot === TableHeader ? TableHeaderCell : TableCell;
+        var CellLineBlot = blot === TableHeader ? HeaderCellLine : CellLine;
+        tablePart.children.forEach(function (row) {
+          var ref = row.children.at(index);
+          var value = CellLineBlot.formats(row.children.head.children.head.domNode);
+          var cell = _this6.scroll.create(CellBlot.blotName, {
+            row: value.row
+          });
+          var cellLine = _this6.scroll.create(CellLineBlot.blotName, {
+            row: value.row
+          });
+          var emptyLine = _this6.scroll.create(_blots_break__WEBPACK_IMPORTED_MODULE_1__/* ["default"].blotName */ .Z.blotName);
+          cellLine.appendChild(emptyLine);
+          cell.appendChild(cellLine);
+          row.insertBefore(cell, ref);
+        });
+      });
+    }
+  }, {
+    key: "insertRow",
+    value: function insertRow(index) {
+      var _this7 = this;
+      var _this$descendants = this.descendants(TableBody),
+        _this$descendants2 = _slicedToArray(_this$descendants, 1),
+        body = _this$descendants2[0];
+      if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(body) || !(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(body.children.head)) {
+        return;
+      }
+      var id = tableId();
+      var row = this.scroll.create(TableRow.blotName, {
+        row: id
+      });
+      body.children.head.children.forEach(function () {
+        var cell = _this7.scroll.create(TableCell.blotName, {
+          row: id
+        });
+        var cellLine = _this7.scroll.create(CellLine.blotName, {
+          row: id
+        });
+        var emptyLine = _this7.scroll.create(_blots_break__WEBPACK_IMPORTED_MODULE_1__/* ["default"].blotName */ .Z.blotName);
+        cellLine.appendChild(emptyLine);
+        cell.appendChild(cellLine);
+        row.appendChild(cell);
+      });
+      var ref = body.children.at(index);
+      body.insertBefore(row, ref);
+    }
+  }, {
+    key: "insertHeaderRow",
+    value: function insertHeaderRow() {
+      var _this8 = this;
+      var _this$descendants3 = this.descendants(TableHeader),
+        _this$descendants4 = _slicedToArray(_this$descendants3, 1),
+        header = _this$descendants4[0];
+      var _this$descendants5 = this.descendants(TableBody),
+        _this$descendants6 = _slicedToArray(_this$descendants5, 1),
+        body = _this$descendants6[0];
+      if ((0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(header) || !(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(body) || !(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(body.children.head)) {
+        return;
+      }
+      var id = tableId();
+      var newHeader = this.scroll.create(TableHeader.blotName);
+      var row = this.scroll.create(TableHeaderRow.blotName);
+      var ref = this.children.at(0);
+      newHeader.appendChild(row);
+      body.children.head.children.forEach(function () {
+        var cell = _this8.scroll.create(TableHeaderCell.blotName, {
+          row: id
+        });
+        var cellLine = _this8.scroll.create(HeaderCellLine.blotName, {
+          row: id
+        });
+        var emptyLine = _this8.scroll.create(_blots_break__WEBPACK_IMPORTED_MODULE_1__/* ["default"].blotName */ .Z.blotName);
+        cellLine.appendChild(emptyLine);
+        cell.appendChild(cellLine);
+        row.appendChild(cell);
+        cell.optimize();
+      });
+      this.insertBefore(newHeader, ref);
+    }
+  }, {
+    key: "rows",
+    value: function rows() {
+      var body = this.children.head;
+      return (0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(body) ? body.children.map(function (row) {
+        return row;
+      }) : [];
+    }
+  }, {
+    key: "formats",
+    value: function formats() {
+      var formats = {};
+      var childElem = this.cells()[0].domNode.firstElementChild;
+      Object.keys(_attributors_table__WEBPACK_IMPORTED_MODULE_4__/* .TABLE_FORMATS */ .li).forEach(function (format) {
+        var value = childElem.dataset[format.toLowerCase()];
+        if (value) {
+          formats[format] = value;
+        }
+      });
+      return formats;
+    }
+  }, {
+    key: "format",
+    value: function format(name, value) {
+      var tableFormat = _attributors_table__WEBPACK_IMPORTED_MODULE_4__/* .TABLE_FORMATS */ .li[name];
+      if (tableFormat) {
+        var attrName = "data-".concat(name.toLowerCase());
+        this.cells().forEach(function (cell) {
+          (0,_toggle_attribute__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .Z)(cell.children.head.domNode, attrName, value);
+        });
+        tableFormat.add(this.domNode, value);
+      }
+    }
+  }], [{
+    key: "create",
+    value: function create(value) {
+      var node = _get(_getPrototypeOf(TableContainer), "create", this).call(this, value);
+      if (value) {
+        Object.keys(value).forEach(function (format) {
+          var _TABLE_FORMATS$format;
+          (_TABLE_FORMATS$format = _attributors_table__WEBPACK_IMPORTED_MODULE_4__/* .TABLE_FORMATS */ .li[format]) === null || _TABLE_FORMATS$format === void 0 ? void 0 : _TABLE_FORMATS$format.add(node, value[format]);
+        });
+      }
+      return node;
+    }
+  }]);
+  return TableContainer;
+}(_blots_container__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z);
+TableContainer.blotName = 'tableContainer';
+TableContainer.tagName = 'TABLE';
+TableContainer.allowedChildren = [TableHeader, TableBody];
+TableBody.requiredContainer = TableContainer;
+TableHeader.requiredContainer = TableContainer;
+TableBody.allowedChildren = [TableRow];
+TableRow.requiredContainer = TableBody;
+TableRow.allowedChildren = [TableCell];
+TableCell.requiredContainer = TableRow;
+CellLine.requiredContainer = TableCell;
+TableCell.allowedChildren = [CellLine];
+TableHeader.allowedChildren = [TableHeaderRow];
+TableHeaderRow.requiredContainer = TableHeader;
+HeaderCellLine.requiredContainer = TableHeaderCell;
+TableHeaderCell.allowedChildren = [HeaderCellLine];
+TableHeaderRow.allowedChildren = [TableHeaderCell];
+TableHeaderCell.requiredContainer = TableHeaderRow;
+function tableId() {
+  return "row-".concat((0,_get_id__WEBPACK_IMPORTED_MODULE_7__/* ["default"] */ .Z)());
+}
+function cellId() {
+  return "cell-".concat((0,_get_id__WEBPACK_IMPORTED_MODULE_7__/* ["default"] */ .Z)());
+}
+
+
+/***/ }),
+
 /***/ 2795:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -4015,12 +4783,13 @@ var Clipboard = /*#__PURE__*/function (_Module) {
     key: "convert",
     value: function convert(_ref3) {
       var html = _ref3.html,
-        text = _ref3.text;
+        text = _ref3.text,
+        keepLastNewLine = _ref3.keepLastNewLine;
       var formats = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       if (formats[_formats_code__WEBPACK_IMPORTED_MODULE_8__/* ["default"].blotName */ .ZP.blotName]) {
         return new (quill_delta__WEBPACK_IMPORTED_MODULE_0___default())().insert(text, _defineProperty({}, _formats_code__WEBPACK_IMPORTED_MODULE_8__/* ["default"].blotName */ .ZP.blotName, formats[_formats_code__WEBPACK_IMPORTED_MODULE_8__/* ["default"].blotName */ .ZP.blotName]));
       }
-      return html ? this.applyMatchers(html, formats) : this.applyTextMatchers(text);
+      return html ? this.applyMatchers(html, keepLastNewLine, formats) : this.applyTextMatchers(text);
     }
   }, {
     key: "applyTextMatchers",
@@ -4040,9 +4809,9 @@ var Clipboard = /*#__PURE__*/function (_Module) {
     }
   }, {
     key: "applyMatchers",
-    value: function applyMatchers(html) {
+    value: function applyMatchers(html, keepLastNewLine) {
       var _this3 = this;
-      var formats = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var formats = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
       var doc = new DOMParser().parseFromString(html, 'text/html');
       var container = doc.body;
       var nodeMatches = new WeakMap();
@@ -4052,7 +4821,7 @@ var Clipboard = /*#__PURE__*/function (_Module) {
         textMatchers = _this$prepareMatching2[1];
       var delta = traverse(this.quill.scroll, container, elementMatchers, textMatchers, nodeMatches);
       // Remove trailing newline
-      if (deltaEndsWith(delta, '\n') && (delta.ops[delta.ops.length - 1].attributes == null || Object.values(formats).some(function (blotName) {
+      if (!keepLastNewLine && deltaEndsWith(delta, '\n') && (delta.ops[delta.ops.length - 1].attributes == null || Object.values(formats).some(function (blotName) {
         return _this3.tableBlots.includes(blotName);
       }))) {
         return delta.compose(new (quill_delta__WEBPACK_IMPORTED_MODULE_0___default())().retain(delta.length() - 1).delete(1));
@@ -4140,7 +4909,8 @@ var Clipboard = /*#__PURE__*/function (_Module) {
       var text = e.clipboardData.getData('text/plain');
       this.onPaste(range, {
         html: html,
-        text: text
+        text: text,
+        keepLastNewLine: true
       });
     }
   }, {
@@ -4153,9 +4923,11 @@ var Clipboard = /*#__PURE__*/function (_Module) {
     }
   }, {
     key: "onCopy",
-    value: function onCopy(range) {
-      var text = this.quill.getText(range);
-      var html = this.quill.getSemanticHTML(range);
+    value: function onCopy(_ref4) {
+      var index = _ref4.index,
+        length = _ref4.length;
+      var text = this.quill.getText(index, length);
+      var html = this.quill.getSemanticHTML(index, length);
       return {
         html: html,
         text: text
@@ -4163,13 +4935,15 @@ var Clipboard = /*#__PURE__*/function (_Module) {
     }
   }, {
     key: "onPaste",
-    value: function onPaste(range, _ref4) {
-      var text = _ref4.text,
-        html = _ref4.html;
+    value: function onPaste(range, _ref5) {
+      var text = _ref5.text,
+        html = _ref5.html,
+        keepLastNewLine = _ref5.keepLastNewLine;
       var formats = this.quill.getFormat(range.index);
       var pastedDelta = this.convert({
         text: text,
-        html: html
+        html: html,
+        keepLastNewLine: keepLastNewLine
       }, formats);
       debug.log('onPaste', pastedDelta, {
         text: text,
@@ -4298,7 +5072,7 @@ function matchAlias(format, node, delta) {
   return applyFormat(delta, format, true);
 }
 function matchAttributor(node, delta, scroll) {
-  if (['TD', 'TH', 'TABLE'].indexOf(node.tagName) === -1) {
+  if (['TD', 'TH', 'TR', 'TABLE'].indexOf(node.tagName) === -1) {
     var attributes = parchment__WEBPACK_IMPORTED_MODULE_1__.Attributor.keys(node);
     var classes = parchment__WEBPACK_IMPORTED_MODULE_1__.ClassAttributor.keys(node);
     var styles = parchment__WEBPACK_IMPORTED_MODULE_1__.StyleAttributor.keys(node);
@@ -5011,7 +5785,15 @@ var Keyboard = /*#__PURE__*/function (_Module) {
           prev = _this$quill$getLine4[0];
         if (prev) {
           var isPrevLineEmpty = prev.statics.blotName === 'block' && prev.length() <= 1;
-          if (!isPrevLineEmpty) {
+          var isPrevLineTable = prev.statics.blotName.startsWith('table');
+          var isLineEmpty = line.statics.blotName === 'block' && line.length() <= 1;
+          if (isPrevLineTable) {
+            if (isLineEmpty) {
+              line.remove();
+            }
+            this.quill.setSelection(range.index - 1);
+          }
+          if (!isPrevLineEmpty && !isPrevLineTable) {
             var curFormats = line.formats();
             var prevFormats = this.quill.getFormat(range.index - 1, 1);
             formats = Delta.AttributeMap.diff(curFormats, prevFormats) || {};
@@ -5868,58 +6650,36 @@ Syntax.DEFAULTS = {
 
 /***/ }),
 
-/***/ 3450:
+/***/ 867:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "Z": () => (/* binding */ modules_table)
-});
-
-// EXTERNAL MODULE: ./node_modules/quill-delta/dist/Delta.js
-var Delta = __webpack_require__(9098);
-var Delta_default = /*#__PURE__*/__webpack_require__.n(Delta);
-// EXTERNAL MODULE: ./node_modules/parchment/src/parchment.ts + 17 modules
-var parchment = __webpack_require__(1233);
-// EXTERNAL MODULE: ./core/quill.js
-var quill = __webpack_require__(281);
-// EXTERNAL MODULE: ./core/module.js
-var core_module = __webpack_require__(7094);
-// EXTERNAL MODULE: ./blots/block.js + 1 modules
-var block = __webpack_require__(6446);
-// EXTERNAL MODULE: ./blots/break.js
-var blots_break = __webpack_require__(6192);
-// EXTERNAL MODULE: ./blots/container.js
-var container = __webpack_require__(3553);
-// EXTERNAL MODULE: ./utils/is_defined.js
-var is_defined = __webpack_require__(5874);
-// EXTERNAL MODULE: ./formats/table/attributors/cell.js
-var cell = __webpack_require__(1342);
-// EXTERNAL MODULE: ./formats/table/attributors/table.js
-var table = __webpack_require__(319);
-// EXTERNAL MODULE: ./formats/table/get_id.js
-var get_id = __webpack_require__(8536);
-// EXTERNAL MODULE: ./formats/table/toggle_attribute.js
-var toggle_attribute = __webpack_require__(2795);
-;// CONCATENATED MODULE: ./formats/table/index.js
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var quill_delta__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9098);
+/* harmony import */ var quill_delta__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(quill_delta__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var parchment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1233);
+/* harmony import */ var _core_quill__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(281);
+/* harmony import */ var _core_module__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7094);
+/* harmony import */ var _formats_table__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1969);
+/* harmony import */ var _utils_is_defined__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(5874);
+/* harmony import */ var _clipboard__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5635);
+/* harmony import */ var _utils_make_table_arrow_handler__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9466);
+/* harmony import */ var _utils_prepare_attr_matcher__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(7896);
+/* harmony import */ var _formats_table_attributors_table__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(319);
+/* harmony import */ var _formats_table_attributors_cell__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(1342);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
-function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
@@ -5935,727 +6695,21 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-var CELL_IDENTITY_KEYS = ['row', 'cell'];
-var TABLE_TAGS = (/* unused pure expression or super */ null && (['TD', 'TH', 'TR', 'TBODY', 'THEAD', 'TABLE']));
-var DATA_PREFIX = 'data-table-';
-var CellLine = /*#__PURE__*/function (_Block) {
-  _inherits(CellLine, _Block);
-  var _super = _createSuper(CellLine);
-  function CellLine() {
-    _classCallCheck(this, CellLine);
-    return _super.apply(this, arguments);
-  }
-  _createClass(CellLine, [{
-    key: "optimize",
-    value: function optimize() {
-      var _get2;
-      var rowId = this.domNode.getAttribute("".concat(DATA_PREFIX, "row"));
-      if (this.statics.requiredContainer && !(this.parent instanceof this.statics.requiredContainer)) {
-        var domNode = this.domNode;
-        var formats = {
-          row: rowId
-        };
-        Object.keys(cell/* CELL_FORMATS */.Du).forEach(function (format) {
-          var value = domNode.dataset[format.toLowerCase()];
-          if (value) {
-            formats[format] = value;
-          }
-        });
-        this.wrap(this.statics.requiredContainer.blotName, formats);
-      }
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
-      (_get2 = _get(_getPrototypeOf(CellLine.prototype), "optimize", this)).call.apply(_get2, [this].concat(args));
-    }
-  }, {
-    key: "format",
-    value: function format(name, value) {
-      var isCellLine = name === 'tableCellLine';
-      if (isCellLine && value === null) {
-        value = this.formats().tableCellLine;
-      }
-      var isCell = CELL_IDENTITY_KEYS.indexOf(name) > -1;
-      if (isCell || table/* TABLE_FORMATS */.li[name] || cell/* CELL_FORMATS */.Du[name]) {
-        var attrName = "data-".concat(isCell ? 'table-' : '').concat(name.toLowerCase());
-        (0,toggle_attribute/* default */.Z)(this.domNode, attrName, value);
-        if (cell/* CELL_FORMATS */.Du[name]) {
-          var _this$cell;
-          (_this$cell = this.cell()) === null || _this$cell === void 0 ? void 0 : _this$cell.format(name, value);
-        }
-        if (table/* TABLE_FORMATS */.li[name]) {
-          var _this$cell2, _this$cell2$table;
-          (_this$cell2 = this.cell()) === null || _this$cell2 === void 0 ? void 0 : (_this$cell2$table = _this$cell2.table()) === null || _this$cell2$table === void 0 ? void 0 : _this$cell2$table.format(name, value);
-        }
-      } else {
-        _get(_getPrototypeOf(CellLine.prototype), "format", this).call(this, name, value);
-      }
-    }
-  }, {
-    key: "cell",
-    value: function cell() {
-      return 'row' in this.parent ? this.parent : null;
-    }
-  }], [{
-    key: "create",
-    value: function create(value) {
-      var node = _get(_getPrototypeOf(CellLine), "create", this).call(this, value);
-      CELL_IDENTITY_KEYS.forEach(function (key) {
-        var _value$key;
-        var identityMarker = key === 'row' ? tableId : cellId;
-        node.setAttribute("".concat(DATA_PREFIX).concat(key), (_value$key = value[key]) !== null && _value$key !== void 0 ? _value$key : identityMarker());
-      });
-      return node;
-    }
-  }, {
-    key: "formats",
-    value: function formats(domNode) {
-      return CELL_IDENTITY_KEYS.reduce(function (formats, attribute) {
-        var attrName = "".concat(DATA_PREFIX).concat(attribute);
-        if (domNode.hasAttribute(attrName)) {
-          formats[attribute] = domNode.getAttribute(attrName) || undefined;
-        }
-        return formats;
-      }, {});
-    }
-  }]);
-  return CellLine;
-}(block/* default */.ZP);
-CellLine.blotName = 'tableCellLine';
-CellLine.className = 'ql-table-cell-line';
-CellLine.tagName = 'P';
-var HeaderCellLine = /*#__PURE__*/function (_CellLine) {
-  _inherits(HeaderCellLine, _CellLine);
-  var _super2 = _createSuper(HeaderCellLine);
-  function HeaderCellLine() {
-    _classCallCheck(this, HeaderCellLine);
-    return _super2.apply(this, arguments);
-  }
-  return _createClass(HeaderCellLine);
-}(CellLine);
-HeaderCellLine.blotName = 'tableHeaderCellLine';
-HeaderCellLine.className = 'ql-table-header-cell-line';
-var BaseCell = /*#__PURE__*/function (_Container) {
-  _inherits(BaseCell, _Container);
-  var _super3 = _createSuper(BaseCell);
-  function BaseCell() {
-    _classCallCheck(this, BaseCell);
-    return _super3.apply(this, arguments);
-  }
-  _createClass(BaseCell, [{
-    key: "format",
-    value: function format(name, value) {
-      var _CELL_FORMATS$name;
-      (_CELL_FORMATS$name = cell/* CELL_FORMATS */.Du[name]) === null || _CELL_FORMATS$name === void 0 ? void 0 : _CELL_FORMATS$name.add(this.domNode, value);
-    }
-  }, {
-    key: "checkMerge",
-    value: function checkMerge() {
-      if (_get(_getPrototypeOf(BaseCell.prototype), "checkMerge", this).call(this) && this.next.children.head != null) {
-        var thisHead = this.children.head.formats()[this.children.head.statics.blotName];
-        var thisTail = this.children.tail.formats()[this.children.tail.statics.blotName];
-        var nextHead = this.next.children.head.formats()[this.next.children.head.statics.blotName];
-        var nextTail = this.next.children.tail.formats()[this.next.children.tail.statics.blotName];
-        return thisHead.cell === thisTail.cell && thisHead.cell === nextHead.cell && thisHead.cell === nextTail.cell;
-      }
-      return false;
-    }
-  }, {
-    key: "formats",
-    value: function formats() {
-      return BaseCell.cellFormats(this.domNode);
-    }
-  }, {
-    key: "cellOffset",
-    value: function cellOffset() {
-      if (this.parent) {
-        return this.parent.children.indexOf(this);
-      }
-      return -1;
-    }
-  }, {
-    key: "row",
-    value: function row() {
-      return 'table' in this.parent ? this.parent : null;
-    }
-  }, {
-    key: "rowOffset",
-    value: function rowOffset() {
-      if (this.row()) {
-        return this.row().rowOffset();
-      }
-      return -1;
-    }
-  }, {
-    key: "table",
-    value: function table() {
-      var _this$row;
-      return (_this$row = this.row()) === null || _this$row === void 0 ? void 0 : _this$row.table();
-    }
-  }, {
-    key: "optimize",
-    value: function optimize() {
-      var _this$domNode$getAttr, _get3;
-      var rowId = (_this$domNode$getAttr = this.domNode.getAttribute("".concat(DATA_PREFIX, "row"))) !== null && _this$domNode$getAttr !== void 0 ? _this$domNode$getAttr : this.domNode.getAttribute("".concat(DATA_PREFIX, "header-row"));
-      if (this.statics.requiredContainer && !(this.parent instanceof this.statics.requiredContainer)) {
-        this.wrap(this.statics.requiredContainer.blotName, {
-          row: rowId
-        });
-      }
-      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        args[_key2] = arguments[_key2];
-      }
-      (_get3 = _get(_getPrototypeOf(BaseCell.prototype), "optimize", this)).call.apply(_get3, [this].concat(args));
-    }
-  }], [{
-    key: "create",
-    value: function create(value) {
-      var node = _get(_getPrototypeOf(BaseCell), "create", this).call(this, value);
-      if (value) {
-        Object.keys(value).forEach(function (format) {
-          var _CELL_FORMATS$format;
-          (_CELL_FORMATS$format = cell/* CELL_FORMATS */.Du[format]) === null || _CELL_FORMATS$format === void 0 ? void 0 : _CELL_FORMATS$format.add(node, value[format]);
-        });
-      }
-      return node;
-    }
-  }, {
-    key: "cellFormats",
-    value: function cellFormats(domNode) {
-      var formats = {};
-      if (domNode.hasAttribute("".concat(DATA_PREFIX, "row")) || domNode.hasAttribute("".concat(DATA_PREFIX, "header-row"))) {
-        var _domNode$getAttribute;
-        formats.row = (_domNode$getAttribute = domNode.getAttribute("".concat(DATA_PREFIX, "row"))) !== null && _domNode$getAttribute !== void 0 ? _domNode$getAttribute : domNode.getAttribute("".concat(DATA_PREFIX, "header-row"));
-      }
-      Object.keys(cell/* CELL_FORMATS */.Du).forEach(function (format) {
-        var _domNode$firstElement;
-        var value = (_domNode$firstElement = domNode.firstElementChild) === null || _domNode$firstElement === void 0 ? void 0 : _domNode$firstElement.dataset[format.toLowerCase()];
-        if (value) {
-          formats[format] = value;
-        }
-      });
-      return formats;
-    }
-  }]);
-  return BaseCell;
-}(container/* default */.Z);
-BaseCell.tagName = ['TD', 'TH'];
-var TableCell = /*#__PURE__*/function (_BaseCell) {
-  _inherits(TableCell, _BaseCell);
-  var _super4 = _createSuper(TableCell);
-  function TableCell() {
-    _classCallCheck(this, TableCell);
-    return _super4.apply(this, arguments);
-  }
-  _createClass(TableCell, [{
-    key: "format",
-    value: function format(name, value) {
-      if (name === 'row') {
-        this.domNode.setAttribute("".concat(DATA_PREFIX).concat(name), value);
-        this.children.forEach(function (child) {
-          child.format(name, value);
-        });
-      } else {
-        _get(_getPrototypeOf(TableCell.prototype), "format", this).call(this, name, value);
-      }
-    }
-  }], [{
-    key: "create",
-    value: function create(value) {
-      var node = _get(_getPrototypeOf(TableCell), "create", this).call(this, value);
-      var attrName = "".concat(DATA_PREFIX, "row");
-      if (value !== null && value !== void 0 && value.row) {
-        node.setAttribute(attrName, value.row);
-      }
-      return node;
-    }
-  }]);
-  return TableCell;
-}(BaseCell);
-TableCell.blotName = 'tableCell';
-TableCell.className = 'ql-table-data-cell';
-TableCell.dataAttribute = "".concat(DATA_PREFIX, "row");
-var TableHeaderCell = /*#__PURE__*/function (_BaseCell2) {
-  _inherits(TableHeaderCell, _BaseCell2);
-  var _super5 = _createSuper(TableHeaderCell);
-  function TableHeaderCell() {
-    _classCallCheck(this, TableHeaderCell);
-    return _super5.apply(this, arguments);
-  }
-  _createClass(TableHeaderCell, [{
-    key: "format",
-    value: function format(name, value) {
-      if (name === 'row') {
-        this.domNode.setAttribute("".concat(DATA_PREFIX).concat(name), value);
-        this.children.forEach(function (child) {
-          child.format(name, value);
-        });
-      } else {
-        _get(_getPrototypeOf(TableHeaderCell.prototype), "format", this).call(this, name, value);
-      }
-    }
-  }], [{
-    key: "create",
-    value: function create(value) {
-      var node = _get(_getPrototypeOf(TableHeaderCell), "create", this).call(this, value);
-      var attrName = "".concat(DATA_PREFIX, "header-row");
-      if (value && value.row) {
-        node.setAttribute(attrName, value.row);
-      }
-      return node;
-    }
-  }]);
-  return TableHeaderCell;
-}(BaseCell);
-TableHeaderCell.tagName = ['TH', 'TD'];
-TableHeaderCell.className = 'ql-table-header-cell';
-TableHeaderCell.blotName = 'tableHeaderCell';
-TableHeaderCell.dataAttribute = "".concat(DATA_PREFIX, "header-row");
-var BaseRow = /*#__PURE__*/function (_Container2) {
-  _inherits(BaseRow, _Container2);
-  var _super6 = _createSuper(BaseRow);
-  function BaseRow() {
-    _classCallCheck(this, BaseRow);
-    return _super6.apply(this, arguments);
-  }
-  _createClass(BaseRow, [{
-    key: "checkMerge",
-    value: function checkMerge() {
-      if (_get(_getPrototypeOf(BaseRow.prototype), "checkMerge", this).call(this) && (0,is_defined/* default */.Z)(this.next.children.head)) {
-        var formatName = 'row';
-        var thisHead = this.children.head.formats();
-        var thisTail = this.children.tail.formats();
-        var nextHead = this.next.children.head.formats();
-        var nextTail = this.next.children.tail.formats();
-        return thisHead[formatName] === thisTail[formatName] && thisHead[formatName] === nextHead[formatName] && thisHead[formatName] === nextTail[formatName];
-      }
-      return false;
-    }
-  }, {
-    key: "optimize",
-    value: function optimize() {
-      var _get4,
-        _this = this;
-      for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-        args[_key3] = arguments[_key3];
-      }
-      (_get4 = _get(_getPrototypeOf(BaseRow.prototype), "optimize", this)).call.apply(_get4, [this].concat(args));
-      var formatName = this.childFormatName;
-      this.children.forEach(function (child) {
-        if (!(0,is_defined/* default */.Z)(child.next)) {
-          return;
-        }
-        var childFormats = child.formats();
-        var nextFormats = child.next.formats();
-        if (childFormats[formatName] !== nextFormats[formatName]) {
-          var next = _this.splitAfter(child);
-          if (next) {
-            next.optimize();
-          }
-          if (_this.prev) {
-            _this.prev.optimize();
-          }
-        }
-      });
-    }
-  }, {
-    key: "rowOffset",
-    value: function rowOffset() {
-      if (this.parent) {
-        return this.parent.children.indexOf(this);
-      }
-      return -1;
-    }
-  }, {
-    key: "table",
-    value: function table() {
-      var _this$parent;
-      return (_this$parent = this.parent) === null || _this$parent === void 0 ? void 0 : _this$parent.parent;
-    }
-  }, {
-    key: "formats",
-    value: function formats() {
-      var formats = {};
-      var attrName = "".concat(DATA_PREFIX, "row");
-      if (this.domNode.hasAttribute(attrName)) {
-        formats[attrName] = this.domNode.getAttribute(attrName);
-      }
-      return formats;
-    }
-  }], [{
-    key: "create",
-    value: function create(value) {
-      var node = _get(_getPrototypeOf(BaseRow), "create", this).call(this, value);
-      if (value !== null && value !== void 0 && value.row) {
-        node.setAttribute("".concat(DATA_PREFIX, "row"), value.row);
-      }
-      return node;
-    }
-  }]);
-  return BaseRow;
-}(container/* default */.Z);
-BaseRow.tagName = 'TR';
-var TableRow = /*#__PURE__*/function (_BaseRow) {
-  _inherits(TableRow, _BaseRow);
-  var _super7 = _createSuper(TableRow);
-  function TableRow(scroll, domNode) {
-    var _this2;
-    _classCallCheck(this, TableRow);
-    _this2 = _super7.call(this, scroll, domNode);
-    _this2.childFormatName = 'table';
-    return _this2;
-  }
-  return _createClass(TableRow);
-}(BaseRow);
-TableRow.blotName = 'tableRow';
-var TableHeaderRow = /*#__PURE__*/function (_BaseRow2) {
-  _inherits(TableHeaderRow, _BaseRow2);
-  var _super8 = _createSuper(TableHeaderRow);
-  function TableHeaderRow(scroll, domNode) {
-    var _this3;
-    _classCallCheck(this, TableHeaderRow);
-    _this3 = _super8.call(this, scroll, domNode);
-    _this3.childFormatName = 'tableHeaderCell';
-    return _this3;
-  }
-  return _createClass(TableHeaderRow);
-}(BaseRow);
-TableHeaderRow.blotName = 'tableHeaderRow';
-var RowContainer = /*#__PURE__*/function (_Container3) {
-  _inherits(RowContainer, _Container3);
-  var _super9 = _createSuper(RowContainer);
-  function RowContainer() {
-    _classCallCheck(this, RowContainer);
-    return _super9.apply(this, arguments);
-  }
-  _createClass(RowContainer, [{
-    key: "optimize",
-    value: function optimize() {
-      var _get5;
-      if (this.statics.requiredContainer && !(this.parent instanceof this.statics.requiredContainer)) {
-        var domNode = this.children.head.children.head.children.head.domNode;
-        var formats = {};
-        Object.keys(table/* TABLE_FORMATS */.li).forEach(function (format) {
-          var value = domNode.dataset[format.toLowerCase()];
-          if (value) {
-            formats[format] = value;
-          }
-        });
-        this.wrap(this.statics.requiredContainer.blotName, formats);
-      }
-      for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-        args[_key4] = arguments[_key4];
-      }
-      (_get5 = _get(_getPrototypeOf(RowContainer.prototype), "optimize", this)).call.apply(_get5, [this].concat(args));
-    }
-  }]);
-  return RowContainer;
-}(container/* default */.Z);
-var TableBody = /*#__PURE__*/function (_RowContainer) {
-  _inherits(TableBody, _RowContainer);
-  var _super10 = _createSuper(TableBody);
-  function TableBody() {
-    _classCallCheck(this, TableBody);
-    return _super10.apply(this, arguments);
-  }
-  return _createClass(TableBody);
-}(RowContainer);
-TableBody.blotName = 'tableBody';
-TableBody.tagName = 'TBODY';
-var TableHeader = /*#__PURE__*/function (_RowContainer2) {
-  _inherits(TableHeader, _RowContainer2);
-  var _super11 = _createSuper(TableHeader);
-  function TableHeader() {
-    _classCallCheck(this, TableHeader);
-    return _super11.apply(this, arguments);
-  }
-  return _createClass(TableHeader);
-}(RowContainer);
-TableHeader.blotName = 'tableHeader';
-TableHeader.tagName = 'THEAD';
-var TableContainer = /*#__PURE__*/function (_Container4) {
-  _inherits(TableContainer, _Container4);
-  var _super12 = _createSuper(TableContainer);
-  function TableContainer() {
-    _classCallCheck(this, TableContainer);
-    return _super12.apply(this, arguments);
-  }
-  _createClass(TableContainer, [{
-    key: "balanceCells",
-    value: function balanceCells() {
-      var headerRows = this.descendants(TableHeaderRow);
-      var bodyRows = this.descendants(TableRow);
-      var maxColCount = this.getMaxTableColCount(headerRows, bodyRows);
-      this.balanceRows(maxColCount, headerRows, TableHeaderCell);
-      this.balanceRows(maxColCount, bodyRows, TableCell);
-    }
-  }, {
-    key: "getMaxTableColCount",
-    value: function getMaxTableColCount(headerRows, bodyRows) {
-      return Math.max(this.getMaxRowColCount(headerRows), this.getMaxRowColCount(bodyRows));
-    }
-  }, {
-    key: "getMaxRowColCount",
-    value: function getMaxRowColCount(rows) {
-      return Math.max.apply(Math, _toConsumableArray(rows.map(function (row) {
-        return row.children.length;
-      })));
-    }
-  }, {
-    key: "balanceRows",
-    value: function balanceRows(maxColCount, rows, CellClass) {
-      var _this4 = this;
-      rows.forEach(function (row) {
-        new Array(maxColCount - row.children.length).fill(0).forEach(function () {
-          var value;
-          if ((0,is_defined/* default */.Z)(row.children.head)) {
-            value = CellClass.cellFormats(row.children.head.domNode);
-          }
-          var blot = _this4.scroll.create(CellClass.blotName, value);
-          var cellLine = _this4.scroll.create(CellClass.allowedChildren[0].blotName, value);
-          blot.appendChild(cellLine);
-          row.appendChild(blot);
-          blot.optimize(); // Add break blot
-        });
-      });
-    }
-  }, {
-    key: "cells",
-    value: function cells(column) {
-      return this.rows().map(function (row) {
-        return row.children.at(column);
-      });
-    }
-  }, {
-    key: "deleteColumn",
-    value: function deleteColumn(index) {
-      var _this5 = this;
-      [TableHeader, TableBody].forEach(function (blot) {
-        var _this5$descendants = _this5.descendants(blot),
-          _this5$descendants2 = _slicedToArray(_this5$descendants, 1),
-          tablePart = _this5$descendants2[0];
-        if (!(0,is_defined/* default */.Z)(tablePart) || !(0,is_defined/* default */.Z)(tablePart.children.head)) {
-          return;
-        }
-        tablePart.children.forEach(function (row) {
-          var cell = row.children.at(index);
-          if ((0,is_defined/* default */.Z)(cell)) {
-            cell.remove();
-          }
-        });
-      });
-    }
-  }, {
-    key: "insertColumn",
-    value: function insertColumn(index) {
-      var _this6 = this;
-      [TableHeader, TableBody].forEach(function (blot) {
-        var _this6$descendants = _this6.descendants(blot),
-          _this6$descendants2 = _slicedToArray(_this6$descendants, 1),
-          tablePart = _this6$descendants2[0];
-        if (!(0,is_defined/* default */.Z)(tablePart) || !(0,is_defined/* default */.Z)(tablePart.children.head)) {
-          return;
-        }
-        var CellBlot = blot === TableHeader ? TableHeaderCell : TableCell;
-        var CellLineBlot = blot === TableHeader ? HeaderCellLine : CellLine;
-        tablePart.children.forEach(function (row) {
-          var ref = row.children.at(index);
-          var value = CellLineBlot.formats(row.children.head.children.head.domNode);
-          var cell = _this6.scroll.create(CellBlot.blotName, {
-            row: value.row
-          });
-          var cellLine = _this6.scroll.create(CellLineBlot.blotName, {
-            row: value.row
-          });
-          var emptyLine = _this6.scroll.create(blots_break/* default.blotName */.Z.blotName);
-          cellLine.appendChild(emptyLine);
-          cell.appendChild(cellLine);
-          row.insertBefore(cell, ref);
-        });
-      });
-    }
-  }, {
-    key: "insertRow",
-    value: function insertRow(index) {
-      var _this7 = this;
-      var _this$descendants = this.descendants(TableBody),
-        _this$descendants2 = _slicedToArray(_this$descendants, 1),
-        body = _this$descendants2[0];
-      if (!(0,is_defined/* default */.Z)(body) || !(0,is_defined/* default */.Z)(body.children.head)) {
-        return;
-      }
-      var id = tableId();
-      var row = this.scroll.create(TableRow.blotName, {
-        row: id
-      });
-      body.children.head.children.forEach(function () {
-        var cell = _this7.scroll.create(TableCell.blotName, {
-          row: id
-        });
-        var cellLine = _this7.scroll.create(CellLine.blotName, {
-          row: id
-        });
-        var emptyLine = _this7.scroll.create(blots_break/* default.blotName */.Z.blotName);
-        cellLine.appendChild(emptyLine);
-        cell.appendChild(cellLine);
-        row.appendChild(cell);
-      });
-      var ref = body.children.at(index);
-      body.insertBefore(row, ref);
-    }
-  }, {
-    key: "insertHeaderRow",
-    value: function insertHeaderRow() {
-      var _this8 = this;
-      var _this$descendants3 = this.descendants(TableHeader),
-        _this$descendants4 = _slicedToArray(_this$descendants3, 1),
-        header = _this$descendants4[0];
-      var _this$descendants5 = this.descendants(TableBody),
-        _this$descendants6 = _slicedToArray(_this$descendants5, 1),
-        body = _this$descendants6[0];
-      if ((0,is_defined/* default */.Z)(header) || !(0,is_defined/* default */.Z)(body) || !(0,is_defined/* default */.Z)(body.children.head)) {
-        return;
-      }
-      var id = tableId();
-      var newHeader = this.scroll.create(TableHeader.blotName);
-      var row = this.scroll.create(TableHeaderRow.blotName);
-      var ref = this.children.at(0);
-      newHeader.appendChild(row);
-      body.children.head.children.forEach(function () {
-        var cell = _this8.scroll.create(TableHeaderCell.blotName, {
-          row: id
-        });
-        var cellLine = _this8.scroll.create(HeaderCellLine.blotName, {
-          row: id
-        });
-        var emptyLine = _this8.scroll.create(blots_break/* default.blotName */.Z.blotName);
-        cellLine.appendChild(emptyLine);
-        cell.appendChild(cellLine);
-        row.appendChild(cell);
-        cell.optimize();
-      });
-      this.insertBefore(newHeader, ref);
-    }
-  }, {
-    key: "rows",
-    value: function rows() {
-      var body = this.children.head;
-      return (0,is_defined/* default */.Z)(body) ? body.children.map(function (row) {
-        return row;
-      }) : [];
-    }
-  }, {
-    key: "formats",
-    value: function formats() {
-      var formats = {};
-      var childElem = this.cells()[0].domNode.firstElementChild;
-      Object.keys(table/* TABLE_FORMATS */.li).forEach(function (format) {
-        var value = childElem.dataset[format.toLowerCase()];
-        if (value) {
-          formats[format] = value;
-        }
-      });
-      return formats;
-    }
-  }, {
-    key: "format",
-    value: function format(name, value) {
-      var tableFormat = table/* TABLE_FORMATS */.li[name];
-      if (tableFormat) {
-        var attrName = "data-".concat(name.toLowerCase());
-        this.cells().forEach(function (cell) {
-          (0,toggle_attribute/* default */.Z)(cell.children.head.domNode, attrName, value);
-        });
-        tableFormat.add(this.domNode, value);
-      }
-    }
-  }], [{
-    key: "create",
-    value: function create(value) {
-      var node = _get(_getPrototypeOf(TableContainer), "create", this).call(this, value);
-      if (value) {
-        Object.keys(value).forEach(function (format) {
-          var _TABLE_FORMATS$format;
-          (_TABLE_FORMATS$format = table/* TABLE_FORMATS */.li[format]) === null || _TABLE_FORMATS$format === void 0 ? void 0 : _TABLE_FORMATS$format.add(node, value[format]);
-        });
-      }
-      return node;
-    }
-  }]);
-  return TableContainer;
-}(container/* default */.Z);
-TableContainer.blotName = 'tableContainer';
-TableContainer.tagName = 'TABLE';
-TableContainer.allowedChildren = [TableHeader, TableBody];
-TableBody.requiredContainer = TableContainer;
-TableHeader.requiredContainer = TableContainer;
-TableBody.allowedChildren = [TableRow];
-TableRow.requiredContainer = TableBody;
-TableRow.allowedChildren = [TableCell];
-TableCell.requiredContainer = TableRow;
-CellLine.requiredContainer = TableCell;
-TableCell.allowedChildren = [CellLine];
-TableHeader.allowedChildren = [TableHeaderRow];
-TableHeaderRow.requiredContainer = TableHeader;
-HeaderCellLine.requiredContainer = TableHeaderCell;
-TableHeaderCell.allowedChildren = [HeaderCellLine];
-TableHeaderRow.allowedChildren = [TableHeaderCell];
-TableHeaderCell.requiredContainer = TableHeaderRow;
-function tableId() {
-  return "row-".concat((0,get_id/* default */.Z)());
-}
-function cellId() {
-  return "cell-".concat((0,get_id/* default */.Z)());
-}
-
-// EXTERNAL MODULE: ./modules/clipboard.js
-var clipboard = __webpack_require__(5635);
-// EXTERNAL MODULE: ./modules/table/utils/make_table_arrow_handler.js
-var make_table_arrow_handler = __webpack_require__(9466);
-// EXTERNAL MODULE: ./modules/table/utils/prepare_attr_matcher.js
-var prepare_attr_matcher = __webpack_require__(7896);
-;// CONCATENATED MODULE: ./modules/table/index.js
-function table_typeof(obj) { "@babel/helpers - typeof"; return table_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, table_typeof(obj); }
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function table_slicedToArray(arr, i) { return table_arrayWithHoles(arr) || table_iterableToArrayLimit(arr, i) || table_unsupportedIterableToArray(arr, i) || table_nonIterableRest(); }
-function table_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function table_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return table_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return table_arrayLikeToArray(o, minLen); }
-function table_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-function table_iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-function table_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-function table_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function table_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-function table_createClass(Constructor, protoProps, staticProps) { if (protoProps) table_defineProperties(Constructor.prototype, protoProps); if (staticProps) table_defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function table_inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) table_setPrototypeOf(subClass, superClass); }
-function table_setPrototypeOf(o, p) { table_setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return table_setPrototypeOf(o, p); }
-function table_createSuper(Derived) { var hasNativeReflectConstruct = table_isNativeReflectConstruct(); return function _createSuperInternal() { var Super = table_getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = table_getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return table_possibleConstructorReturn(this, result); }; }
-function table_possibleConstructorReturn(self, call) { if (call && (table_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return table_assertThisInitialized(self); }
-function table_assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-function table_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-function table_getPrototypeOf(o) { table_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return table_getPrototypeOf(o); }
-
-
-
-
-
-
-
-
 
 
 
 var EMPTY_RESULT = [null, null, null, -1];
 var Table = /*#__PURE__*/function (_Module) {
-  table_inherits(Table, _Module);
-  var _super = table_createSuper(Table);
+  _inherits(Table, _Module);
+  var _super = _createSuper(Table);
   function Table() {
     var _this;
-    table_classCallCheck(this, Table);
+    _classCallCheck(this, Table);
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
     _this = _super.call.apply(_super, [this].concat(args));
-    _this.tableBlots = [CellLine.blotName, HeaderCellLine.blotName];
+    _this.tableBlots = [_formats_table__WEBPACK_IMPORTED_MODULE_4__/* .CellLine.blotName */ .zW.blotName, _formats_table__WEBPACK_IMPORTED_MODULE_4__/* .HeaderCellLine.blotName */ .iD.blotName];
     _this.tableBlots.forEach(function (blotName) {
       _this.quill.editor.addImmediateFormat(blotName);
     });
@@ -6664,7 +6718,7 @@ var Table = /*#__PURE__*/function (_Module) {
     _this.listenBalanceCells();
     return _this;
   }
-  table_createClass(Table, [{
+  _createClass(Table, [{
     key: "integrateClipboard",
     value: function integrateClipboard() {
       var _this2 = this;
@@ -6672,8 +6726,8 @@ var Table = /*#__PURE__*/function (_Module) {
         _this2.quill.clipboard.addTableBlot(blotName);
       });
       this.quill.clipboard.addMatcher('td, th', matchCell);
-      this.quill.clipboard.addMatcher('table', (0,prepare_attr_matcher/* default */.Z)('table'));
-      this.quill.clipboard.addMatcher('td, th', (0,prepare_attr_matcher/* default */.Z)('cell'));
+      this.quill.clipboard.addMatcher('table', (0,_utils_prepare_attr_matcher__WEBPACK_IMPORTED_MODULE_7__/* .prepareAttributeMatcher */ .F)(_formats_table_attributors_table__WEBPACK_IMPORTED_MODULE_8__/* .TABLE_ATTRIBUTORS */ .Zt));
+      this.quill.clipboard.addMatcher('td, th', (0,_utils_prepare_attr_matcher__WEBPACK_IMPORTED_MODULE_7__/* .prepareCellAttributeMatcher */ .a)(_formats_table_attributors_cell__WEBPACK_IMPORTED_MODULE_9__/* .CELL_ATTRIBUTORS */ .h6));
     }
   }, {
     key: "addKeyboardHandlers",
@@ -6689,7 +6743,7 @@ var Table = /*#__PURE__*/function (_Module) {
   }, {
     key: "balanceTables",
     value: function balanceTables() {
-      this.quill.scroll.descendants(TableContainer).forEach(function (table) {
+      this.quill.scroll.descendants(_formats_table__WEBPACK_IMPORTED_MODULE_4__/* .TableContainer */ .xJ).forEach(function (table) {
         table.balanceCells();
       });
     }
@@ -6697,53 +6751,53 @@ var Table = /*#__PURE__*/function (_Module) {
     key: "deleteColumn",
     value: function deleteColumn() {
       var _this$getTable = this.getTable(),
-        _this$getTable2 = table_slicedToArray(_this$getTable, 3),
+        _this$getTable2 = _slicedToArray(_this$getTable, 3),
         table = _this$getTable2[0],
         cell = _this$getTable2[2];
-      if (!(0,is_defined/* default */.Z)(cell)) {
+      if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_10__/* ["default"] */ .Z)(cell)) {
         return;
       }
       table.deleteColumn(cell.cellOffset());
-      this.quill.update(quill/* default.sources.USER */.ZP.sources.USER);
+      this.quill.update(_core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .ZP.sources.USER);
     }
   }, {
     key: "deleteRow",
     value: function deleteRow() {
       var _this$getTable3 = this.getTable(),
-        _this$getTable4 = table_slicedToArray(_this$getTable3, 2),
+        _this$getTable4 = _slicedToArray(_this$getTable3, 2),
         row = _this$getTable4[1];
-      if (!(0,is_defined/* default */.Z)(row)) {
+      if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_10__/* ["default"] */ .Z)(row)) {
         return;
       }
       row.remove();
-      this.quill.update(quill/* default.sources.USER */.ZP.sources.USER);
+      this.quill.update(_core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .ZP.sources.USER);
     }
   }, {
     key: "deleteTable",
     value: function deleteTable() {
       var _this$getTable5 = this.getTable(),
-        _this$getTable6 = table_slicedToArray(_this$getTable5, 1),
+        _this$getTable6 = _slicedToArray(_this$getTable5, 1),
         table = _this$getTable6[0];
-      if (!(0,is_defined/* default */.Z)(table)) {
+      if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_10__/* ["default"] */ .Z)(table)) {
         return;
       }
       var offset = table.offset();
       table.remove();
-      this.quill.update(quill/* default.sources.USER */.ZP.sources.USER);
-      this.quill.setSelection(offset, quill/* default.sources.SILENT */.ZP.sources.SILENT);
+      this.quill.update(_core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .ZP.sources.USER);
+      this.quill.setSelection(offset, _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.SILENT */ .ZP.sources.SILENT);
     }
   }, {
     key: "getTable",
     value: function getTable() {
       var range = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.quill.getSelection();
-      if (!(0,is_defined/* default */.Z)(range)) {
+      if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_10__/* ["default"] */ .Z)(range)) {
         return EMPTY_RESULT;
       }
       var _this$quill$getLine = this.quill.getLine(range.index),
-        _this$quill$getLine2 = table_slicedToArray(_this$quill$getLine, 2),
+        _this$quill$getLine2 = _slicedToArray(_this$quill$getLine, 2),
         cellLine = _this$quill$getLine2[0],
         offset = _this$quill$getLine2[1];
-      if (!(0,is_defined/* default */.Z)(cellLine) || this.tableBlots.indexOf(cellLine.statics.blotName) === -1) {
+      if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_10__/* ["default"] */ .Z)(cellLine) || this.tableBlots.indexOf(cellLine.statics.blotName) === -1) {
         return EMPTY_RESULT;
       }
       var cell = cellLine.parent;
@@ -6756,21 +6810,21 @@ var Table = /*#__PURE__*/function (_Module) {
     value: function insertColumn(offset) {
       var range = this.quill.getSelection();
       var _this$getTable7 = this.getTable(range),
-        _this$getTable8 = table_slicedToArray(_this$getTable7, 3),
+        _this$getTable8 = _slicedToArray(_this$getTable7, 3),
         table = _this$getTable8[0],
         row = _this$getTable8[1],
         cell = _this$getTable8[2];
-      if (!(0,is_defined/* default */.Z)(cell)) {
+      if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_10__/* ["default"] */ .Z)(cell)) {
         return;
       }
       var column = cell.cellOffset();
       table.insertColumn(column + offset);
-      this.quill.update(quill/* default.sources.USER */.ZP.sources.USER);
+      this.quill.update(_core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .ZP.sources.USER);
       var shift = row.rowOffset();
       if (offset === 0) {
         shift += 1;
       }
-      this.quill.setSelection(range.index + shift, range.length, quill/* default.sources.SILENT */.ZP.sources.SILENT);
+      this.quill.setSelection(range.index + shift, range.length, _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.SILENT */ .ZP.sources.SILENT);
     }
   }, {
     key: "insertColumnLeft",
@@ -6787,20 +6841,20 @@ var Table = /*#__PURE__*/function (_Module) {
     value: function insertRow(offset) {
       var range = this.quill.getSelection();
       var _this$getTable9 = this.getTable(range),
-        _this$getTable10 = table_slicedToArray(_this$getTable9, 3),
+        _this$getTable10 = _slicedToArray(_this$getTable9, 3),
         table = _this$getTable10[0],
         row = _this$getTable10[1],
         cell = _this$getTable10[2];
-      if (!(0,is_defined/* default */.Z)(cell)) {
+      if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_10__/* ["default"] */ .Z)(cell)) {
         return;
       }
       var index = row.rowOffset();
       table.insertRow(index + offset);
-      this.quill.update(quill/* default.sources.USER */.ZP.sources.USER);
+      this.quill.update(_core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .ZP.sources.USER);
       if (offset > 0) {
-        this.quill.setSelection(range, quill/* default.sources.SILENT */.ZP.sources.SILENT);
+        this.quill.setSelection(range, _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.SILENT */ .ZP.sources.SILENT);
       } else {
-        this.quill.setSelection(range.index + row.children.length, range.length, quill/* default.sources.SILENT */.ZP.sources.SILENT);
+        this.quill.setSelection(range.index + row.children.length, range.length, _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.SILENT */ .ZP.sources.SILENT);
       }
     }
   }, {
@@ -6818,36 +6872,36 @@ var Table = /*#__PURE__*/function (_Module) {
     value: function insertHeaderRow() {
       var range = this.quill.getSelection();
       var _this$getTable11 = this.getTable(range),
-        _this$getTable12 = table_slicedToArray(_this$getTable11, 3),
+        _this$getTable12 = _slicedToArray(_this$getTable11, 3),
         table = _this$getTable12[0],
         cell = _this$getTable12[2];
-      if (!(0,is_defined/* default */.Z)(cell)) {
+      if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_10__/* ["default"] */ .Z)(cell)) {
         return;
       }
       table.insertHeaderRow();
-      this.quill.update(quill/* default.sources.USER */.ZP.sources.USER);
+      this.quill.update(_core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .ZP.sources.USER);
     }
   }, {
     key: "insertTable",
     value: function insertTable(rows, columns) {
       var range = this.quill.getSelection();
-      if (!(0,is_defined/* default */.Z)(range)) {
+      if (!(0,_utils_is_defined__WEBPACK_IMPORTED_MODULE_10__/* ["default"] */ .Z)(range)) {
         return;
       }
       var delta = new Array(rows).fill(0).reduce(function (memo) {
-        var rowId = tableId();
+        var rowId = (0,_formats_table__WEBPACK_IMPORTED_MODULE_4__/* .tableId */ .Lv)();
         new Array(columns).fill('\n').forEach(function (text) {
           memo.insert(text, {
             tableCellLine: {
               row: rowId,
-              cell: tableId()
+              cell: (0,_formats_table__WEBPACK_IMPORTED_MODULE_4__/* .tableId */ .Lv)()
             }
           });
         });
         return memo;
-      }, new (Delta_default())().retain(range.index));
-      this.quill.updateContents(delta, quill/* default.sources.USER */.ZP.sources.USER);
-      this.quill.setSelection(range.index, quill/* default.sources.SILENT */.ZP.sources.SILENT);
+      }, new (quill_delta__WEBPACK_IMPORTED_MODULE_0___default())().retain(range.index));
+      this.quill.updateContents(delta, _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .ZP.sources.USER);
+      this.quill.setSelection(range.index, _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.SILENT */ .ZP.sources.SILENT);
       this.balanceTables();
     }
   }, {
@@ -6859,11 +6913,11 @@ var Table = /*#__PURE__*/function (_Module) {
     key: "listenBalanceCells",
     value: function listenBalanceCells() {
       var _this4 = this;
-      this.quill.on(quill/* default.events.SCROLL_OPTIMIZE */.ZP.events.SCROLL_OPTIMIZE, function (mutations) {
+      this.quill.on(_core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].events.SCROLL_OPTIMIZE */ .ZP.events.SCROLL_OPTIMIZE, function (mutations) {
         mutations.some(function (mutation) {
           if (['TD', 'TH', 'TR', 'TBODY', 'THEAD', 'TABLE'].indexOf(mutation.target.tagName) !== -1) {
-            _this4.quill.once(quill/* default.events.TEXT_CHANGE */.ZP.events.TEXT_CHANGE, function (delta, old, source) {
-              if (source !== quill/* default.sources.USER */.ZP.sources.USER) return;
+            _this4.quill.once(_core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].events.TEXT_CHANGE */ .ZP.events.TEXT_CHANGE, function (delta, old, source) {
+              if (source !== _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .ZP.sources.USER) return;
               _this4.balanceTables();
             });
             return true;
@@ -6871,8 +6925,8 @@ var Table = /*#__PURE__*/function (_Module) {
           return false;
         });
       });
-      this.quill.on(quill/* default.events.CONTENT_SETTED */.ZP.events.CONTENT_SETTED, function () {
-        _this4.quill.once(quill/* default.events.TEXT_CHANGE */.ZP.events.TEXT_CHANGE, function () {
+      this.quill.on(_core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].events.CONTENT_SETTED */ .ZP.events.CONTENT_SETTED, function () {
+        _this4.quill.once(_core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].events.TEXT_CHANGE */ .ZP.events.TEXT_CHANGE, function () {
           _this4.balanceTables();
         });
       });
@@ -6880,24 +6934,24 @@ var Table = /*#__PURE__*/function (_Module) {
   }], [{
     key: "register",
     value: function register() {
-      quill/* default.register */.ZP.register(CellLine, true);
-      quill/* default.register */.ZP.register(HeaderCellLine, true);
-      quill/* default.register */.ZP.register(TableHeaderCell, true);
-      quill/* default.register */.ZP.register(TableCell, true);
-      quill/* default.register */.ZP.register(TableHeaderRow, true);
-      quill/* default.register */.ZP.register(TableRow, true);
-      quill/* default.register */.ZP.register(TableBody, true);
-      quill/* default.register */.ZP.register(TableHeader, true);
-      quill/* default.register */.ZP.register(TableContainer, true);
-      [table/* TABLE_FORMATS */.li, cell/* CELL_FORMATS */.Du].forEach(function (formats) {
+      _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].register */ .ZP.register(_formats_table__WEBPACK_IMPORTED_MODULE_4__/* .CellLine */ .zW, true);
+      _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].register */ .ZP.register(_formats_table__WEBPACK_IMPORTED_MODULE_4__/* .HeaderCellLine */ .iD, true);
+      _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].register */ .ZP.register(_formats_table__WEBPACK_IMPORTED_MODULE_4__/* .TableHeaderCell */ .xs, true);
+      _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].register */ .ZP.register(_formats_table__WEBPACK_IMPORTED_MODULE_4__/* .TableCell */ .pj, true);
+      _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].register */ .ZP.register(_formats_table__WEBPACK_IMPORTED_MODULE_4__/* .TableHeaderRow */ .KA, true);
+      _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].register */ .ZP.register(_formats_table__WEBPACK_IMPORTED_MODULE_4__/* .TableRow */ .SC, true);
+      _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].register */ .ZP.register(_formats_table__WEBPACK_IMPORTED_MODULE_4__/* .TableBody */ .RM, true);
+      _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].register */ .ZP.register(_formats_table__WEBPACK_IMPORTED_MODULE_4__/* .TableHeader */ .xD, true);
+      _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].register */ .ZP.register(_formats_table__WEBPACK_IMPORTED_MODULE_4__/* .TableContainer */ .xJ, true);
+      [_formats_table_attributors_table__WEBPACK_IMPORTED_MODULE_8__/* .TABLE_FORMATS */ .li, _formats_table_attributors_cell__WEBPACK_IMPORTED_MODULE_9__/* .CELL_FORMATS */ .Du].forEach(function (formats) {
         Object.keys(formats).forEach(function (name) {
-          quill/* default.register */.ZP.register(_defineProperty({}, "formats/".concat(name), formats[name]), true);
+          _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].register */ .ZP.register(_defineProperty({}, "formats/".concat(name), formats[name]), true);
         });
       });
     }
   }]);
   return Table;
-}(core_module/* default */.Z);
+}(_core_module__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z);
 Table.keyboardBindings = {
   'table backspace': {
     key: 'backspace',
@@ -6906,7 +6960,7 @@ Table.keyboardBindings = {
     offset: 0,
     handler: function handler(range) {
       var _this$quill$getLine3 = this.quill.getLine(range.index),
-        _this$quill$getLine4 = table_slicedToArray(_this$quill$getLine3, 1),
+        _this$quill$getLine4 = _slicedToArray(_this$quill$getLine3, 1),
         line = _this$quill$getLine4[0];
       if (!line.prev || ['tableCellLine', 'tableHeaderCellLine'].indexOf(line.prev.statics.blotName) === -1) {
         return false;
@@ -6933,19 +6987,19 @@ Table.keyboardBindings = {
         this.quill.scroll.deleteAt(range.index, range.length);
       }
       var lineFormats = Object.keys(context.format).reduce(function (formats, format) {
-        if (_this5.quill.scroll.query(format, parchment.Scope.BLOCK) && !Array.isArray(context.format[format])) {
+        if (_this5.quill.scroll.query(format, parchment__WEBPACK_IMPORTED_MODULE_1__.Scope.BLOCK) && !Array.isArray(context.format[format])) {
           formats[format] = context.format[format];
         }
         return formats;
       }, {});
-      this.quill.insertText(range.index, '\n', lineFormats.tableCellLine, quill/* default.sources.USER */.ZP.sources.USER);
-      this.quill.setSelection(range.index + 1, quill/* default.sources.SILENT */.ZP.sources.SILENT);
+      this.quill.insertText(range.index, '\n', lineFormats.tableCellLine, _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .ZP.sources.USER);
+      this.quill.setSelection(range.index + 1, _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.SILENT */ .ZP.sources.SILENT);
       this.quill.focus();
       Object.keys(context.format).forEach(function (name) {
         if (lineFormats[name] != null) return;
         if (Array.isArray(context.format[name])) return;
         if (name === 'link') return;
-        _this5.quill.format(name, context.format[name], quill/* default.sources.USER */.ZP.sources.USER);
+        _this5.quill.format(name, context.format[name], _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .ZP.sources.USER);
       });
     }
   },
@@ -6958,14 +7012,14 @@ Table.keyboardBindings = {
         cell = context.line;
       var offset = cell.offset(this.quill.scroll);
       if (event.shiftKey) {
-        this.quill.setSelection(offset - 1, quill/* default.sources.USER */.ZP.sources.USER);
+        this.quill.setSelection(offset - 1, _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .ZP.sources.USER);
       } else {
-        this.quill.setSelection(offset + cell.length(), quill/* default.sources.USER */.ZP.sources.USER);
+        this.quill.setSelection(offset + cell.length(), _core_quill__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sources.USER */ .ZP.sources.USER);
       }
     }
   },
-  'table down': (0,make_table_arrow_handler/* default */.Z)(false, ['tableCellLine', 'tableHeaderCellLine']),
-  'table up': (0,make_table_arrow_handler/* default */.Z)(true, ['tableCellLine', 'tableHeaderCellLine'])
+  'table down': (0,_utils_make_table_arrow_handler__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(false, ['tableCellLine', 'tableHeaderCellLine']),
+  'table up': (0,_utils_make_table_arrow_handler__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .Z)(true, ['tableCellLine', 'tableHeaderCellLine'])
 };
 function matchCell(node, delta) {
   var row = node.parentNode;
@@ -6977,21 +7031,21 @@ function matchCell(node, delta) {
   var cellId = cells.indexOf(node) + 1;
   var cellLineBlotName = isHeaderRow ? 'tableHeaderCellLine' : 'tableCellLine';
   if (delta.length() === 0) {
-    delta = new (Delta_default())().insert('\n', _defineProperty({}, cellLineBlotName, {
+    delta = new (quill_delta__WEBPACK_IMPORTED_MODULE_0___default())().insert('\n', _defineProperty({}, cellLineBlotName, {
       row: rowId,
       cell: cellId
     }));
     return delta;
   }
-  if (!(0,clipboard/* deltaEndsWith */.PF)(delta, '\n')) {
+  if (!(0,_clipboard__WEBPACK_IMPORTED_MODULE_5__/* .deltaEndsWith */ .PF)(delta, '\n')) {
     delta.insert('\n');
   }
-  return (0,clipboard/* applyFormat */.HI)(delta, cellLineBlotName, {
+  return (0,_clipboard__WEBPACK_IMPORTED_MODULE_5__/* .applyFormat */ .HI)(delta, cellLineBlotName, {
     row: rowId,
     cell: cellId
   });
 }
-/* harmony default export */ const modules_table = (Table);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Table);
 
 /***/ }),
 
@@ -7617,8 +7671,8 @@ var TableLite = /*#__PURE__*/function (_Module) {
         return _this2.quill.clipboard.addTableBlot(blotName);
       });
       this.quill.clipboard.addMatcher('tr', matchTable);
-      this.quill.clipboard.addMatcher('table', (0,prepare_attr_matcher/* default */.Z)('table'));
-      this.quill.clipboard.addMatcher('td, th', (0,prepare_attr_matcher/* default */.Z)('cell'));
+      this.quill.clipboard.addMatcher('table', (0,prepare_attr_matcher/* prepareAttributeMatcher */.F)(table/* TABLE_ATTRIBUTORS */.Zt));
+      this.quill.clipboard.addMatcher('td, th', (0,prepare_attr_matcher/* prepareCellAttributeMatcher */.a)(cell/* CELL_ATTRIBUTORS */.h6));
     }
   }, {
     key: "addKeyboardHandlers",
@@ -8003,44 +8057,67 @@ function makeTableArrowHandler(up, formats) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (/* binding */ prepareAttributeMatcher)
+/* harmony export */   "F": () => (/* binding */ prepareAttributeMatcher),
+/* harmony export */   "a": () => (/* binding */ prepareCellAttributeMatcher)
 /* harmony export */ });
 /* harmony import */ var parchment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1233);
 /* harmony import */ var _attributors_attributor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1674);
 /* harmony import */ var _attributors_style_attributor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4569);
-/* harmony import */ var _formats_table_attributors_cell__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1342);
-/* harmony import */ var _formats_table_attributors_table__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(319);
-/* harmony import */ var _clipboard__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5635);
+/* harmony import */ var _clipboard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5635);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 
 
-
-
-var ATTRIBUTORS = {
-  table: _formats_table_attributors_table__WEBPACK_IMPORTED_MODULE_4__/* .TABLE_ATTRIBUTORS */ .Zt,
-  cell: _formats_table_attributors_cell__WEBPACK_IMPORTED_MODULE_3__/* .CELL_ATTRIBUTORS */ .h6
-};
-function prepareAttributeMatcher(type) {
-  var attributors = ATTRIBUTORS[type];
+function writeToRecord(record, key, value, override) {
+  record[key] = !override && record[key] ? record[key] : value;
+}
+function fillFormats(attributes, node, scroll, attributors, result, override) {
+  attributes.filter(function (name) {
+    return !!name;
+  }).forEach(function (name) {
+    var queryAttr = scroll.query(name, parchment__WEBPACK_IMPORTED_MODULE_0__.Scope.ATTRIBUTE);
+    if (queryAttr !== null) {
+      var queryAttrValue = queryAttr.value(node);
+      if (queryAttrValue) {
+        writeToRecord(result, queryAttr.attrName, queryAttrValue, override);
+        return;
+      }
+    }
+    var attr = attributors[name];
+    if (attr != null && (attr.attrName === name || attr.keyName === name)) {
+      var attrValue = attr.value(node) || undefined;
+      writeToRecord(result, attr.attrName, attrValue, override);
+    }
+  });
+  return result;
+}
+function prepareAttributeMatcher(attributors) {
   return function (node, delta, scroll) {
     var attributes = _attributors_attributor__WEBPACK_IMPORTED_MODULE_1__/* ["default"].keys */ .Z.keys(node);
     var styles = _attributors_style_attributor__WEBPACK_IMPORTED_MODULE_2__/* ["default"].keys */ .Z.keys(node);
-    var formats = {};
-    attributes.concat(styles).forEach(function (name) {
-      var attr = scroll.query(name, parchment__WEBPACK_IMPORTED_MODULE_0__.Scope.ATTRIBUTE);
-      if (attr != null) {
-        formats[attr.attrName] = attr.value(node);
-        if (formats[attr.attrName]) return;
-      }
-      attr = attributors[name];
-      if (attr != null && (attr.attrName === name || attr.keyName === name)) {
-        attr = attributors[name];
-        formats[attr.attrName] = attr.value(node) || undefined;
-      }
-    });
+    var formats = _objectSpread(_objectSpread({}, fillFormats(attributes, node, scroll, attributors, {}, true)), fillFormats(styles, node, scroll, attributors, {}, true));
     if (Object.keys(formats).length > 0) {
-      return (0,_clipboard__WEBPACK_IMPORTED_MODULE_5__/* .applyFormat */ .HI)(delta, formats);
+      return (0,_clipboard__WEBPACK_IMPORTED_MODULE_3__/* .applyFormat */ .HI)(delta, formats);
+    }
+    return delta;
+  };
+}
+function prepareCellAttributeMatcher(attributors) {
+  return function (node, delta, scroll) {
+    var _node$parentNode;
+    var attributes = _attributors_attributor__WEBPACK_IMPORTED_MODULE_1__/* ["default"].keys */ .Z.keys(node);
+    var styles = _attributors_style_attributor__WEBPACK_IMPORTED_MODULE_2__/* ["default"].keys */ .Z.keys(node);
+    var parentTrNode = ((_node$parentNode = node.parentNode) === null || _node$parentNode === void 0 ? void 0 : _node$parentNode.tagName) === 'TR' ? node.parentNode : undefined;
+    var formats = _objectSpread(_objectSpread({}, fillFormats(attributes, node, scroll, attributors, {}, true)), fillFormats(styles, node, scroll, attributors, {}, true));
+    if (parentTrNode) {
+      var parentStyles = _attributors_style_attributor__WEBPACK_IMPORTED_MODULE_2__/* ["default"].keys */ .Z.keys(parentTrNode);
+      formats = fillFormats(parentStyles, parentTrNode, scroll, attributors, formats, false);
+    }
+    if (Object.keys(formats).length > 0) {
+      return (0,_clipboard__WEBPACK_IMPORTED_MODULE_3__/* .applyFormat */ .HI)(delta, formats);
     }
     return delta;
   };
@@ -21061,8 +21138,8 @@ Video.tagName = 'IFRAME';
 var code = __webpack_require__(7309);
 // EXTERNAL MODULE: ./modules/syntax.js
 var syntax = __webpack_require__(9072);
-// EXTERNAL MODULE: ./modules/table/index.js + 1 modules
-var table = __webpack_require__(3450);
+// EXTERNAL MODULE: ./modules/table/index.js
+var table = __webpack_require__(867);
 // EXTERNAL MODULE: ./node_modules/quill-delta/dist/Delta.js
 var Delta = __webpack_require__(9098);
 var Delta_default = /*#__PURE__*/__webpack_require__.n(Delta);

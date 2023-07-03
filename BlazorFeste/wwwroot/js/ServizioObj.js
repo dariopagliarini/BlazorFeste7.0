@@ -27,7 +27,7 @@ export var ServizioObj = {
     ];
 
     _casse.forEach(_cassa => {
-      if (_cassa.abilitata && !_cassa.visibile) {
+      if (_cassa.abilitata && (!_cassa.visibile || !_cassa.scontrinoAbilitato)) { 
         _items.push(
           {
             location: 'before',
@@ -48,20 +48,20 @@ export var ServizioObj = {
     });
 
     _items.push(
-      {
-        location: 'before',
-        widget: 'dxButton',
-        options: {
-          icon: 'fa-solid fa-cash-register',
-          type: 'default',
-          text: 'Stato Prodotto 29',
-          hint: "Pagina Stato Prodotto",
-          onClick() {
-            _objRef.invokeMethodAsync("NavigateToPage", "StatoProdotto/29")
-              .catch(err => console.error(err.toString()));
-          },
-        },
-      },
+      //{
+      //  location: 'before',
+      //  widget: 'dxButton',
+      //  options: {
+      //    icon: 'fa-solid fa-cash-register',
+      //    type: 'default',
+      //    text: 'Stato Prodotto 29',
+      //    hint: "Pagina Stato Prodotto",
+      //    onClick() {
+      //      _objRef.invokeMethodAsync("NavigateToPage", "StatoProdotto/29")
+      //        .catch(err => console.error(err.toString()));
+      //    },
+      //  },
+      //},
       {
         location: 'before',
         widget: 'dxButton',
@@ -69,7 +69,7 @@ export var ServizioObj = {
           icon: 'fa-solid fa-dolly',
           type: 'default',
           text: 'Reload Anagrafiche',
-          hint: "Reload  Anagrafiche",
+          hint: "Reload Anagrafiche",
           onClick() {
             _objRef.invokeMethodAsync('RefreshAnagrafiche')
               .catch(err => console.error(err.toString()));

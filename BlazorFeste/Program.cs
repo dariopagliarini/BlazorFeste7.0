@@ -1,9 +1,7 @@
 using Blazored.Toast;
+
 using BlazorFeste.DataAccess;
 using BlazorFeste.Services;
-
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 
 using Serilog;
 
@@ -23,58 +21,59 @@ var applicationName = section != null ? section.Value : "unknow";
 
 try
 {
-    Log.Information($"Application {applicationName} started");
-    
-    var builder = WebApplication.CreateBuilder(args);
+  Log.Information("---------------------------------------------------");
+  Log.Information($"       Application {applicationName} started");
+  Log.Information("---------------------------------------------------");
 
-    builder.Host.UseSerilog((ctx, lc) => lc
-                 .ReadFrom.Configuration(configuration));
+  var builder = WebApplication.CreateBuilder(args);
 
-    // Add services to the container.
-    builder.Services.AddRazorPages();
-    builder.Services.AddServerSideBlazor(options => options.JSInteropDefaultCallTimeout = TimeSpan.FromSeconds(30))
-          .AddHubOptions(options =>
-          {
-              options.ClientTimeoutInterval = TimeSpan.FromSeconds(60);
-              options.EnableDetailedErrors = false;
-              options.HandshakeTimeout = TimeSpan.FromSeconds(30);
-              options.KeepAliveInterval = TimeSpan.FromSeconds(15);
-              options.MaximumParallelInvocationsPerClient = 1;
-              options.MaximumReceiveMessageSize = 128 * 1024 * 1024; // 128 MB
-              options.StreamBufferCapacity = 10;
-          });
+  builder.Host.UseSerilog((ctx, lc) => lc
+               .ReadFrom.Configuration(configuration));
 
-    builder.Services.AddHttpContextAccessor();
-    builder.Services.AddLocalization();
-    builder.Services.AddBlazoredToast();
+  // Add services to the container.
+  builder.Services.AddRazorPages();
+  builder.Services.AddServerSideBlazor(options => options.JSInteropDefaultCallTimeout = TimeSpan.FromSeconds(30))
+        .AddHubOptions(options =>
+        {
+          options.ClientTimeoutInterval = TimeSpan.FromSeconds(60);
+          options.EnableDetailedErrors = false;
+          options.HandshakeTimeout = TimeSpan.FromSeconds(30);
+          options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+          options.MaximumParallelInvocationsPerClient = 1;
+          options.MaximumReceiveMessageSize = 128 * 1024 * 1024; // 128 MB
+          options.StreamBufferCapacity = 10;
+        });
 
-    builder.Services.AddSingleton<FesteDataAccess>();
-    builder.Services.AddSingleton<UserInterfaceService>();
+  builder.Services.AddHttpContextAccessor();
+  builder.Services.AddLocalization();
+  builder.Services.AddBlazoredToast();
 
-    builder.Services.AddHostedService<ClockTimerService>();
-    builder.Services.AddHostedService<DatabaseTimerService>();
+  builder.Services.AddSingleton<FesteDataAccess>();
+  builder.Services.AddSingleton<UserInterfaceService>();
 
-    builder.Services.AddScoped<ClientInformationService>();
+  builder.Services.AddHostedService<ClockTimerService>();
+  builder.Services.AddHostedService<DatabaseTimerService>();
 
-    var app = builder.Build();
+  builder.Services.AddScoped<ClientInformationService>();
 
-    app.UseStaticFiles();
-    app.UseRouting();
-    app.UseRequestLocalization("it-IT");  // "en-US"
-    CultureInfo.CurrentCulture = new CultureInfo("it-IT");
+  var app = builder.Build();
 
+  app.UseStaticFiles();
+  app.UseRouting();
+  app.UseRequestLocalization("it-IT");  // "en-US"
+  CultureInfo.CurrentCulture = new CultureInfo("it-IT");
 
-    app.MapBlazorHub();
-    app.MapFallbackToPage("/_Host");
+  app.MapBlazorHub();
+  app.MapFallbackToPage("/_Host");
 
-    app.Run();
+  app.Run();
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, $"Application {applicationName} failed to start");
+  Log.Fatal(ex, $"Application {applicationName} failed to start");
 }
 finally
 {
-    Log.Information("Shut down complete");
-    Log.CloseAndFlush();
+  Log.Information("Shut down complete");
+  Log.CloseAndFlush();
 }

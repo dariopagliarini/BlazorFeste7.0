@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.cs.js)
-* Version: 22.2.5
-* Build date: Mon Mar 27 2023
+* Version: 22.2.7
+* Build date: Mon Jun 19 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -124,6 +124,7 @@
             "dxDataGrid-filterRowOperationBetween": "Mezi",
             "dxDataGrid-filterRowOperationBetweenStartText": "Za\u010d\xedn\xe1",
             "dxDataGrid-filterRowOperationBetweenEndText": "Kon\u010d\xed",
+            "dxDataGrid-ariaSearchBox": "Search box",
             "dxDataGrid-applyFilterText": "Pou\u017e\xedt filtr",
             "dxDataGrid-trueText": "Plat\xed",
             "dxDataGrid-falseText": "Neplat\xed",
@@ -180,11 +181,14 @@
             "dxTreeList-editingAddRowToNode": "P\u0159idat",
             "dxPager-infoText": "Strana {0} ze {1} ({2} polo\u017eek)",
             "dxPager-pagesCountText": "ze",
+            "dxPager-pageSize": "Items per page: {0}",
             "dxPager-pageSizesAllText": "V\u0161e",
             "dxPager-page": "Page {0}",
             "dxPager-prevPage": "Previous Page",
             "dxPager-nextPage": "Next Page",
             "dxPager-ariaLabel": "Page Navigation",
+            "dxPager-ariaPageSize": "Page size",
+            "dxPager-ariaPageNumber": "Page number",
             "dxPivotGrid-grandTotal": "Celkem",
             "dxPivotGrid-total": "{0} Celkem",
             "dxPivotGrid-fieldChooserTitle": "V\xfdb\u011br pole",
@@ -250,6 +254,7 @@
             "dxScheduler-moreAppointments": "{0} nav\xedc",
             "dxCalendar-todayButtonText": "Dnes",
             "dxCalendar-ariaWidgetName": "Kalend\xe1\u0159",
+            "dxCalendar-ariaHotKeysInfo": "To navigate between views, press Control, and then Left Arrow or Right Arrow. To zoom in on a view, press Control, and then Down Arrow. To zoom out, press Control, and then Up Arrow.",
             "dxColorView-ariaRed": "\u010cerven\xe1",
             "dxColorView-ariaGreen": "Zelen\xe1",
             "dxColorView-ariaBlue": "Modr\xe1",

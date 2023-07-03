@@ -29,7 +29,7 @@ namespace PrinterServerAPI.Controllers
     public IActionResult Post([FromBody] StampaOrdine_RawData _rawData)
     {
       if (_rawData.LogEnabled)
-        Log.Information($"HTTPPost - {_rawData.IPAddress} - {_rawData.DebugText}");
+        Log.Information($"HTTPPost - {_rawData.IPAddress} - {_rawData.DebugText} - {_rawData.rawData.Length} bytes");
 
       if (_printerService.Accoda_Ordine(_rawData))
       {

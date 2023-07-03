@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.ja.js)
-* Version: 22.2.5
-* Build date: Mon Mar 27 2023
+* Version: 22.2.7
+* Build date: Mon Jun 19 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -124,6 +124,7 @@
             "dxDataGrid-filterRowOperationBetween": "\uff5e\u304b\u3089\uff5e\u306e\u9593",
             "dxDataGrid-filterRowOperationBetweenStartText": "\u958b\u59cb\u5024",
             "dxDataGrid-filterRowOperationBetweenEndText": "\u7d42\u4e86\u5024",
+            "dxDataGrid-ariaSearchBox": "Search box",
             "dxDataGrid-applyFilterText": "\u30d5\u30a3\u30eb\u30bf\u30fc\u3092\u9069\u7528",
             "dxDataGrid-trueText": "true",
             "dxDataGrid-falseText": "false",
@@ -165,7 +166,7 @@
             "dxDataGrid-ariaFilterCell": "\u30d5\u30a3\u30eb\u30bf\u30fc \u30bb\u30eb",
             "dxDataGrid-ariaCollapse": "\u6298\u308a\u305f\u305f\u3080",
             "dxDataGrid-ariaExpand": "\u5c55\u958b",
-            "dxDataGrid-ariaDataGrid": "\u30c7\u30fc\u30bf \u30b0\u30ea\u30c3\u30c9",
+            "dxDataGrid-ariaDataGrid": "{0} \u884c\u3068 {1} \u5217\u306e\u30c7\u30fc\u30bf \u30b0\u30ea\u30c3\u30c9",
             "dxDataGrid-ariaSearchInGrid": "\u30c7\u30fc\u30bf \u30b0\u30ea\u30c3\u30c9\u5185\u3067\u691c\u7d22",
             "dxDataGrid-ariaSelectAll": "\u3059\u3079\u3066\u3092\u9078\u629e",
             "dxDataGrid-ariaSelectRow": "\u884c\u306e\u9078\u629e",
@@ -186,6 +187,8 @@
             "dxPager-prevPage": "\u524d\u306e\u30da\u30fc\u30b8",
             "dxPager-nextPage": "\u6b21\u306e\u30da\u30fc\u30b8",
             "dxPager-ariaLabel": "\u30da\u30fc\u30b8 \u30ca\u30d3\u30b2\u30fc\u30b7\u30e7\u30f3",
+            "dxPager-ariaPageSize": "\u30da\u30fc\u30b8 \u30b5\u30a4\u30ba",
+            "dxPager-ariaPageNumber": "\u30da\u30fc\u30b8\u756a\u53f7",
             "dxPivotGrid-grandTotal": "\u7dcf\u8a08",
             "dxPivotGrid-total": "{0} \u5408\u8a08",
             "dxPivotGrid-fieldChooserTitle": "\u30d5\u30a3\u30fc\u30eb\u30c9\u306e\u9078\u629e",
@@ -251,6 +254,7 @@
             "dxScheduler-moreAppointments": "\u305d\u306e\u4ed6 {0} \u3064\u9078\u629e",
             "dxCalendar-todayButtonText": "\u4eca\u65e5",
             "dxCalendar-ariaWidgetName": "\u30ab\u30ec\u30f3\u30c0\u30fc",
+            "dxCalendar-ariaHotKeysInfo": "To navigate between views, press Control, and then Left Arrow or Right Arrow. To zoom in on a view, press Control, and then Down Arrow. To zoom out, press Control, and then Up Arrow.",
             "dxColorView-ariaRed": "\u8d64",
             "dxColorView-ariaGreen": "\u7dd1",
             "dxColorView-ariaBlue": "\u9752",

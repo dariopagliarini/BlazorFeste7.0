@@ -633,7 +633,7 @@ export var GestioneCassaObj = {
           K_ROW = 8;
           K_COL = 6;
           F_CELL = 13;
-          F_LABEL = 11;
+          F_LABEL = 12;
           break;
 
         case (numProdotti <= 56):
@@ -682,7 +682,6 @@ export var GestioneCassaObj = {
 
               let strDaEvadere = '';
               if (prodotto.viewLableDaEvadere) {
-                //strDaEvadere = '<div title="Da Evadere" id="lblDaEvadere_' + prodotto.idProdotto + '" class="child_lblDaEvadere ' + (prodotto.consumo - prodotto.evaso > 0 ? 'visible" >' : 'invisible" >') + (prodotto.consumo - prodotto.evaso) + '</div>';
                 strDaEvadere = '<div title="Da Evadere" style="font-size:' + F_LABEL + 'px" id="lblDaEvadere_' + prodotto.idProdotto + '" class="child_lblDaEvadere" >' + (prodotto.consumo - prodotto.evaso) + '</div>';
               }
 
@@ -819,10 +818,6 @@ export var GestioneCassaObj = {
                     minWidth: 240,
                     type: 'info',
                     displayTime: 3000,
-                  //  animation: {
-                  //    show: { type: 'fade', duration: 400, from: 0, to: 1,},
-                  //    hide: { type: 'fade', duration: 40, to: 0 },
-                  //  },
                   },
                   {
                     position: 'center',
@@ -854,7 +849,7 @@ export var GestioneCassaObj = {
       .count()
       .done(function (result) {
         if (result > 0) {
-          DevExpress.ui.notify("Variazione Anagrafica Prodotti - Verificare l'ordine in corso", "warning", 4000);
+          DevExpress.ui.notify("Variazione Anagrafica Prodotti - Verificare l'ordine in corso", "warning", 6000);
         } else {
           DevExpress.ui.notify("Variazione Anagrafica Prodotti", "success", 4000);
         }

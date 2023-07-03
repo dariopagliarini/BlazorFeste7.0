@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Dapper.Contrib.Extensions;
+
+using System;
 using System.Collections.Generic;
-using Dapper.Contrib.Extensions;
 
 namespace BlazorFeste.Data.Models
 {
@@ -25,12 +26,14 @@ namespace BlazorFeste.Data.Models
     [Computed]
     public int IdCassa { get => int.Parse(Cassa); }
     [Computed]
-    public string strDataAssegnazione { 
-      get {
+    public string strDataAssegnazione
+    {
+      get
+      {
         return $"{DataAssegnazione.ToString("ddd dd/MM").ToUpper()} - {(DataAssegnazione.Hour == 12 ? "PRANZO" : "CENA")}";
       }
     }
-    [Computed]
-    public List<ArchOrdiniRighe> righe { get; set; }
+    //[Computed]
+    //public List<ArchOrdiniRighe> righe { get; set; }
   }
 }

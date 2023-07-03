@@ -22,9 +22,9 @@ namespace BlazorFeste.Components
     [JsonProperty("data")]
     public object Data { get; set; }
   }
+
   public partial class GestioneAnagrProdotti : IDisposable
   {
-
     #region Inject
     [Inject] public UserInterfaceService _UserInterfaceService { get; init; }
     [Inject] public FesteDataAccess festeDataAccess { get; init; }
@@ -62,11 +62,7 @@ namespace BlazorFeste.Components
 
         Module = (await JsModule);
         
-#if THREADSAFE
         await Module.InvokeVoidAsync("GestioneAnagrProdottiObj.init", objRef, _UserInterfaceService.AnagrProdotti.Values);
-#else
-        await Module.InvokeVoidAsync("GestioneAnagrProdottiObj.init", objRef, _UserInterfaceService.AnagrProdotti);
-#endif
       }
       else
       {
@@ -77,11 +73,7 @@ namespace BlazorFeste.Components
         {
           Module = (await JsModule);
 
-#if THREADSAFE
           await Module.InvokeVoidAsync("GestioneAnagrProdottiObj.init", objRef, _UserInterfaceService.AnagrProdotti.Values);
-#else
-          await Module.InvokeVoidAsync("GestioneAnagrProdottiObj.init", objRef, _UserInterfaceService.AnagrProdotti);
-#endif
         }
       }
       await base.OnAfterRenderAsync(firstRender);
@@ -109,11 +101,9 @@ namespace BlazorFeste.Components
 
         if (change.Type == "update")
         {
-#if THREADSAFE
+
           prodotto = _UserInterfaceService.AnagrProdotti.First(p => p.Key == change.Key).Value;
-#else
-          prodotto = _UserInterfaceService.AnagrProdotti.First(p => p.IdProdotto == change.Key);
-#endif
+
           JsonConvert.PopulateObject(change.Data.ToString(), prodotto);
 
           if (String.IsNullOrEmpty(prodotto.BackColor))
@@ -128,31 +118,6 @@ namespace BlazorFeste.Components
         }
         _UserInterfaceService.OnNotifyAnagrProdotti(false);
       }
-    }
-
-    [JSInvokable("ResetConsumi")]
-    public async Task<List<AnagrProdotti>> ResetConsumi()
-    {
-#if THREADSAFE
-      foreach (var item in _UserInterfaceService.AnagrProdotti.Values)
-#else
-      foreach (var item in _UserInterfaceService.AnagrProdotti)
-#endif
-      {
-        item.Consumo = 0;
-        item.Evaso = 0;
-        item.ConsumoCumulativo = 0;
-        item.EvasoCumulativo = 0;
-
-        await festeDataAccess.UpdateAnagrProdottiAsync(item);
-      }
-      _UserInterfaceService.OnNotifyAnagrProdotti(false);
-
-#if THREADSAFE
-      return (_UserInterfaceService.AnagrProdotti.Values.ToList());
-#else
-      return (_UserInterfaceService.AnagrProdotti);
-#endif
     }
     #endregion  
   }

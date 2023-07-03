@@ -17,11 +17,11 @@ export var GestioneListaObj = {
   btnSbloccaListe: null,
 
   idTimerUpdateRequest: null,
-  startTime: null,
-  endTime: null,
+  //startTime: null,
+  //endTime: null,
 
   flagInizializza : true,
-  CSS_RigaTotali: 0,
+  CSS_RigaTotali: 1,
   Filtro_StatoRiga: false,
   EvasioneParziale: false,
 
@@ -42,7 +42,7 @@ export var GestioneListaObj = {
             text: 'Aggiorna',
             hint: "Aggiorna Lista Ordini",
             onClick() {
-              console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - toolbar - OnClick - Aggiorna");
+              //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - toolbar - OnClick - Aggiorna");
               GestioneListaObj.btnRefresh();
             },
           },
@@ -97,8 +97,7 @@ export var GestioneListaObj = {
             height: 36,
             width: 108,
             onInitialized: function (e) {
-              e.component.option("value", false);
-              //e.component.toggleClass("myColor");
+              e.component.option("value", true);
             },
             onValueChanged: function (e) {
               if (e.value) {
@@ -131,7 +130,7 @@ export var GestioneListaObj = {
               e.component.option("value", GestioneListaObj.Filtro_StatoRiga);
             },
             onValueChanged: function (e) {
-              console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - toolbar - onValueChanged - switchVisualizzazione");
+              //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - toolbar - onValueChanged - switchVisualizzazione");
               GestioneListaObj.Filtro_StatoRiga = e.value;
               GestioneListaObj.btnRefresh();
             },
@@ -239,10 +238,9 @@ export var GestioneListaObj = {
               //DevExpress.ui.notify('Salva button has been clicked!', "success");
 
               if (GestioneListaObj.OrdineToBeUpdated) {
-                _objRef.invokeMethodAsync('AggiornaDatiOrdineAsync',
-                  GestioneListaObj.Ordine)
+                _objRef.invokeMethodAsync('AggiornaDatiOrdineAsync', GestioneListaObj.Ordine)
                   .then(_retvalue => {
-                    console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - popupEditOrdine - onClick - Salva");
+                    //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - popupEditOrdine - onClick - Salva");
                     GestioneListaObj.btnRefresh(); // TODO - Provare ad aggiornare nella grid solo il record modificato
                   })
                   .catch(err => console.error(err.toString()));
@@ -554,16 +552,16 @@ export var GestioneListaObj = {
       onEditingStart(e) {
         GestioneListaObj.Ordine = e.data;
         GestioneListaObj.editedColumn = e.column;
-        console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - EditingStart - " + e.column.dataField);
+        //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - EditingStart - " + e.column.dataField);
       },
       onRowUpdating(e) {
-        console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - RowUpdating");
+        //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - RowUpdating");
       },
       onRowUpdated(e) {
-        console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - RowUpdated");
+        //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - RowUpdated");
       },
       onSaving(e) {
-        console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - Saving");
+        //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - Saving");
       },
       onSaved(e) {
         switch (GestioneListaObj.editedColumn.dataField) {
@@ -582,13 +580,13 @@ export var GestioneListaObj = {
           default:
             break;
         }
-        console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - Saved - " + GestioneListaObj.editedColumn.dataField);
+        //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - Saved - " + GestioneListaObj.editedColumn.dataField);
       },
       onEditCanceling(e) {
-        console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - EditCanceling");
+        //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - EditCanceling");
       },
       onEditCanceled(e) {
-        console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - EditCanceled");
+        //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - EditCanceled");
       },
       onRowPrepared: function (e) {
         switch (e.rowType) {
@@ -639,15 +637,6 @@ export var GestioneListaObj = {
                 if (QuantitàEvasaNew > Riga.quantitàProdotto)
                   QuantitàEvasaNew = 0;
               } else {
-              //if ((e.event.ctrlKey == true) && (e.event.altKey == false) && (Riga.idStatoRiga == 1)) {
-              //  QuantitàEvasaNew += 1;
-              //  if (QuantitàEvasaNew > Riga.quantitàProdotto)
-              //    QuantitàEvasaNew = Riga.quantitàProdotto;
-              //} else if ((e.event.ctrlKey == false) && (e.event.altKey == true) && (Riga.idStatoRiga == 1)) {
-              //  QuantitàEvasaNew -= 1;
-              //  if (QuantitàEvasaNew < 0)
-              //    QuantitàEvasaNew = 0;
-              //} else {
                 var IdStatoRiga_Nuovo;
                 switch (Riga.idStatoRiga) {
                   case -1:
@@ -813,7 +802,6 @@ export var GestioneListaObj = {
         break;
     }
 
-
     // console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - gestisciColonne - Prodotti: " + _Prodotti.length.toString());
     for (var i = 0; i < _Prodotti.length; i++) {
       GestioneListaObj.gridHeader.addColumn(
@@ -885,19 +873,19 @@ export var GestioneListaObj = {
     GestioneListaObj.gridHeader.endUpdate();
     GestioneListaObj.gridOrdini.endUpdate();
 
-    console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - gestisciColonne - Prodotti: " + _Prodotti.length.toString()); 
+    //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - gestisciColonne - Prodotti: " + _Prodotti.length.toString()); 
     GestioneListaObj.btnRefresh();
   },
 
   btnRefresh: () =>  {
     //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - btnRefresh - Enter");
 
-    GestioneListaObj.startTime = performance.now();
+    //GestioneListaObj.startTime = performance.now();
     GestioneListaObj.objRef.invokeMethodAsync("RefreshGridOrdiniRowsAsync", GestioneListaObj.Filtro_StatoRiga)
       .then(_retvalue => {
         GestioneListaObj.listRefreshAll(_retvalue);
 
-        GestioneListaObj.endTime = performance.now();
+        //GestioneListaObj.endTime = performance.now();
         //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - btnRefresh - Exit - " + (GestioneListaObj.endTime - GestioneListaObj.startTime).toFixed(0) + ' msec');
       });
     GestioneListaObj.restartUpdateHeaderTimer(40);
@@ -908,11 +896,22 @@ export var GestioneListaObj = {
     console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - onNotifyStatoOrdine");
   },
 
+  onNotifyStatoLista: () => {
+    console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - onNotifyStatoLista");
+
+    GestioneListaObj.objRef.invokeMethodAsync("RefreshGridOrdiniRowsAsync", GestioneListaObj.Filtro_StatoRiga)
+      .then(_retvalue => {
+        GestioneListaObj.listRefreshAll(_retvalue);
+      });
+    GestioneListaObj.restartUpdateHeaderTimer(40);
+  },
+
   listRefreshAll: (dati)  => {
     if (GestioneListaObj.gridOrdini != null) {
       GestioneListaObj.gridOrdini.beginUpdate();
       GestioneListaObj.gridOrdini.option("dataSource", dati);
       GestioneListaObj.gridOrdini.endUpdate();
+      GestioneListaObj.gridOrdini.refresh();
     }
   },
 
@@ -920,7 +919,7 @@ export var GestioneListaObj = {
     clearTimeout(GestioneListaObj.idTimerUpdateRequest);
     GestioneListaObj.idTimerUpdateRequest = setTimeout(function ()
     {
-      console.log(moment().format("HH:mm:ss.SSS") + " -  GestioneListaObj - RefreshGridOrdiniHeaderAsync - updateHeaderRequest"); // + GestioneListaObj.idTimerUpdateRequest);
+      //console.log(moment().format("HH:mm:ss.SSS") + " -  GestioneListaObj - RefreshGridOrdiniHeaderAsync - updateHeaderRequest"); // + GestioneListaObj.idTimerUpdateRequest);
 
       GestioneListaObj.startTime = performance.now();
       clearTimeout(GestioneListaObj.idTimerUpdateRequest);
@@ -949,22 +948,7 @@ export var GestioneListaObj = {
             GestioneListaObj.gridHeader.beginUpdate();
             GestioneListaObj.gridHeader.option("dataSource", JSON.parse(strRiga));
             GestioneListaObj.gridHeader.endUpdate();
-
-            //console.log(moment().format("HH:mm:ss.SSS") + " -  GestioneListaObj - RefreshGridOrdiniHeaderAsync - " + (performance.now() - GestioneListaObj.startTime).toFixed(0) + ' msec');
-
-            //GestioneListaObj.gridOrdini.beginUpdate();
-            //for (var i = 0; i < RigaTotali[_CSS_RigaTotali].length; i++) {
-            //  //console.log(moment().format("HH:mm:ss.SSS") + " - " + i + " GestioneListaObj - RefreshGridOrdiniHeaderAsync - " + (performance.now() - GestioneListaObj.startTime).toFixed(0) + ' msec');
-
-            //  let colId = 'Colonna_' + i;
-
-            //  if (RigaTotali[_CSS_RigaTotali][i] == 0)
-            //    GestioneListaObj.gridOrdini.columnOption(colId, "headerCellTemplate", $("<div>&nbsp</div>"));
-            //  else
-            //    GestioneListaObj.gridOrdini.columnOption(colId, "headerCellTemplate", $("<div class='status_" + _CSS_RigaTotali + "'>" + RigaTotali[_CSS_RigaTotali][i] + "</div>"));
-            //}
-            //GestioneListaObj.gridOrdini.endUpdate();
-            console.log(moment().format("HH:mm:ss.SSS") + " -  GestioneListaObj - RefreshGridOrdiniHeaderAsync - " + (performance.now() - GestioneListaObj.startTime).toFixed(0) + ' msec');
+            GestioneListaObj.gridHeader.refresh();
           }
         }
       );
@@ -984,9 +968,9 @@ export var GestioneListaObj = {
       $("#myGridOrdini").dxDataGrid("dispose");
       //$("#myGridOrdini").remove();
 
-      console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - dispose");
+      //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - dispose");
     } catch (error) {
-      console.error(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - dispose - Error: " + error);
+      //console.error(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - dispose - Error: " + error);
     }
   },
 }

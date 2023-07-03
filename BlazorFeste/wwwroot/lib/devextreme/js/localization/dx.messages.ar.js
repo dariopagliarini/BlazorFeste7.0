@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.ar.js)
-* Version: 22.2.5
-* Build date: Mon Mar 27 2023
+* Version: 22.2.7
+* Build date: Mon Jun 19 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -124,6 +124,7 @@
             "dxDataGrid-filterRowOperationBetween": "\u0645\u0627 \u0628\u064a\u0646",
             "dxDataGrid-filterRowOperationBetweenStartText": "\u0628\u062f\u0627",
             "dxDataGrid-filterRowOperationBetweenEndText": "\u0627\u0646\u062a\u0647\u0649",
+            "dxDataGrid-ariaSearchBox": "Search box",
             "dxDataGrid-applyFilterText": "\u062a\u0637\u0628\u064a\u0642 \u0645\u0631\u0634\u062d",
             "dxDataGrid-trueText": "\u0635\u062d\u064a\u062d",
             "dxDataGrid-falseText": "\u062e\u0627\u0637\u0626\u0629",
@@ -180,11 +181,14 @@
             "dxTreeList-editingAddRowToNode": "\u0627\u0636\u0627\u0641\u0629",
             "dxPager-infoText": "\u0627\u0644\u0635\u0641\u062d\u0629 {0} \u0645\u0646 {1} ({2} \u0645\u0646 \u0627\u0644\u0639\u0646\u0627\u0635\u0631)",
             "dxPager-pagesCountText": "\u0645\u0646",
+            "dxPager-pageSize": "Items per page: {0}",
             "dxPager-pageSizesAllText": "\u0627\u0644\u0643\u0644",
             "dxPager-page": "Page {0}",
             "dxPager-prevPage": "Previous Page",
             "dxPager-nextPage": "Next Page",
             "dxPager-ariaLabel": "Page Navigation",
+            "dxPager-ariaPageSize": "Page size",
+            "dxPager-ariaPageNumber": "Page number",
             "dxPivotGrid-grandTotal": "\u0627\u0644\u0625\u062c\u0645\u0627\u0644\u064a \u0627\u0644\u0643\u0644\u064a",
             "dxPivotGrid-total": "{0} \u0627\u0644\u0645\u062c\u0645\u0648\u0639",
             "dxPivotGrid-fieldChooserTitle": "\u0645\u0646\u062a\u0642\u064a \u0627\u0644\u062d\u0642\u0648\u0644",
@@ -250,6 +254,7 @@
             "dxScheduler-moreAppointments": "{0} \u0627\u0644\u0645\u0632\u064a\u062f",
             "dxCalendar-todayButtonText": "\u0627\u0644\u064a\u0648\u0645",
             "dxCalendar-ariaWidgetName": "\u0627\u0644\u062a\u0642\u0648\u064a\u0645",
+            "dxCalendar-ariaHotKeysInfo": "To navigate between views, press Control, and then Left Arrow or Right Arrow. To zoom in on a view, press Control, and then Down Arrow. To zoom out, press Control, and then Up Arrow.",
             "dxColorView-ariaRed": "\u0623\u062d\u0645\u0631",
             "dxColorView-ariaGreen": "\u0623\u062e\u0636\u0631",
             "dxColorView-ariaBlue": "\u0623\u0632\u0631\u0642",

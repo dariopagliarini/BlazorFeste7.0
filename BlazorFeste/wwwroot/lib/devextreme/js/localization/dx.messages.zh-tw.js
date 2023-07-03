@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.zh-tw.js)
-* Version: 22.2.5
-* Build date: Mon Mar 27 2023
+* Version: 22.2.7
+* Build date: Mon Jun 19 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -124,6 +124,7 @@
             "dxDataGrid-filterRowOperationBetween": "\u4e4b\u9593",
             "dxDataGrid-filterRowOperationBetweenStartText": "\u958b\u59cb",
             "dxDataGrid-filterRowOperationBetweenEndText": "\u7d50\u675f",
+            "dxDataGrid-ariaSearchBox": "Search box",
             "dxDataGrid-applyFilterText": "\u61c9\u7528\u904e\u6ffe\u5668",
             "dxDataGrid-trueText": "\u771f",
             "dxDataGrid-falseText": "\u5047",
@@ -180,11 +181,14 @@
             "dxTreeList-editingAddRowToNode": "\u6dfb\u52a0",
             "dxPager-infoText": "\u7b2c{0}\u9801,\u5171{1}\u9801 ({2} \u500b\u9805\u76ee)",
             "dxPager-pagesCountText": "\u5230",
+            "dxPager-pageSize": "Items per page: {0}",
             "dxPager-pageSizesAllText": "\u5168\u90e8",
             "dxPager-page": "Page {0}",
             "dxPager-prevPage": "Previous Page",
             "dxPager-nextPage": "Next Page",
             "dxPager-ariaLabel": "Page Navigation",
+            "dxPager-ariaPageSize": "Page size",
+            "dxPager-ariaPageNumber": "Page number",
             "dxPivotGrid-grandTotal": "\u5408\u8a08",
             "dxPivotGrid-total": "{0} \u7e3d\u8a08",
             "dxPivotGrid-fieldChooserTitle": "\u6b04\u4f4d\u9078\u64c7\u5668",
@@ -250,6 +254,7 @@
             "dxScheduler-moreAppointments": "{0} \u66f4\u591a",
             "dxCalendar-todayButtonText": "\u4eca\u5929",
             "dxCalendar-ariaWidgetName": "\u65e5\u66c6",
+            "dxCalendar-ariaHotKeysInfo": "To navigate between views, press Control, and then Left Arrow or Right Arrow. To zoom in on a view, press Control, and then Down Arrow. To zoom out, press Control, and then Up Arrow.",
             "dxColorView-ariaRed": "\u7d05\u8272",
             "dxColorView-ariaGreen": "\u7da0\u8272",
             "dxColorView-ariaBlue": "\u85cd\u8272",

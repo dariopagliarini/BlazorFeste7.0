@@ -1,5 +1,6 @@
 ﻿using Blazored.Toast.Services;
 
+using BlazorFeste.Constants;
 using BlazorFeste.Data.Models;
 using BlazorFeste.DataAccess;
 using BlazorFeste.lib;
@@ -9,9 +10,13 @@ using BlazorFeste.Util;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+
 using Serilog;
 
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace BlazorFeste.Pages
 {
@@ -36,7 +41,7 @@ namespace BlazorFeste.Pages
     private DotNetObjectReference<GestioneCassa> objRef;
     bool flagInizializza { get; set; } = false;
 
-    AnagrCasse Cassa = new AnagrCasse();
+    AnagrCasse Cassa { get; set; } = new AnagrCasse();
     public string strTitolo { get; set; } = "Cassa Non Abilitata";
     List<AnagrProdotti> TabellaProdotti { get; set; }
     #endregion
@@ -44,7 +49,7 @@ namespace BlazorFeste.Pages
     #region LifeCycle
     protected override Task OnInitializedAsync()
     {
-      _UserInterfaceService.DataOraServer += OnDataOraServerChanged;
+      _UserInterfaceService.NotifyDataOraServer += OnNotifyDataOraServer;
       _UserInterfaceService.NotifyStatoProdotti += OnNotifyStatoProdotti;
       _UserInterfaceService.NotifyAnagrProdotti += OnNotifyAnagrProdotti;
 
@@ -68,7 +73,6 @@ namespace BlazorFeste.Pages
           await Module.InvokeVoidAsync("GestioneCassaObj.createButtons", IdCassa, TabellaProdotti);
           await Module.InvokeVoidAsync("GestioneCassaObj.init", objRef, Cassa);
 
-          //if (Cassa.PortName != "")  && Cassa.IsRemote == false)
           if (Cassa.ScontrinoAbilitato.Value)
             await RescanSerialPorts(Cassa, true);
         }
@@ -77,16 +81,22 @@ namespace BlazorFeste.Pages
     }
     protected override async Task OnParametersSetAsync()
     {
-      AggiornaDatiCassa();
+      Cassa = _UserInterfaceService.AnagrCasse.Where(w => w.IdCassa == IdCassa).FirstOrDefault();
 
-      flagInizializza = true;
+      if (Cassa != null)
+      {
+        strTitolo = $"Gestione {Cassa.Cassa}";
 
+        AggiornaDatiCassa(_UserInterfaceService.AnagrProdotti.Values.ToList());
+
+        flagInizializza = true;
+      }
       await base.OnParametersSetAsync();
     }
 
     public void Dispose()
     {
-      _UserInterfaceService.DataOraServer -= OnDataOraServerChanged;
+      _UserInterfaceService.NotifyDataOraServer -= OnNotifyDataOraServer;
       _UserInterfaceService.NotifyStatoProdotti -= OnNotifyStatoProdotti;
       _UserInterfaceService.NotifyAnagrProdotti -= OnNotifyAnagrProdotti;
 
@@ -98,8 +108,9 @@ namespace BlazorFeste.Pages
 
     #region JSInvokable
     [JSInvokable("OnSaveToMySQLAsync")]
-    public async Task<int> OnSaveToMySQLAsync(bool _PrintEnabled, string _TipoOrdine, string _Tavolo, string _Coperti, string _NotaOrdine, string _Referente, List<RigaCassa> Righe)
+    public async Task<long> OnSaveToMySQLAsync(bool _PrintEnabled, string _TipoOrdine, string _Tavolo, string _Coperti, string _NotaOrdine, string _Referente, List<RigaCassa> Righe)
     {
+      // Inizializzazione Record ArchOrdini
       ArchOrdini _archOrdine = new ArchOrdini
       {
         Cassa = IdCassa.ToString(),
@@ -107,11 +118,20 @@ namespace BlazorFeste.Pages
         Tavolo = _Tavolo,
         NumeroCoperti = _Coperti,
         NoteOrdine = _NotaOrdine,
-        IdStatoOrdine = 0,
         Referente = _Referente,
-        DataOra = DateTime.Now
+        DataOra = DateTime.Now,
+
+        // Prima venivano gestiti nel trigger
+        IdFesta = _UserInterfaceService.ArchFesta.IdFesta,
+        DataAssegnazione = _UserInterfaceService.DtFestaInCorso,
+        IdStatoOrdine = (int)K_STATO_ORDINE.AppenaNato, // 0
+
+        // Gestito nel trigger MySQL "arch_ordini_before_insert"
+        //ProgressivoSerata = _UserInterfaceService.QryOrdini.Count() + 1,
       };
-      List<ArchOrdiniRighe> _archOrdiniRighe = new List<ArchOrdiniRighe>();
+
+      // Inizializzazione Record ArchOrdiniRighe
+      List<ArchOrdiniRighe> _archOrdineRighe = new List<ArchOrdiniRighe>();
 
       // Verifico se l'ordine ha qualche tipologia di sconto
       double _TotaleOrdine = Righe.Sum(s => (s.PrezzoUnitario * s.QuantitàProdotto));
@@ -120,54 +140,20 @@ namespace BlazorFeste.Pages
         // Devo risistemare il valore del buono
         int _NumeroBuoni = Righe.Where(w => w.PrezzoUnitario < 0).Sum(s => s.QuantitàProdotto);
 
-        foreach (var item in Righe.Where(w => w.PrezzoUnitario < 0))
+        foreach (var item in Righe.Where(w => w.PrezzoUnitario < 0)) // Ricalcolo il valore del buono nel caso non venga speso completamente
         {
           item.PrezzoUnitario = item.PrezzoUnitario - (_TotaleOrdine / _NumeroBuoni);
         }
       }
 
-      //_TotaleOrdine = Righe.Sum(s => (s.PrezzoUnitario * s.QuantitàProdotto));
       int iRiga = 1;
       foreach (var item in Righe.Where(w => w.QuantitàProdotto > 0))
       {
-#if THREADSAFE
         var a = (from prod in _UserInterfaceService.AnagrProdotti.Values.Where(w => w.IdProdotto == item.IdProdotto)
-#else
-        var a = (from prod in _UserInterfaceService.AnagrProdotti.Where(w => w.IdProdotto == item.IdProdotto)
-#endif
                  join lista in _UserInterfaceService.AnagrListe on prod.IdLista equals lista.IdLista
                  select new { prod, lista }).FirstOrDefault();
 
-#if THREADSAFE
-        AnagrProdotti _anagrProdotto = _UserInterfaceService.AnagrProdotti.Values.Where(w => w.IdProdotto == item.IdProdotto).FirstOrDefault();
-#else
-        AnagrProdotti _anagrProdotto = _UserInterfaceService.AnagrProdotti.Where(w => w.IdProdotto == item.IdProdotto).FirstOrDefault();
-#endif
-        _anagrProdotto.Consumo += Convert.ToUInt32(item.QuantitàProdotto);
-
-        var _consumoCumulativo = _anagrProdotto.ConsumoCumulativo;
-        if (_anagrProdotto.IdProdotto != _anagrProdotto.EvadiSuIdProdotto)
-        {
-          // Devo aggiornare anche il prodotto dove tengo il conteggio cumulativo
-#if THREADSAFE
-          AnagrProdotti _anagrProdottoSuCuiEvadere = _UserInterfaceService.AnagrProdotti.Values.Where(w => w.IdProdotto == _anagrProdotto.EvadiSuIdProdotto).FirstOrDefault();
-#else
-          AnagrProdotti _anagrProdottoSuCuiEvadere = _UserInterfaceService.AnagrProdotti.Where(w => w.IdProdotto == _anagrProdotto.EvadiSuIdProdotto).FirstOrDefault();
-#endif
-          _consumoCumulativo = _anagrProdottoSuCuiEvadere.ConsumoCumulativo;
-          _anagrProdottoSuCuiEvadere.ConsumoCumulativo += Convert.ToUInt32(item.QuantitàProdotto);
-          await festeDataAccess.UpdateAnagrProdottiAsync(_anagrProdottoSuCuiEvadere);
-        }
-        else
-        {
-          _anagrProdotto.ConsumoCumulativo += Convert.ToUInt32(item.QuantitàProdotto);
-        }
-        await festeDataAccess.UpdateAnagrProdottiAsync(_anagrProdotto);
-
-        //if (_anagrProdotto.IdProdotto == 29)
-        //  Log.Warning($"ArchOrdiniRighe Insert - {_anagrProdotto.IdProdotto} : Consumo: {_anagrProdotto.Consumo}/{_anagrProdotto.ConsumoCumulativo} - Evaso: {_anagrProdotto.Evaso}/{_anagrProdotto.EvasoCumulativo} - QueueTicket: {_consumoCumulativo + 1}");
-
-        _archOrdiniRighe.Add(new ArchOrdiniRighe
+        _archOrdineRighe.Add(new ArchOrdiniRighe
         {
           IdOrdine = 0,
           IdRiga = iRiga++,
@@ -175,48 +161,143 @@ namespace BlazorFeste.Pages
           Categoria = a.lista.Lista,
           IdProdotto = item.IdProdotto,
           NomeProdotto = item.NomeProdotto,
-          IdStatoRiga = 0,
+          IdStatoRiga = (int)K_STATO_RIGA.OrdineAppenaNato, //   0,
           QuantitàProdotto = item.QuantitàProdotto,
           QuantitàEvasa = 0,
           Importo = item.PrezzoUnitario * item.QuantitàProdotto,
           DataOra_RigaPresaInCarico = default(DateTime),
           DataOra_RigaEvasa = default(DateTime),
-          QueueTicket = _consumoCumulativo + 1
+          QueueTicket = a.prod.Consumo + 1
         });
-
-        // Questa gestione è stata spostata nel servizio DatabaseTimerService
-        //AnagrProdotti _anagrProdotto = _UserInterfaceService.AnagrProdotti.Where(w => w.IdProdotto == item.IdProdotto).FirstOrDefault();
-        //_anagrProdotto.Consumo += Convert.ToUInt32(item.QuantitàProdotto);
-        //await festeDataAccess.UpdateAnagrProdottiAsync(_anagrProdotto);
       }
-      var idOrdine = await festeDataAccess.InsertArchOrdiniAsync(_archOrdine, _archOrdiniRighe);
 
-      _UserInterfaceService.OnNotifyStatoProdotti(_archOrdine.IdCassa);
+      if (Cassa.SoloBanco.Value)
+      {
+        // Se l'ordine arriva da una cassa "SoloBanco" devo evadere l'ordine
+        _archOrdine.IdStatoOrdine = (int)K_STATO_ORDINE.InCorso; //  2;
 
-      toastService.ShowSuccess($"Ordine #{idOrdine} creato con successo"); // , "Avanti il prossimo"
+        // Tutte le righe dell'ordine vengono messe nello stato 3
+        foreach (var item in _archOrdineRighe)
+        {
+          item.IdStatoRiga = (int)K_STATO_RIGA.OrdineEvaso; // 3;
+          item.QuantitàEvasa = item.QuantitàProdotto;
+          item.DataOra_RigaPresaInCarico = DateTime.Now;
+          item.DataOra_RigaEvasa = DateTime.Now;
+        }
+      }
+      else
+      {
+        #region Evasione Liste non gestite (Abilitate ma non visibili)
+        foreach (var lista in _UserInterfaceService.AnagrListe.Where(w => w.Visibile == false))
+        {
+          if (_archOrdineRighe.Select(s => s.IdCategoria).Contains(lista.IdLista))
+          {
+            // Tutte le righe dell'ordine che appartengono alla lista vengono messe nello stato 3 (Ordine Evaso x questa lista)
+            var Prodotti = (_UserInterfaceService.AnagrProdotti.Values.Where(w => w.IdLista == lista.IdLista)).ToList();
+            var Prodotto = Prodotti.Select(s => s.IdProdotto).ToArray();
 
+            foreach (var riga in _archOrdineRighe.Where(w => Prodotto.Contains(w.IdProdotto)))
+            {
+              riga.IdStatoRiga = (int)K_STATO_RIGA.OrdineEvaso; // 3; 
+              riga.QuantitàEvasa = riga.QuantitàProdotto;
+              riga.DataOra_RigaPresaInCarico = DateTime.Now;
+              riga.DataOra_RigaEvasa = DateTime.Now;
+            }
+
+            // Se la lista è una lista padre (IoSonoListaPadre = true)
+            if (lista.IoSonoListaPadre == true)
+            {
+              var OrdinePre = _archOrdine;
+
+              // Sblocco le liste figlio
+              _archOrdine.IdStatoOrdine = (int)K_STATO_ORDINE.InCorso; //  2;
+
+              // Tutte le righe dell'ordine che fanno parte delle liste figlio devo essere riconoscibili - Metto il loro IdStatoRiga a -1
+              var ListeFiglio = _UserInterfaceService.AnagrListe.Where(w => w.IdListaPadre == lista.IdLista).Select(s => s.IdLista).ToArray();
+              var RigheDelleListeFiglio = (from r in _archOrdineRighe
+                                           join p in Prodotti.Where(w => ListeFiglio.Contains(w.IdLista)) on r.IdProdotto equals p.IdProdotto
+                                           select r.IdRiga).ToArray();
+
+              foreach (var item in _archOrdineRighe.Where(w => RigheDelleListeFiglio.Contains(w.IdRiga)))
+              {
+                item.IdStatoRiga = -1;
+              }
+            }
+          }
+        }
+        #endregion
+
+        #region Gestione Liste da prendere in carico automaticamente (Abilitate, Visibili e con StampaCucina)
+        foreach (var lista in _UserInterfaceService.AnagrListe.Where(w => (w.Visibile == true) && (w.Cucina_StampaScontrino == true)))
+        {
+          if (_archOrdineRighe.Select(s => s.IdCategoria).Contains(lista.IdLista))
+          {
+            // Tutte le righe dell'ordine che appartengono alla lista vengono messe nello stato 1 (Presa In Carico)
+            var Prodotti = (_UserInterfaceService.AnagrProdotti.Values.Where(w => w.IdLista == lista.IdLista)).ToList();
+            var Prodotto = Prodotti.Select(s => s.IdProdotto).ToArray();
+
+            foreach (var riga in _archOrdineRighe.Where(w => Prodotto.Contains(w.IdProdotto)))
+            {
+              riga.IdStatoRiga = (int)K_STATO_RIGA.PresaInCarico; 
+              riga.DataOra_RigaPresaInCarico = DateTime.Now;
+            }
+          }
+        }
+        #endregion
+
+        // Verifico se esistono righe dell'ordine con IdListaPadre > 0 (cioè con delle code a priorità maggiore ancora da smaltire)
+        _archOrdine.IdStatoOrdine = GetStatoOrdine(_archOrdine, _archOrdineRighe);
+
+        _archOrdine.Tavolo = _archOrdine.TipoOrdine.CompareTo("SERVITO") == 0 ? string.Format("{0} {1}", _archOrdine.Tavolo, Regex.Replace(_archOrdine.NumeroCoperti, @"[^a-zA-Z]+", string.Empty).ToUpper()).Trim() : _archOrdine.TipoOrdine;
+        _archOrdine.NumeroCoperti = Regex.Replace(_archOrdine.NumeroCoperti, @"[^0-9]+", string.Empty).Trim();
+      }
+
+      // Creo l'ordine nel database e assegno alle variabili di memoria l'idOrdine che mi arriva dal DB prima di creare l'ordine nelle liste globali
+      _archOrdine.IdOrdine = await festeDataAccess.InsertArchOrdiniAsync(_archOrdine, _archOrdineRighe); 
+
+      // Creo l'ordine nella lista in memoria
+      if (_UserInterfaceService.QryOrdini.TryAdd(_archOrdine.IdOrdine, _archOrdine))
+      {
+        foreach (var _archOrdineRiga in _archOrdineRighe)
+        {
+          _archOrdineRiga.IdOrdine = _archOrdine.IdOrdine;
+          if (!_UserInterfaceService.QryOrdiniRighe.TryAdd(new Tuple<long, int>(_archOrdine.IdOrdine, _archOrdineRiga.IdRiga), _archOrdineRiga))
+          {
+            Log.Warning($"DatabaseTimerService - GetDatabaseData - Insert OrdineRiga - {_archOrdine.IdOrdine}/{_archOrdineRiga.IdRiga} non inserita");
+          }
+        }
+      }
+      else
+      {
+        Log.Warning($"DatabaseTimerService - GetDatabaseData - Insert Ordine - {_archOrdine.IdOrdine} non inserito");
+      }
+
+      // Se arrivo qui significa che :
+      //    Devo notificare a chi lo desidera i dati del nuovo ordine
+      //      _UserInterfaceService.OnNotifyStatoOrdine(idOrdine);
+      _UserInterfaceService.OnNotifyNuovoOrdine(new DatiOrdine { ordine = _archOrdine, ordineRighe = _archOrdineRighe });
+      
+      toastService.ShowSuccess($"Ordine #{_archOrdine.IdOrdine} creato con successo"); // , "Avanti il prossimo"
+
+      #region Gestione Stampa 
       try
       {
         // Verifico se ho qualche riga da stampare anche in cucina (solo se Ordine== "SERVITO")
         var _RigheDaStampareInCucina = (from l in _UserInterfaceService.AnagrListe.Where(w => w.Cucina_StampaScontrino == true)
-                                        join r in _archOrdiniRighe on l.IdLista equals r.IdCategoria
+                                        join r in _archOrdineRighe on l.IdLista equals r.IdCategoria
                                         select r.IdRiga).Any()
                                         &&
                                         (_TipoOrdine == "SERVITO");
 
         if (_PrintEnabled || _RigheDaStampareInCucina)
         {
-          // Recupero i dati dell'ordine dal database (con tutti i valori aggiornati dai trigger)
-          ArchOrdini _ordine = (await festeDataAccess.GetGenericQuery<ArchOrdini>($"SELECT * FROM arch_ordini WHERE IdOrdine = {idOrdine}")).ToList().FirstOrDefault();
-          List<ArchOrdiniRighe> _ordineRighe = (await festeDataAccess.GetGenericQuery<ArchOrdiniRighe>($"SELECT r.* FROM arch_ordini o JOIN arch_ordini_righe r ON o.IdOrdine = r.IdOrdine WHERE o.IdOrdine = {idOrdine}")).ToList();
-
           if (_PrintEnabled)
           {
-            HttpResponseMessage result = (await RichiediStampaScontrino(_ordine, _ordineRighe));
+            HttpResponseMessage result = (await RichiediStampaScontrino(_archOrdine, _archOrdineRighe));
             switch (result.StatusCode)
             {
               case HttpStatusCode.NotFound:
-                toastService.ShowInfo($"Errore Stampa Ordine {_archOrdine.DataOra.ToString("dd/MM/yyyy HH:mm:ss")}");
+                toastService.ShowInfo($"Errore Stampa Ordine {_archOrdine.DataOra:dd/MM/yyyy HH:mm:ss)}");
 
                 break;
               default:
@@ -226,12 +307,12 @@ namespace BlazorFeste.Pages
 
           if (_RigheDaStampareInCucina)
           {
-            HttpResponseMessage result = (await RichiediStampaScontrinoCucina(_ordine, _ordineRighe));
+            HttpResponseMessage result = (await RichiediStampaScontrinoCucina(_archOrdine, _archOrdineRighe));
 
             switch (result.StatusCode)
             {
               case HttpStatusCode.NotFound:
-                toastService.ShowInfo($"Errore Stampa Ordine {_archOrdine.DataOra.ToString("dd/MM/yyyy HH:mm:ss")}");
+                toastService.ShowInfo($"Errore Stampa Ordine {_archOrdine.DataOra:dd/MM/yyyy HH:mm:ss}");
 
                 break;
               default:
@@ -243,17 +324,15 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error($"{clientInfo.IPAddress} - OnSaveToMySQLAsync - {ex.Message}");
+        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
         //_ = ex;
         //Console.WriteLine("I/O error");
         //Log.Fatal(ex, "I/O error:");
       }
+      #endregion
 
-      // Questa gestione è stata spostata nel servizio DatabaseTimerService
-      //AggiornaDatiCassa();
-      //await Module.InvokeVoidAsync("GestioneCassaObj.updateStatoProdotti", TabellaProdotti);
-
-      return (idOrdine);
+      Log.Information($"{clientInfo.IPAddress} - Nuovo Ordine - {_archOrdine.IdOrdine}, Cassa: {_archOrdine.Cassa}, RigheOrdine: {_archOrdineRighe.Count}");
+      return (_archOrdine.IdOrdine);
     }
 
     [JSInvokable("OnPrintRequest_StampaDiProva")]
@@ -276,10 +355,9 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error($"{clientInfo.IPAddress} - OnPrintRequest_StampaDiProva - {ex.Message}");
+        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
       }
     }
-
 
     [JSInvokable("OnPrintRequest")]   // Ristampa Ultimo Ordine
     public async Task OnPrintRequest(bool _PrintEnabled, int idOrdine)
@@ -288,8 +366,11 @@ namespace BlazorFeste.Pages
       {
         if (_PrintEnabled)
         {
-          ArchOrdini _ordine = (await festeDataAccess.GetGenericQuery<ArchOrdini>($"SELECT * FROM arch_ordini WHERE IdOrdine = {idOrdine}")).ToList().FirstOrDefault();
-          List<ArchOrdiniRighe> _ordineRighe = (await festeDataAccess.GetGenericQuery<ArchOrdiniRighe>($"SELECT r.* FROM arch_ordini o JOIN arch_ordini_righe r ON o.IdOrdine = r.IdOrdine WHERE o.IdOrdine = {idOrdine}")).ToList();
+          ArchOrdini _ordine = _UserInterfaceService.QryOrdini.Values.Where(w => w.IdOrdine == idOrdine).FirstOrDefault();
+          List<ArchOrdiniRighe> _ordineRighe = _UserInterfaceService.QryOrdiniRighe.Values.Where(w => w.IdOrdine == idOrdine).ToList();
+
+          //ArchOrdini _ordine = (await festeDataAccess.GetGenericQuery<ArchOrdini>($"SELECT * FROM arch_ordini WHERE IdOrdine = {idOrdine}")).ToList().FirstOrDefault();
+          //List<ArchOrdiniRighe> _ordineRighe = (await festeDataAccess.GetGenericQuery<ArchOrdiniRighe>($"SELECT r.* FROM arch_ordini o JOIN arch_ordini_righe r ON o.IdOrdine = r.IdOrdine WHERE o.IdOrdine = {idOrdine}")).ToList();
 
           //HttpResponseMessage result = (await RichiediStampaScontrino(idOrdine));
           HttpResponseMessage result = (await RichiediStampaScontrino(_ordine, _ordineRighe));
@@ -308,7 +389,7 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error($"{clientInfo.IPAddress} - OnPrintRequest - {ex.Message}");
+        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
 
         //_ = ex;
         //Console.WriteLine("I/O error");
@@ -336,8 +417,7 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error($"{clientInfo.IPAddress} - OnPrintRequest_Consumi - {ex.Message}");
-
+        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
         //_ = ex;
         //Console.WriteLine("I/O error");
         //Log.Fatal(ex, "I/O error:");
@@ -346,32 +426,48 @@ namespace BlazorFeste.Pages
     #endregion
 
     #region Metodi
-    private void AggiornaDatiCassa()
+    private void AggiornaDatiCassa(List<AnagrProdotti> statoProdotti)
     {
-      Cassa = _UserInterfaceService.AnagrCasse.Where(w => w.IdCassa == IdCassa).FirstOrDefault();
+      //Cassa = _UserInterfaceService.AnagrCasse.Where(w => w.IdCassa == IdCassa).FirstOrDefault();
 
       if (Cassa != null)
       {
-        strTitolo = $"Gestione {Cassa.Cassa}";
-
-#if THREADSAFE
         IEnumerable<ArchOrdini> ordiniDellaCassa = _UserInterfaceService.QryOrdini.Where(w => (w.Value.IdCassa == IdCassa)).Select(s => s.Value);
-#else
-        IEnumerable<ArchOrdini> ordiniDellaCassa = _UserInterfaceService.QryOrdini.Where(w => (w.IdCassa == IdCassa));
-#endif
         Cassa.OrdiniDellaCassa = ordiniDellaCassa.Count();
         if (Cassa.OrdiniDellaCassa > 0)
         {
           Cassa.idUltimoOrdine = ordiniDellaCassa.OrderByDescending(o => o.IdOrdine).FirstOrDefault().IdOrdine;
         }
-#if THREADSAFE
-        TabellaProdotti = _UserInterfaceService.AnagrProdotti.Values.Where(w => Cassa.prodottiVisibili.Contains(w.IdProdotto)).ToList();
-#else
-        TabellaProdotti = _UserInterfaceService.AnagrProdotti.Where(w => Cassa.prodottiVisibili.Contains(w.IdProdotto)).ToList();
-#endif
+        TabellaProdotti = statoProdotti.Where(w => Cassa.prodottiVisibili.Contains(w.IdProdotto)).ToList();
       }
     }
+    private int GetStatoOrdine(ArchOrdini archOrdine, List<ArchOrdiniRighe> archOrdineRighe)
+    {
+      int Result = (int)K_STATO_ORDINE.InCorso; 
 
+      // Verifico se esistono righe dell'ordine con IdListaPadre > 0 (cioè con delle code a priorità maggiore ancora da smaltire)
+      var RigheConListaPadre = from r in archOrdineRighe
+                               join p in _UserInterfaceService.AnagrProdotti.Values on r.IdProdotto equals p.IdProdotto
+                               join l in _UserInterfaceService.AnagrListe.Where(w => w.IdListaPadre > 0) on p.IdLista equals l.IdLista
+                               select new { r, p, l };
+
+      foreach (var Riga in RigheConListaPadre)
+      {
+        // Verifico se esistono ancora prodotti da smaltire nella lista padre
+        var RigheListaPadre = from r in archOrdineRighe.Where(w => w.IdStatoRiga < (int)K_STATO_RIGA.OrdineEvaso) 
+                              join p in _UserInterfaceService.AnagrProdotti.Values on r.IdProdotto equals p.IdProdotto
+                              join l in _UserInterfaceService.AnagrListe.Where(w => w.IdLista == Riga.l.IdListaPadre) on p.IdLista equals l.IdLista
+                              select new { r, p, l };
+
+        // Me ne basta una per decidere che lo stato dell'ordine é = 1 (Bloccato dalla lista Padre)
+        if (RigheListaPadre.Any())
+        {
+          Result = (int)K_STATO_ORDINE.Bloccato; // Le liste con priorità = 2 devono aspettare
+          break;
+        }
+      }
+      return Result;
+    }
     private async Task<HttpResponseMessage> HttpRequestToPrinterController<T>(string _ClientIPAddress, string _ControllerRoute, T _DatiDaInviare, int _TimeOutMSec = 5000)
     {
       HttpResponseMessage result = new HttpResponseMessage();
@@ -397,7 +493,7 @@ namespace BlazorFeste.Pages
       {
         // handle web exception
         toastService.ShowError($"{ex.Message}"); // "Errore Stampante"
-        Log.Error($"{clientInfo.IPAddress} - HttpRequestToPrinterController 1 - {ex.Message}");
+        Log.Error(ex, $"{clientInfo.IPAddress} - HttpRequestToPrinterController 1");
       }
       catch (TaskCanceledException ex)
       {
@@ -405,18 +501,17 @@ namespace BlazorFeste.Pages
         {
           // a real cancellation, triggered by the caller
           toastService.ShowError($"{ex.Message}"); // "Errore Stampante"
-          Log.Error($"{clientInfo.IPAddress} - HttpRequestToPrinterController 2 - {ex.Message}");
+          Log.Error(ex, $"{clientInfo.IPAddress} - HttpRequestToPrinterController 2");
         }
         else
         {
           // a web request timeout (possibly other things!?)
           toastService.ShowError($"Problemi Accesso PrinterServer - {_ClientIPAddress}"); // "Errore Stampante"
-          Log.Error($"{clientInfo.IPAddress} - HttpRequestToPrinterController 3 - {ex.Message}");
+          //Log.Error(ex, $"{clientInfo.IPAddress} - HttpRequestToPrinterController 3");
         }
       }
       return (result);
     }
-
     private async Task RescanSerialPorts(AnagrCasse _cassa, bool LogEnabled)
     {
       try
@@ -437,7 +532,7 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error($"{clientInfo.IPAddress} - RescanSerialPorts - {ex.Message}");
+        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
       }
     }
     private async Task<HttpResponseMessage> RichiediStampaDiProva(AnagrCasse _cassa)
@@ -479,7 +574,7 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error($"{clientInfo.IPAddress} - RichiediStampaDiProva - {ex.Message}");
+        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
       }
       return (result);
     }
@@ -489,8 +584,6 @@ namespace BlazorFeste.Pages
 
       try
       {
-        AnagrCasse _cassa = _UserInterfaceService.AnagrCasse.Where(w => w.IdCassa == _ordine.IdCassa).FirstOrDefault();
-
         List<AnagrListe> _listeDaStampare = new List<AnagrListe>();
         List<ArchOrdiniRighe> _queueTicketDaStampare = new List<ArchOrdiniRighe>();
 
@@ -501,11 +594,7 @@ namespace BlazorFeste.Pages
         {
           _listeDaStampare = _UserInterfaceService.AnagrListe.Where(w => ((w.Banco_StampaScontrino == true) && (CategorieDaOrdine.Contains(w.IdLista)))).ToList();
 
-#if THREADSAFE
           _queueTicketDaStampare = (from p in _UserInterfaceService.AnagrProdotti.Values.Where(w => w.PrintQueueTicket)
-#else
-          _queueTicketDaStampare = (from p in _UserInterfaceService.AnagrProdotti.Where(w => w.PrintQueueTicket)
-#endif
                                     join r in _archOrdiniRighe on p.IdProdotto equals r.IdProdotto
                                     select r).ToList();
         }
@@ -514,25 +603,41 @@ namespace BlazorFeste.Pages
           _listeDaStampare = _UserInterfaceService.AnagrListe.Where(w => ((w.Tavolo_StampaScontrino == true) && (CategorieDaOrdine.Contains(w.IdLista)))).ToList();
         }
 
-        StampaOrdine_Scontrino stampaOrdine = new StampaOrdine_Scontrino
+        //StampaOrdine_Scontrino stampaOrdine = new StampaOrdine_Scontrino
+        //{
+        //  strNomeGiornata = _ordine.strDataAssegnazione, 
+        //  Cassa = _cassa,
+        //  Festa = _UserInterfaceService.ArchFesta,
+        //  Ordine = _ordine,
+        //  RigheOrdine = _archOrdiniRighe,
+        //  ListeDaStampare = _listeDaStampare,
+        //  QueueTicketDaStampare = _queueTicketDaStampare,
+        //  ScontrinoMuto = _cassa.ScontrinoMuto.Value
+        //};
+
+        StampaOrdine_Scontrino stampaOrdine = new StampaOrdine_Scontrino();
+        try
         {
-          strNomeGiornata = _ordine.strDataAssegnazione, //  _UserInterfaceService.DtFestaInCorso.ToString("ddd dd/MM/yyyy HH:mm"),
-          Cassa = _cassa,
-          Festa = _UserInterfaceService.ArchFesta,
-          Ordine = _ordine,
-          RigheOrdine = _archOrdiniRighe,
-          ListeDaStampare = _listeDaStampare,
-          QueueTicketDaStampare = _queueTicketDaStampare,
-          ScontrinoMuto = _cassa.ScontrinoMuto.Value
-        };
+          stampaOrdine.strNomeGiornata = _ordine.strDataAssegnazione;
+          stampaOrdine.Cassa = Cassa;
+          stampaOrdine.Festa = _UserInterfaceService.ArchFesta;
+          stampaOrdine.Ordine = _ordine;
+          stampaOrdine.RigheOrdine = _archOrdiniRighe;
+          stampaOrdine.ListeDaStampare = _listeDaStampare;
+          stampaOrdine.QueueTicketDaStampare = _queueTicketDaStampare;
+          stampaOrdine.ScontrinoMuto = Cassa.ScontrinoMuto.Value;
+        }
+        catch (Exception ex)
+        {
+          Log.Error(ex, $"{clientInfo.IPAddress} - stampaOrdine - Code Exception");
+        }
 
         // Locale o Remota deve essere interpretato dal punto di vista della Cassa (cioè del Client)
         string ClientIPAddress = string.Empty;
-
-        if (_cassa.IsRemote.Value == true)
+        if (Cassa.IsRemote.Value == true)
         {
           // Se la stampante è Remota recupero l'indirizzo nel campo RemoteAddress
-          ClientIPAddress = _cassa.RemoteAddress;
+          ClientIPAddress = Cassa.RemoteAddress;
         }
         else
         {
@@ -547,8 +652,8 @@ namespace BlazorFeste.Pages
         StampaOrdine_RawData stampaOrdineRawData = new StampaOrdine_RawData
         {
           IPAddress = ClientIPAddress,
-          Stampante = _cassa.PortName,
-          DebugText = $"{_cassa.Cassa} - Ordine #{stampaOrdine.Ordine.IdOrdine}",
+          Stampante = Cassa.PortName,
+          DebugText = $"{Cassa.Cassa} - Ordine #{stampaOrdine.Ordine.IdOrdine}",
           LogEnabled = true,
           rawData = scontrino.Prepara_Ordine(stampaOrdine)
         };
@@ -557,7 +662,7 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error($"{clientInfo.IPAddress} - RichiediStampaScontrino - {ex.Message}");
+        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
       }
       return (result);
     }
@@ -567,8 +672,6 @@ namespace BlazorFeste.Pages
 
       try
       {
-        AnagrCasse _cassa = _UserInterfaceService.AnagrCasse.Where(w => w.IdCassa == _ordine.IdCassa).FirstOrDefault();
-
         List<AnagrListe> _listeDaStampareInCucina = _UserInterfaceService.AnagrListe.Where(w => w.Cucina_StampaScontrino == true).ToList();
 
         var scontrino = new GestioneScontrini_Ordini();
@@ -586,7 +689,7 @@ namespace BlazorFeste.Pages
             StampaOrdine_ScontrinoCucina _scontrinoCucina = new()
             {
               strNomeGiornata = _ordine.strDataAssegnazione,
-              Cassa = _cassa,
+              Cassa = Cassa,
               Festa = _UserInterfaceService.ArchFesta,
               Ordine = _ordine,
               RigheOrdine = _archOrdiniRighe.Where(w => w.IdCategoria == item.IdLista).ToList(), //   _archOrdiniRighe,
@@ -607,7 +710,7 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error($"{clientInfo.IPAddress} - RichiediStampaScontrinoCucina - {ex.Message}");
+        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
       }
       return (result);
     }
@@ -619,20 +722,14 @@ namespace BlazorFeste.Pages
       try
       {
         // Recupero i dati dell'ordine dal database
-#if THREADSAFE
-        var DatiFestaInCorso = from o in _UserInterfaceService.QryOrdini.Where(w => w.Value.DataAssegnazione == _UserInterfaceService.DtFestaInCorso)
+        var DatiFestaInCorso = from o in _UserInterfaceService.QryOrdini // .Where(w => w.Value.DataAssegnazione == _UserInterfaceService.DtFestaInCorso)
                                join r in _UserInterfaceService.QryOrdiniRighe on o.Key equals r.Key.Item1
                                select new { o, r };
-#else
-        var DatiFestaInCorso = from o in _UserInterfaceService.QryOrdini.Where(w => w.DataAssegnazione == _UserInterfaceService.DtFestaInCorso)
-                               join r in _UserInterfaceService.QryOrdiniRighe on o.IdOrdine equals r.IdOrdine
-                               select new { o, r };
-#endif
+
         if (DatiFestaInCorso.Any())
         {
           if (_flagCumulativo)
           {
-#if THREADSAFE
             var _qryStatoCasse = (from r in DatiFestaInCorso
                                     //where r.o.IdCassa == _cassa.IdCassa
                                   group r by new { r.o.Value.IdCassa, r.r.Value.IdProdotto } into g
@@ -655,43 +752,14 @@ namespace BlazorFeste.Pages
                                        Importo = g.Sum(s => s.r.Value.Importo),
                                        QuantitàProdotto = g.Sum(s => s.r.Value.QuantitàProdotto),
                                      });
-#else
-            var _qryStatoCasse = (from r in DatiFestaInCorso
-                                    //where r.o.IdCassa == _cassa.IdCassa
-                                  group r by new { r.o.IdCassa, r.r.IdProdotto } into g
-                                  orderby g.Key.IdCassa
-                                  select new
-                                  {
-                                    IdCassa = g.Key.IdCassa,
-                                    IdProdotto = g.Key.IdProdotto,
-                                    Importo = g.Sum(s => s.r.Importo),
-                                    QuantitàProdotto = g.Sum(s => s.r.QuantitàProdotto),
-                                  });
-            // Recupero l'elenco dei prodotti usati nella festa selezionata
-            var _qryStatoProdotti = (from r in DatiFestaInCorso
-                                       //where r.o.IdCassa == _cassa.IdCassa
-                                     group r by r.r.IdProdotto into g
-                                     orderby g.Key
-                                     select new
-                                     {
-                                       IdProdotto = g.Key,
-                                       Importo = g.Sum(s => s.r.Importo),
-                                       QuantitàProdotto = g.Sum(s => s.r.QuantitàProdotto),
-                                     });
-#endif
             consumiGiornata = new StampaOrdine_ConsumiGiornata
             {
               IPAddress = clientInfo.IPAddress,
-              //strNomeGiornata = _UserInterfaceService.DtFestaInCorso.ToString("ddd dd/MM/yyyy HH:mm"),
               strNomeGiornata = $"{_UserInterfaceService.DtFestaInCorso.ToString("ddd dd/MM").ToUpper()} - {(_UserInterfaceService.DtFestaInCorso.Hour == 12 ? "PRANZO" : "CENA")}",
               flagCumulativo = _flagCumulativo,
               Cassa = _cassa,
               Festa = _UserInterfaceService.ArchFesta,
-#if THREADSAFE
               statoCassa = (from p in _UserInterfaceService.AnagrProdotti.Values
-#else
-              statoCassa = (from p in _UserInterfaceService.AnagrProdotti
-#endif
                             join r in _qryStatoProdotti on p.IdProdotto equals r.IdProdotto
                             orderby p.IdProdotto
                             //where p.Stato
@@ -717,7 +785,6 @@ namespace BlazorFeste.Pages
           }
           else
           {
-#if THREADSAFE
             var _qryStatoCasse = (from r in DatiFestaInCorso
                                   where r.o.Value.IdCassa == _cassa.IdCassa
                                   group r by new { r.o.Value.IdCassa, r.r.Value.IdProdotto } into g
@@ -740,30 +807,7 @@ namespace BlazorFeste.Pages
                                        Importo = g.Sum(s => s.r.Value.Importo),
                                        QuantitàProdotto = g.Sum(s => s.r.Value.QuantitàProdotto),
                                      });
-#else
-            var _qryStatoCasse = (from r in DatiFestaInCorso
-                                  where r.o.IdCassa == _cassa.IdCassa
-                                  group r by new { r.o.IdCassa, r.r.IdProdotto } into g
-                                  orderby g.Key.IdCassa
-                                  select new
-                                  {
-                                    IdCassa = g.Key.IdCassa,
-                                    IdProdotto = g.Key.IdProdotto,
-                                    Importo = g.Sum(s => s.r.Importo),
-                                    QuantitàProdotto = g.Sum(s => s.r.QuantitàProdotto),
-                                  });
 
-            var _qryStatoProdotti = (from r in DatiFestaInCorso
-                                     where r.o.IdCassa == _cassa.IdCassa
-                                     group r by r.r.IdProdotto into g
-                                     orderby g.Key
-                                     select new
-                                     {
-                                       IdProdotto = g.Key,
-                                       Importo = g.Sum(s => s.r.Importo),
-                                       QuantitàProdotto = g.Sum(s => s.r.QuantitàProdotto),
-                                     });
-#endif
             consumiGiornata = new StampaOrdine_ConsumiGiornata
             {
               IPAddress = clientInfo.IPAddress,
@@ -772,11 +816,9 @@ namespace BlazorFeste.Pages
               flagCumulativo = _flagCumulativo,
               Cassa = _cassa,
               Festa = _UserInterfaceService.ArchFesta,
-#if THREADSAFE
+
               statoCassa = (from p in _UserInterfaceService.AnagrProdotti.Values
-#else
-              statoCassa = (from p in _UserInterfaceService.AnagrProdotti
-#endif
+
                             join r in _qryStatoProdotti on p.IdProdotto equals r.IdProdotto
                             orderby p.IdProdotto
                             //where p.Stato
@@ -832,11 +874,11 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error($"{clientInfo.IPAddress} - RichiediStampaConsumi - {ex.Message}");
+        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
       }
       return (result);
     }
-    private async void OnDataOraServerChanged(object sender, DateTime adesso)
+    private async void OnNotifyDataOraServer(object sender, DateTime adesso)
     {
       try
       {
@@ -845,28 +887,29 @@ namespace BlazorFeste.Pages
           await Module.InvokeVoidAsync("GestioneCassaObj.updateDataOra", adesso.ToString("HH:mm:ss"));
         }
       }
-      catch
+      catch (TaskCanceledException tEx) { _ = tEx; }
+      catch (Exception ex)
       {
-        // Log.Error($"{clientInfo.IPAddress} - OnDataOraServerChanged - {ex.Message}");
+        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
       }
     }
-    private async void OnNotifyStatoProdotti(object sender, int idCassa)
+    private async void OnNotifyStatoProdotti(object sender, DatiNotifyStatoProdotti datiNotifyStatoProdotti)
     {
       try
       {
-        AggiornaDatiCassa();
+        AggiornaDatiCassa(datiNotifyStatoProdotti.statoProdotti);
 
         if (Module is not null)
         {
           await Module.InvokeVoidAsync("GestioneCassaObj.updateStatoProdotti", TabellaProdotti);
         }
       }
+      catch (TaskCanceledException tEx) { _ = tEx; }
       catch (Exception ex)
       {
-        Log.Error($"{clientInfo.IPAddress} - OnNotifyStatoProdotti - {ex.Message}");
+        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
       }
     }
-
     private async void OnNotifyAnagrProdotti(object sender, bool _refresh)
     {
       if (Cassa is null)
@@ -876,19 +919,17 @@ namespace BlazorFeste.Pages
 
       try
       {
-#if THREADSAFE
         TabellaProdotti = _UserInterfaceService.AnagrProdotti.Values.Where(w => Cassa.prodottiVisibili.Contains(w.IdProdotto)).ToList();
-#else
-        TabellaProdotti = _UserInterfaceService.AnagrProdotti.Where(w => Cassa.prodottiVisibili.Contains(w.IdProdotto)).ToList();
-#endif
+
         if (Module is not null)
         {
           await Module.InvokeVoidAsync("GestioneCassaObj.updateAnagrProdotti", IdCassa, TabellaProdotti);
         }
       }
+      catch (TaskCanceledException tEx) { _ = tEx; }
       catch (Exception ex)
       {
-        Log.Error($"{clientInfo.IPAddress} - OnNotifyStatoProdotti - {ex.Message}");
+        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
       }
     }
     #endregion

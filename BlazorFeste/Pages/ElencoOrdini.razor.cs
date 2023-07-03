@@ -59,7 +59,6 @@ namespace BlazorFeste.Pages
 
         Module = (await JsModule);
 
-#if THREADSAFE
         var Ordini = from o in _UserInterfaceService.QryOrdini.Select(s => s.Value).OrderByDescending(k => k.Timestamp)
                      select new Ordine
                      {
@@ -85,33 +84,7 @@ namespace BlazorFeste.Pages
                                   IdStatoRiga = r.Value.IdStatoRiga
                                 }).ToList()
                      };
-#else
-        var Ordini = from o in _UserInterfaceService.QryOrdini.OrderByDescending(k => k.Timestamp)
-                     select new Ordine
-                     {
-                       IdOrdine = o.IdOrdine,
-                       DataOra = o.DataOra.ToString("HH:mm:ss"),
-                       Cassa = o.Cassa,
-                       Timestamp = o.Timestamp.ToString("HH:mm:ss"),
-                       TipoOrdine = o.TipoOrdine,
-                       Tavolo = o.Tavolo,
-                       NumeroCoperti = o.NumeroCoperti,
-                       Referente = o.Referente,
-                       IdStatoOrdine = o.IdStatoOrdine,
-                       Righe = (from r in _UserInterfaceService.QryOrdiniRighe.Where(w => w.IdOrdine == o.IdOrdine)
-                                join p in _UserInterfaceService.AnagrProdotti
-                                  on r.IdProdotto equals p.IdProdotto
-                                orderby r.IdProdotto
-                                select new Ordine_Righe
-                                {
-                                  IdRiga = r.IdRiga,
-                                  NomeProdotto = p.NomeProdotto,
-                                  QuantitàProdotto = r.QuantitàProdotto,
-                                  Importo = r.Importo,
-                                  IdStatoRiga = r.IdStatoRiga
-                                }).ToList()
-                     };
-#endif
+
         await Module.InvokeVoidAsync("ElencoOrdiniObj.renderGridOrdini", objRef, "#myGridOrdini", Ordini);
         await Module.InvokeVoidAsync("ElencoOrdiniObj.renderGridRighe", "#myGridRighe");
       }

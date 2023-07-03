@@ -15,51 +15,54 @@ namespace BlazorFeste.Services
     public List<AnagrListe> AnagrListe { get; set; } = new List<AnagrListe>();
     public List<AnagrStampanti> AnagrStampanti { get; set; } = new List<AnagrStampanti>();
 
-#if THREADSAFE
     public ConcurrentDictionary<int, AnagrProdotti> AnagrProdotti { get; set; } = new ConcurrentDictionary<int, AnagrProdotti>();
     public ConcurrentDictionary<long, ArchOrdini> QryOrdini { get; set; } = new ConcurrentDictionary<long, ArchOrdini>();
     public ConcurrentDictionary<Tuple<long, int>, ArchOrdiniRighe> QryOrdiniRighe { get; set; } = new ConcurrentDictionary<Tuple<long, int>, ArchOrdiniRighe>();
-#else
-    public List<AnagrProdotti> AnagrProdotti { get; set; } = new List<AnagrProdotti>();
-    public List<ArchOrdini> QryOrdini { get; set; } = new List<ArchOrdini>();
-    public List<ArchOrdiniRighe> QryOrdiniRighe { get; set; } = new List<ArchOrdiniRighe>();
-#endif
 
     public long elapsed_GetDatabaseData { get; set; }
 
-    public event EventHandler<DateTime> DataOraServer = default!;
-    public event EventHandler<string> UpdateListe;
+    public long updatesQryOrdini { get; set; } = 0;
+    public long updatesQryOrdiniRighe { get; set; } = 0;
+
+    public event EventHandler<DateTime> NotifyDataOraServer = default!;
+    public event EventHandler<string> NotifyUpdateListe;
     public event EventHandler<long> NotifyStatoOrdine;
-    public event EventHandler<int> NotifyStatoProdotti;
-    public event EventHandler<int> NotifyStatoLista;
+    public event EventHandler<DatiNotifyStatoProdotti> NotifyStatoProdotti;
+    public event EventHandler<DatiNotifyStatoLista> NotifyStatoLista;
     public event EventHandler<bool> NotifyAnagrProdotti;
     public event EventHandler<bool> NotifyAnagrCasse;
     public event EventHandler<bool> NotifyAnagrListe;
+
+    public event EventHandler<DatiOrdine> NotifyNuovoOrdine;
     #endregion
 
     public UserInterfaceService(IWebHostEnvironment iWebHostEnvironment)
     {
       _IWebHostEnvironment = iWebHostEnvironment;
     }
-    public void OnDataOraServer(DateTime adesso)
+    public void OnNotifyDataOraServer(DateTime adesso)
     {
-      DataOraServer?.Invoke(this, adesso);
+      NotifyDataOraServer?.Invoke(this, adesso);
     }
-    public void OnUpdateListe(string ElapsedInfo)
+    public void OnNotifyUpdateListe(string ElapsedInfo)
     {
-      UpdateListe?.Invoke(this, ElapsedInfo);
+      NotifyUpdateListe?.Invoke(this, ElapsedInfo);
     }
     public void OnNotifyStatoOrdine(long idOrdine)
     {
       NotifyStatoOrdine?.Invoke(this, idOrdine);
     }
-    public void OnNotifyStatoProdotti(int idCassa)
+    public void OnNotifyNuovoOrdine(DatiOrdine datiOrdine)
     {
-      NotifyStatoProdotti?.Invoke(this, idCassa);
+      NotifyNuovoOrdine?.Invoke( this, datiOrdine);
     }
-    public void OnNotifyStatoLista(int idLista)
+    public void OnNotifyStatoProdotti(DatiNotifyStatoProdotti datiNotifyStatoProdotti)
     {
-      NotifyStatoLista?.Invoke(this, idLista);
+      NotifyStatoProdotti?.Invoke(this, datiNotifyStatoProdotti);
+    }
+    public void OnNotifyStatoLista(DatiNotifyStatoLista datiNotifyStatoLista)
+    {
+      NotifyStatoLista?.Invoke(this, datiNotifyStatoLista);
     }
     public void OnNotifyAnagrProdotti(bool refresh)
     {
@@ -75,44 +78,39 @@ namespace BlazorFeste.Services
     }
     public DateTime GetCurrentDataAssegnazione()
     {
-      DateTime dtOggi;
+      DateTime dtOggi = DateTime.Now.Date.AddDays(-1).AddHours(22);
 
-      //if (_IWebHostEnvironment.IsDevelopment())
-      //{
-      //  dtOggi = DateTime.Parse("2022-06-12 22:00:00"); // dtOggi = DateTime.Parse("2021-07-31 12:00:00");
-      //}
-      //else
+      switch (DateTime.Now.Hour)
       {
-        switch (DateTime.Now.Hour)
-        {
-          case 8:
-          case 9:
-          case 10:
-          case 11:
-          case 12:
-          case 13:
-          case 14:
-          case 15:
-          case 16:
-            dtOggi = DateTime.Now.Date.AddHours(12);
-            break;
+        case 8:
+        case 9:
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15:
+        case 16:
+          dtOggi = DateTime.Now.Date.AddHours(12);
+          break;
 
-          case 17:
-          case 18:
-          case 19:
-          case 20:
-          case 21:
-          case 22:
-          case 23:
-            dtOggi = DateTime.Now.Date.AddHours(22);
-            break;
+        case 17:
+        case 18:
+        case 19:
+        case 20:
+        case 21:
+        case 22:
+        case 23:
+          dtOggi = DateTime.Now.Date.AddHours(22);
+          break;
 
-          default:
-            dtOggi = DateTime.Now.Date.AddDays(-1).AddHours(22);
-            break;
-        }
+        default:
+          dtOggi = DateTime.Now.Date.AddDays(-1).AddHours(22);
+          break;
       }
-      //dtOggi = DateTime.Parse("2019-07-01 22:00:00"); // dtOggi = DateTime.Parse("2021-07-31 12:00:00");
+      // dtOggi = DateTime.Parse("2023-06-19 22:00:00"); 
+      //dtOggi = DateTime.Parse("2023-07-01 22:00:00"); 
+      
       return (dtOggi);
     }
   }
