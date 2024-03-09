@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.ru.js)
-* Version: 22.2.7
-* Build date: Mon Jun 19 2023
+* Version: 23.1.4
+* Build date: Fri Jul 14 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -70,6 +70,12 @@
             "dxDateBox-simulatedDataPickerTitleDate": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0434\u0430\u0442\u0443",
             "dxDateBox-simulatedDataPickerTitleDateTime": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0434\u0430\u0442\u0443 \u0438 \u0432\u0440\u0435\u043c\u044f",
             "dxDateBox-validation-datetime": "\u0417\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0434\u043e\u043b\u0436\u043d\u043e \u0431\u044b\u0442\u044c \u0434\u0430\u0442\u043e\u0439/\u0432\u0440\u0435\u043c\u0435\u043d\u0435\u043c",
+            "dxDateRangeBox-invalidStartDateMessage": "Start value must be a date",
+            "dxDateRangeBox-invalidEndDateMessage": "End value must be a date",
+            "dxDateRangeBox-startDateOutOfRangeMessage": "Start date is out of range",
+            "dxDateRangeBox-endDateOutOfRangeMessage": "End date is out of range",
+            "dxDateRangeBox-startDateLabel": "\u0414\u0430\u0442\u0430 \u043d\u0430\u0447\u0430\u043b\u0430",
+            "dxDateRangeBox-endDateLabel": "\u0414\u0430\u0442\u0430 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043d\u0438\u044f",
             "dxFileUploader-selectFile": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0444\u0430\u0439\u043b",
             "dxFileUploader-dropFile": "\u0438\u043b\u0438 \u041f\u0435\u0440\u0435\u0442\u0430\u0449\u0438\u0442\u0435 \u0444\u0430\u0439\u043b \u0441\u044e\u0434\u0430",
             "dxFileUploader-bytes": "\u0431\u0430\u0439\u0442",
@@ -92,6 +98,10 @@
             "dxForm-requiredMessage": " \u041f\u043e\u043b\u0435 {0} \u0434\u043e\u043b\u0436\u043d\u043e \u0431\u044b\u0442\u044c \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u043e",
             "dxNumberBox-invalidValueMessage": "\u0417\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u0434\u043e\u043b\u0436\u043d\u043e \u0431\u044b\u0442\u044c \u0447\u0438\u0441\u043b\u043e\u043c",
             "dxNumberBox-noDataText": "\u041d\u0435\u0442 \u0434\u0430\u043d\u043d\u044b\u0445",
+            "dxDataGrid-emptyHeaderWithColumnChooserText": "\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 {0} \u0447\u0442\u043e\u0431\u044b \u043e\u0442\u043e\u0431\u0440\u0430\u0437\u0438\u0442\u044c \u0441\u0442\u043e\u043b\u0431\u0446\u044b",
+            "dxDataGrid-emptyHeaderWithGroupPanelText": "\u041f\u0435\u0440\u0435\u0442\u0430\u0449\u0438\u0442\u0435 \u0441\u0442\u043e\u043b\u0431\u0435\u0446 \u0438\u0437 \u043f\u0430\u043d\u0435\u043b\u0438 \u0433\u0440\u0443\u043f\u043f\u0438\u0440\u043e\u0432\u043a\u0438",
+            "dxDataGrid-emptyHeaderWithColumnChooserAndGroupPanelText": "\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 {0} \u0438\u043b\u0438 \u043f\u0435\u0440\u0435\u0442\u0430\u0449\u0438\u0442\u0435 \u0441\u0442\u043e\u043b\u0431\u0435\u0446 \u0438\u0437 \u043f\u0430\u043d\u0435\u043b\u0438 \u0433\u0440\u0443\u043f\u043f\u0438\u0440\u043e\u0432\u043a\u0438",
+            "dxDataGrid-emptyHeaderColumnChooserText": "\u043f\u0430\u043d\u0435\u043b\u044c \u0432\u044b\u0431\u043e\u0440\u0430 \u0441\u0442\u043e\u043b\u0431\u0446\u043e\u0432",
             "dxDataGrid-columnChooserTitle": "\u0412\u044b\u0431\u043e\u0440 \u0441\u0442\u043e\u043b\u0431\u0446\u043e\u0432",
             "dxDataGrid-columnChooserEmptyText": "\u041f\u0435\u0440\u0435\u0442\u0430\u0449\u0438\u0442\u0435 \u0441\u0442\u043e\u043b\u0431\u0435\u0446 \u0441\u044e\u0434\u0430, \u0447\u0442\u043e\u0431\u044b \u0441\u043a\u0440\u044b\u0442\u044c \u0435\u0433\u043e",
             "dxDataGrid-groupContinuesMessage": "\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0435\u043d\u0438\u0435 \u043d\u0430 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0435\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435",

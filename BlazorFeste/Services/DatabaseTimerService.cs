@@ -12,7 +12,7 @@ namespace BlazorFeste.Services
   public class DatabaseTimerService : BackgroundService, IDisposable
   {
     private CancellationToken cancellationToken;
-    private const int _runTime = 1000;
+    private const int _runTime = 990;
 
     private readonly UserInterfaceService _UserInterfaceService;
     private readonly FesteDataAccess _FesteDataAccess;
@@ -30,17 +30,26 @@ namespace BlazorFeste.Services
       cancellationToken = stoppingToken;
       while (!cancellationToken.IsCancellationRequested)
       {
-        _UserInterfaceService.elapsed_GetDatabaseData = await GetDatabaseData();
+        var watch = System.Diagnostics.Stopwatch.StartNew();
 
-        // Aggiornamento dei dati per i clients
-        _UserInterfaceService.OnNotifyUpdateListe($"{_UserInterfaceService.elapsed_GetDatabaseData} - {_UserInterfaceService.updatesQryOrdini}/{_UserInterfaceService.updatesQryOrdiniRighe}");
+        var _elapsed_GetDatabaseData = await GetDatabaseData();
+
+        if (_UserInterfaceService.NotifyDashboardCount > 0)
+        {
+          var _datiDashboard = await _FesteDataAccess.GetDashBoardDataAsync(_UserInterfaceService.GetCurrentDataAssegnazione());
+          _datiDashboard.elapsed_GetDatabaseData = _elapsed_GetDatabaseData;
+          _UserInterfaceService.OnNotifyDashboard(_datiDashboard);
+        }
+        //      _UserInterfaceService.OnNotifyUpdateListe($"{_UserInterfaceService.elapsed_GetDatabaseData} - {_UserInterfaceService.updatesQryOrdini}/{_UserInterfaceService.updatesQryOrdiniRighe}");
 
         // Ogni ora devo fare qualcosa ???  - TODO
         if (DateTime.UtcNow.Hour != memoOra)
         {
           memoOra = DateTime.UtcNow.Hour;
         }
-        await Task.Delay(TimeSpan.FromMilliseconds(Math.Max(0, _runTime - _UserInterfaceService.elapsed_GetDatabaseData)), stoppingToken);
+        watch.Stop();
+
+        await Task.Delay(TimeSpan.FromMilliseconds(Math.Max(0, _runTime - watch.ElapsedMilliseconds)), stoppingToken);
       }
     }
     public override void Dispose()
@@ -172,107 +181,6 @@ namespace BlazorFeste.Services
             }
           }
 
-          /*
-                    foreach (var ordine in _qryOrdini)
-                    {
-                      if (_UserInterfaceService.QryOrdini.TryGetValue(ordine.IdOrdine, out ArchOrdini retrievedValue))
-                      {
-                        // If something changes - Make a copy of the data. 
-                        if (!JToken.DeepEquals(JsonConvert.SerializeObject(ordine), JsonConvert.SerializeObject(retrievedValue)))
-                        {
-                          // Replace the old value with the new value.
-                          if (!_UserInterfaceService.QryOrdini.TryUpdate(ordine.IdOrdine, ordine, retrievedValue))
-                          {
-                            // The data was not updated. Log error, throw exception, etc.
-                            Log.Error($"DatabaseTimerService - GetDatabaseData - Sincronizzazione QryOrdini - {ordine.IdOrdine} non aggiornato");
-                          }
-                        }
-                      }
-                      else
-                      {
-                        if (!_UserInterfaceService.QryOrdini.TryAdd(ordine.IdOrdine, ordine))
-                        {
-                          Log.Error($"DatabaseTimerService - GetDatabaseData - Sincronizzazione QryOrdini - {ordine.IdOrdine} non inserito");
-                        }
-                      }
-                    }
-
-                    foreach (var riga in _qryOrdiniRighe)
-                    {
-                      if (_UserInterfaceService.QryOrdiniRighe.TryGetValue(new Tuple<long, int>(riga.IdOrdine, riga.IdRiga), out ArchOrdiniRighe retrievedValue))
-                      {
-                        // If something changes - Make a copy of the data. 
-                        if (!JToken.DeepEquals(JsonConvert.SerializeObject(riga), JsonConvert.SerializeObject(retrievedValue)))
-                        {
-                          // Replace the old value with the new value.
-                          if (!_UserInterfaceService.QryOrdiniRighe.TryUpdate(new Tuple<long, int>(riga.IdOrdine, riga.IdRiga), riga, retrievedValue))
-                          {
-                            // The data was not updated. Log error, throw exception, etc.
-                            Log.Error($"DatabaseTimerService - GetDatabaseData - Sincronizzazione QryOrdiniRighe - {riga.IdOrdine}/{riga.IdRiga} non aggiornata");
-                          }
-                        }
-                      }
-                      else
-                      {
-                        if (!_UserInterfaceService.QryOrdiniRighe.TryAdd(new Tuple<long, int>(riga.IdOrdine, riga.IdRiga), riga))
-                        {
-                          Log.Error($"DatabaseTimerService - GetDatabaseData - Sincronizzazione QryOrdiniRighe - {riga.IdOrdine}/{riga.IdRiga}  non inserita");
-                        }
-                      }
-                    }
-          */
-
-          #region Ordini Appena Nati
-          /*
-                    // Elaborazione degli ordini appena nati
-                    List<ArchOrdini> qryOrdiniAppenaNati = _UserInterfaceService.QryOrdini.Where(w => w.Value.IdStatoOrdine == 0).OrderBy(o => o.Key).Select(s => s.Value).ToList();
-
-                    // Se esiste almeno un ordine "appena nato"
-                    foreach (var Ordine in qryOrdiniAppenaNati)
-                    {
-                      // Se l'ordine non ha righe lo escludo da ulteriori logiche (oppure lo elimino)
-                      if (!_UserInterfaceService.QryOrdiniRighe.Where(w => w.Key.Item1 == Ordine.IdOrdine).Any())
-                      {
-                        await _FesteDataAccess.DeleteArchOrdiniAsync(Ordine); // Elimino l'Ordine dal Database - // Ordine.IdStatoOrdine = 4;
-                        _UserInterfaceService.QryOrdini.TryRemove(Ordine.IdOrdine, out ArchOrdini _Ordine);  // Elimino l'Ordine dalla struttura di memoria
-                      }
-                      else
-                      {
-                        var Cassa = _UserInterfaceService.AnagrCasse.Where(w => w.IdCassa == Ordine.IdCassa).FirstOrDefault();
-
-                        if (Cassa.SoloBanco.Value)
-                        {
-                          // Se l'ordine arriva da una cassa "SoloBanco" devo evadere l'ordine
-                          await EvadiOrdineAsync(Ordine);
-                        }
-                        else
-                        {
-                          // Devo evadere tutte le liste che non sono gestite - TODO
-                          foreach (var item in _UserInterfaceService.AnagrListe.Where(w => w.Visibile == false))
-                          {
-                            if (_UserInterfaceService.QryOrdiniRighe.Values.Where(w => w.IdOrdine == Ordine.IdOrdine).Select(s => s.IdCategoria).Contains(item.IdLista))
-                              await EvadiListaNonGestitaAsync(Ordine, item);
-                          }
-                          //await EvadiOrdine(Ordine.IdOrdine, _UserInterfaceService.AnagrProdotti, _UserInterfaceService.AnagrListe.Where(w => w.Visibile == false).ToList());
-
-                          // Verifico se esistono righe dell'ordine con IdListaPadre > 0 (cioè con delle code a priorità maggiore ancora da smaltire)
-                          Ordine.IdStatoOrdine = GetStatoOrdine(Ordine);
-
-                          Ordine.Tavolo = Ordine.TipoOrdine.CompareTo("SERVITO") == 0 ? string.Format("{0} {1}", Ordine.Tavolo, Regex.Replace(Ordine.NumeroCoperti, @"[^a-zA-Z]+", string.Empty).ToUpper()).Trim() : Ordine.TipoOrdine;
-                          Ordine.NumeroCoperti = Regex.Replace(Ordine.NumeroCoperti, @"[^0-9]+", string.Empty).Trim();
-                          Ordine.DataOra = DateTime.Now;
-
-                          // Aggiorno il record dell'Ordine nel Database
-                          await _FesteDataAccess.UpdateArchOrdiniAsync(Ordine);
-                        }
-                        // Se arrivo qui significa che :
-                        //    Devo notificare a chi lo desidera i dati del nuovo ordine
-                        _UserInterfaceService.OnNotifyStatoOrdine(Ordine.IdOrdine);
-                      }
-                    }
-          */
-          #endregion
-
           #region Sincronizzazione AnagrProdotti
           try
           {
@@ -381,105 +289,5 @@ namespace BlazorFeste.Services
       watch.Stop();
       return (watch.ElapsedMilliseconds);
     }
-    /*
-        public async Task EvadiOrdineAsync(ArchOrdini _ordine)
-        {
-          //var OrdinePre = _ordine;
-
-          _ordine.IdStatoOrdine = (int)K_STATO_ORDINE.InCorso; //  2;
-          _ordine.DataOra = DateTime.Now;
-
-          // Aggiorno il record dell'Ordine nel Database
-          await _FesteDataAccess.UpdateArchOrdiniAsync(_ordine);
-
-          // Tutte le righe dell'ordine vengono messe nello stato 3
-          foreach (var item in _UserInterfaceService.QryOrdiniRighe.Values.Where(w => w.IdOrdine == _ordine.IdOrdine))
-          {
-            item.IdStatoRiga = (int)K_STATO_RIGA.OrdineEvaso; // 3;
-            item.QuantitàEvasa = item.QuantitàProdotto;
-            item.DataOra_RigaPresaInCarico = DateTime.Now;
-            item.DataOra_RigaEvasa = DateTime.Now;
-
-            await _FesteDataAccess.UpdateArchOrdiniRigheAsync(item);
-          }
-        }
-
-        public async Task EvadiListaNonGestitaAsync(ArchOrdini _ordine, AnagrListe _lista)
-        {
-          // Tutte le righe dell'ordine che appartengono alla lista vengono messe nello stato 3 (Ordine Evaso x questa lista)
-          var Prodotti = (_UserInterfaceService.AnagrProdotti.Values.Where(w => w.IdLista == _lista.IdLista)).ToList();
-
-          var Prodotto = Prodotti.Select(s => s.IdProdotto).ToArray();
-
-          foreach (var item in _UserInterfaceService.QryOrdiniRighe.Values.Where(w => (w.IdOrdine == _ordine.IdOrdine) && Prodotto.Contains(w.IdProdotto)))
-          {
-            item.IdStatoRiga = (int)K_STATO_RIGA.OrdineEvaso; // 3; 
-            item.QuantitàEvasa = item.QuantitàProdotto;
-            item.DataOra_RigaPresaInCarico = DateTime.Now;
-            item.DataOra_RigaEvasa = DateTime.Now;
-
-            await _FesteDataAccess.UpdateArchOrdiniRigheAsync(item);
-          }
-
-          // Se la lista è una lista padre (IoSonoListaPadre = true)
-          if (_lista.IoSonoListaPadre == true)
-          {
-            var OrdinePre = _ordine;
-
-            // Sblocco le liste figlio
-            _ordine.IdStatoOrdine = (int)K_STATO_ORDINE.InCorso; //  2;
-
-            await _FesteDataAccess.UpdateArchOrdiniAsync(_ordine);
-
-            // Aggiorno il record dell'Ordine nella struttura di memoria
-            var index = _UserInterfaceService.QryOrdini.TryUpdate(_ordine.IdOrdine, _ordine, OrdinePre);
-
-            // Tutte le righe dell'ordine che fanno parte delle liste figlio devo essere riconoscibili - Metto il loro IdStatoRiga a -1
-            var ListeFiglio = _UserInterfaceService.AnagrListe.Where(w => w.IdListaPadre == _lista.IdLista).Select(s => s.IdLista).ToArray();
-            var RigheDelleListeFiglio = (from r in _UserInterfaceService.QryOrdiniRighe.Values.Where(w => (w.IdOrdine == _ordine.IdOrdine))
-                                         join p in Prodotti.Where(w => ListeFiglio.Contains(w.IdLista)) on r.IdProdotto equals p.IdProdotto
-                                         select r.IdRiga).ToArray();
-
-            foreach (var item in _UserInterfaceService.QryOrdiniRighe.Values.Where(w => (w.IdOrdine == _ordine.IdOrdine) && RigheDelleListeFiglio.Contains(w.IdRiga)))
-            {
-              item.IdStatoRiga = -1;
-
-              await _FesteDataAccess.UpdateArchOrdiniRigheAsync(item);
-            }
-          }
-          _UserInterfaceService.OnNotifyStatoOrdine(_ordine.IdOrdine);
-          _UserInterfaceService.OnNotifyStatoProdotti(_ordine.IdCassa);
-        }
-
-        private int GetStatoOrdine(ArchOrdini archOrdine)
-        {
-          int Result = (int)K_STATO_ORDINE.InCorso; // 2;
-
-          var ArchOrdiniRighe = _UserInterfaceService.QryOrdiniRighe.Where(w => w.Key.Item1 == archOrdine.IdOrdine).ToList();
-
-          // Verifico se esistono righe dell'ordine con IdListaPadre > 0 (cioè con delle code a priorità maggiore ancora da smaltire)
-          var RigheConListaPadre = from r in ArchOrdiniRighe
-                                   join p in _UserInterfaceService.AnagrProdotti.Values on r.Value.IdProdotto equals p.IdProdotto
-                                   join l in _UserInterfaceService.AnagrListe.Where(w => w.IdListaPadre > 0) on p.IdLista equals l.IdLista
-                                   select new { r, p, l };
-
-          foreach (var Riga in RigheConListaPadre)
-          {
-            // Verifico se esistono ancora prodotti da smaltire nella lista padre
-            var RigheListaPadre = from r in ArchOrdiniRighe.Where(w => w.Value.IdStatoRiga < (int)K_STATO_RIGA.OrdineEvaso) //  3) 
-                                  join p in _UserInterfaceService.AnagrProdotti.Values on r.Value.IdProdotto equals p.IdProdotto
-                                  join l in _UserInterfaceService.AnagrListe.Where(w => w.IdLista == Riga.l.IdListaPadre) on p.IdLista equals l.IdLista
-                                  select new { r, p, l };
-
-            // Me ne basta una per decidere che lo stato dell'ordine é = 1 (Bloccato dalla lista Padre)
-            if (RigheListaPadre.Any())
-            {
-              Result = (int)K_STATO_ORDINE.Bloccato; // 1; // Le liste con priorità = 2 devono aspettare
-              break;
-            }
-          }
-          return Result;
-        }
-    */
   }
 }

@@ -1,5 +1,7 @@
 ﻿using BlazorFeste.Data.Models;
 
+using NPOI.SS.Formula.Functions;
+
 using System.Collections.Concurrent;
 
 namespace BlazorFeste.Services
@@ -19,8 +21,6 @@ namespace BlazorFeste.Services
     public ConcurrentDictionary<long, ArchOrdini> QryOrdini { get; set; } = new ConcurrentDictionary<long, ArchOrdini>();
     public ConcurrentDictionary<Tuple<long, int>, ArchOrdiniRighe> QryOrdiniRighe { get; set; } = new ConcurrentDictionary<Tuple<long, int>, ArchOrdiniRighe>();
 
-    public long elapsed_GetDatabaseData { get; set; }
-
     public long updatesQryOrdini { get; set; } = 0;
     public long updatesQryOrdiniRighe { get; set; } = 0;
 
@@ -34,6 +34,18 @@ namespace BlazorFeste.Services
     public event EventHandler<bool> NotifyAnagrListe;
 
     public event EventHandler<DatiOrdine> NotifyNuovoOrdine;
+    public event EventHandler<DatiNotifyDashboard> NotifyDashboard;
+    public int NotifyDashboardCount {
+      get
+      {
+        int iCount = 0;
+        if (NotifyDashboard != null)
+        {
+          iCount = NotifyDashboard.GetInvocationList().Length;
+        }
+        return iCount;
+      }
+    }
     #endregion
 
     public UserInterfaceService(IWebHostEnvironment iWebHostEnvironment)
@@ -54,9 +66,13 @@ namespace BlazorFeste.Services
     }
     public void OnNotifyNuovoOrdine(DatiOrdine datiOrdine)
     {
-      NotifyNuovoOrdine?.Invoke( this, datiOrdine);
+      NotifyNuovoOrdine?.Invoke(this, datiOrdine);
     }
-    public void OnNotifyStatoProdotti(DatiNotifyStatoProdotti datiNotifyStatoProdotti)
+    public void OnNotifyDashboard(DatiNotifyDashboard datiDashboard)
+    {
+      NotifyDashboard?.Invoke(this, datiDashboard);
+    }
+  public void OnNotifyStatoProdotti(DatiNotifyStatoProdotti datiNotifyStatoProdotti)
     {
       NotifyStatoProdotti?.Invoke(this, datiNotifyStatoProdotti);
     }
@@ -109,8 +125,8 @@ namespace BlazorFeste.Services
           break;
       }
       // dtOggi = DateTime.Parse("2023-06-19 22:00:00"); 
-      //dtOggi = DateTime.Parse("2023-07-01 22:00:00"); 
-      
+      //dtOggi = DateTime.Parse("2023-06-19 22:00:00"); 
+
       return (dtOggi);
     }
   }

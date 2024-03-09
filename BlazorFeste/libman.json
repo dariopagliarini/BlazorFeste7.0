@@ -3,7 +3,7 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "devextreme@22.2.7",
+      "library": "devextreme-dist@23.1.4",
       "destination": "wwwroot/lib/devextreme/"
     },
     {
@@ -23,7 +23,7 @@
       "destination": "wwwroot/lib/FileSaver.js/"
     },
     {
-      "library": "Chart.js@4.3.0",
+      "library": "Chart.js@4.4.0",
       "destination": "wwwroot/lib/Chart.js/"
     },
     {
@@ -53,7 +53,7 @@
       ]
     },
     {
-      "library": "jquery@3.7.0",
+      "library": "jquery@3.7.1",
       "destination": "wwwroot/lib/jquery/"
     }
   ]

@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.cs.js)
-* Version: 22.2.7
-* Build date: Mon Jun 19 2023
+* Version: 23.1.4
+* Build date: Fri Jul 14 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -70,6 +70,12 @@
             "dxDateBox-simulatedDataPickerTitleDate": "Vyberte datum",
             "dxDateBox-simulatedDataPickerTitleDateTime": "Vyberte datum a \u010das",
             "dxDateBox-validation-datetime": "Hodnota mus\xed b\xfdt datum nebo \u010das",
+            "dxDateRangeBox-invalidStartDateMessage": "Start value must be a date",
+            "dxDateRangeBox-invalidEndDateMessage": "End value must be a date",
+            "dxDateRangeBox-startDateOutOfRangeMessage": "Start date is out of range",
+            "dxDateRangeBox-endDateOutOfRangeMessage": "End date is out of range",
+            "dxDateRangeBox-startDateLabel": "Po\u010d\xe1te\u010dn\xed datum",
+            "dxDateRangeBox-endDateLabel": "Koncov\xe9 datum",
             "dxFileUploader-selectFile": "Vyberte soubor",
             "dxFileUploader-dropFile": "nebo p\u0159eneste soubor sem",
             "dxFileUploader-bytes": "byt\u016f",
@@ -92,6 +98,10 @@
             "dxForm-requiredMessage": "{0} je vy\u017eadov\xe1no",
             "dxNumberBox-invalidValueMessage": "Hodnota mus\xed b\xfdt \u010d\xedslo",
             "dxNumberBox-noDataText": "\u017d\xe1dn\xe1 data",
+            "dxDataGrid-emptyHeaderWithColumnChooserText": "Use {0} to display columns",
+            "dxDataGrid-emptyHeaderWithGroupPanelText": "Drag a column from the group panel here",
+            "dxDataGrid-emptyHeaderWithColumnChooserAndGroupPanelText": "Use {0} or drag a column from the group panel",
+            "dxDataGrid-emptyHeaderColumnChooserText": "column chooser",
             "dxDataGrid-columnChooserTitle": "V\xfdb\u011br sloupc\u016f",
             "dxDataGrid-columnChooserEmptyText": "P\u0159esu\u0148te sloupec zde pro skyt\xed",
             "dxDataGrid-groupContinuesMessage": "Pokra\u010dovat na dal\u0161\xed stran\u011b",

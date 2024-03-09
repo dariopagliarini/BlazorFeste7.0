@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.aspnet.mvc.js)
-* Version: 22.2.7
-* Build date: Mon Jun 19 2023
+* Version: 23.1.4
+* Build date: Fri Jul 14 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -44,7 +44,8 @@
                 bag.push(code + "\n")
             }
         }
-        return function(text) {
+        return function(element) {
+            var text = extractTemplateMarkup(element);
             var bag = ["var _ = [];", "with(obj||{}) {"],
                 chunks = text.split(EXTENDED_OPEN_TAG);
             acceptText(bag, chunks.shift());
@@ -57,7 +58,20 @@
                 acceptText(bag, tmp[1])
             }
             bag.push("}", "return _.join('')");
-            return new Function("obj", "encodeHtml", bag.join(""))
+            var code = bag.join("");
+            try {
+                return new Function("obj", "encodeHtml", code)
+            } catch (e) {
+                var src = element[0];
+                if ("SCRIPT" === src.tagName) {
+                    var funcName = src.id.replaceAll("-", "");
+                    var func = "function " + funcName + "(obj,encodeHtml){\n" + code + "\n}";
+                    $.globalEval(func, src, window.document);
+                    return funcName
+                } else {
+                    return text
+                }
+            }
         }
     }();
     var pendingCreateComponentRoutines = [];
@@ -108,15 +122,23 @@
             if (setTemplateEngine) {
                 setTemplateEngine({
                     compile: function(element) {
-                        return templateCompiler(extractTemplateMarkup(element))
+                        return templateCompiler(element)
                     },
                     render: function(template, data) {
-                        var html = template(data, encodeHtml);
-                        var dxMvcExtensionsObj = window.MVCx;
-                        if (dxMvcExtensionsObj && !dxMvcExtensionsObj.isDXScriptInitializedOnLoad) {
-                            html = html.replace(/(<script[^>]+)id="dxss_.+?"/g, "$1")
+                        if (template instanceof Function) {
+                            var html = template(data, encodeHtml);
+                            var dxMvcExtensionsObj = window.MVCx;
+                            if (dxMvcExtensionsObj && !dxMvcExtensionsObj.isDXScriptInitializedOnLoad) {
+                                html = html.replace(/(<script[^>]+)id="dxss_.+?"/g, "$1")
+                            }
+                            return html
+                        } else if (window[template] instanceof Function) {
+                            return window[template](data, encodeHtml)
+                        } else if ("string" === typeof template) {
+                            return template
+                        } else {
+                            throw "Unknown template type"
                         }
-                        return html
                     }
                 })
             }

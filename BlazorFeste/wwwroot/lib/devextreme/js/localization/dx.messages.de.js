@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.de.js)
-* Version: 22.2.7
-* Build date: Mon Jun 19 2023
+* Version: 23.1.4
+* Build date: Fri Jul 14 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -70,6 +70,12 @@
             "dxDateBox-simulatedDataPickerTitleDate": "Datum ausw\xe4hlen",
             "dxDateBox-simulatedDataPickerTitleDateTime": "Datum und Zeit ausw\xe4hlen",
             "dxDateBox-validation-datetime": "Der Wert muss ein Datum oder eine Uhrzeit sein",
+            "dxDateRangeBox-invalidStartDateMessage": "Start value must be a date",
+            "dxDateRangeBox-invalidEndDateMessage": "End value must be a date",
+            "dxDateRangeBox-startDateOutOfRangeMessage": "Start date is out of range",
+            "dxDateRangeBox-endDateOutOfRangeMessage": "End date is out of range",
+            "dxDateRangeBox-startDateLabel": "Anfangszeit",
+            "dxDateRangeBox-endDateLabel": "Endzeit",
             "dxFileUploader-selectFile": "Datei ausw\xe4hlen",
             "dxFileUploader-dropFile": "oder hierher ziehen",
             "dxFileUploader-bytes": "Bytes",
@@ -92,6 +98,10 @@
             "dxForm-requiredMessage": "{0} ist ein Pflichtfeld",
             "dxNumberBox-invalidValueMessage": "Der Wert muss eine Zahl sein",
             "dxNumberBox-noDataText": "Keine Daten",
+            "dxDataGrid-emptyHeaderWithColumnChooserText": "Verwenden Sie die {0}, um Spalten anzuzeigen",
+            "dxDataGrid-emptyHeaderWithGroupPanelText": "Ziehen Sie eine Spalte aus dem Gruppenpanel hierher",
+            "dxDataGrid-emptyHeaderWithColumnChooserAndGroupPanelText": "Verwenden Sie die {0} oder ziehen Sie eine Spalte aus dem Gruppenpanel",
+            "dxDataGrid-emptyHeaderColumnChooserText": "Spaltenauswahl",
             "dxDataGrid-columnChooserTitle": "Spaltenauswahl",
             "dxDataGrid-columnChooserEmptyText": "Ziehen Sie Spalten hierhin, um sie zu verstecken",
             "dxDataGrid-groupContinuesMessage": "Weiter auf der n\xe4chsten Seite",

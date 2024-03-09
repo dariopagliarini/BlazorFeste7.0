@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.sv.js)
-* Version: 22.2.7
-* Build date: Mon Jun 19 2023
+* Version: 23.1.4
+* Build date: Fri Jul 14 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -70,6 +70,12 @@
             "dxDateBox-simulatedDataPickerTitleDate": "V\xe4lj datum",
             "dxDateBox-simulatedDataPickerTitleDateTime": "V\xe4lj datum och tid",
             "dxDateBox-validation-datetime": "V\xe4rdet m\xe5ste vara ett datum eller en tid",
+            "dxDateRangeBox-invalidStartDateMessage": "Start value must be a date",
+            "dxDateRangeBox-invalidEndDateMessage": "End value must be a date",
+            "dxDateRangeBox-startDateOutOfRangeMessage": "Start date is out of range",
+            "dxDateRangeBox-endDateOutOfRangeMessage": "End date is out of range",
+            "dxDateRangeBox-startDateLabel": "Startdatum",
+            "dxDateRangeBox-endDateLabel": "Slutdatum",
             "dxFileUploader-selectFile": "V\xe4lj fil",
             "dxFileUploader-dropFile": "eller sl\xe4pp filen h\xe4r",
             "dxFileUploader-bytes": "byte",
@@ -92,6 +98,10 @@
             "dxForm-requiredMessage": "{0} \xe4r n\xf6dv\xe4ndigt",
             "dxNumberBox-invalidValueMessage": "V\xe4rdet m\xe5ste vara ett nummer",
             "dxNumberBox-noDataText": "Inget data",
+            "dxDataGrid-emptyHeaderWithColumnChooserText": "Use {0} to display columns",
+            "dxDataGrid-emptyHeaderWithGroupPanelText": "Drag a column from the group panel here",
+            "dxDataGrid-emptyHeaderWithColumnChooserAndGroupPanelText": "Use {0} or drag a column from the group panel",
+            "dxDataGrid-emptyHeaderColumnChooserText": "column chooser",
             "dxDataGrid-columnChooserTitle": "Kolumnv\xe4ljare",
             "dxDataGrid-columnChooserEmptyText": "Dra en kolumn hit f\xf6r att d\xf6lja den",
             "dxDataGrid-groupContinuesMessage": "Forts\xe4tter p\xe5 n\xe4sta sida",

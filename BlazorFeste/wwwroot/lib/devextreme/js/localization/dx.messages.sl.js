@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.sl.js)
-* Version: 22.2.7
-* Build date: Mon Jun 19 2023
+* Version: 23.1.4
+* Build date: Fri Jul 14 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -70,6 +70,12 @@
             "dxDateBox-simulatedDataPickerTitleDate": "Izberi datum",
             "dxDateBox-simulatedDataPickerTitleDateTime": "Izberi datum in \u010das",
             "dxDateBox-validation-datetime": "Vrednost mora biti datum ali \u010das",
+            "dxDateRangeBox-invalidStartDateMessage": "Start value must be a date",
+            "dxDateRangeBox-invalidEndDateMessage": "End value must be a date",
+            "dxDateRangeBox-startDateOutOfRangeMessage": "Start date is out of range",
+            "dxDateRangeBox-endDateOutOfRangeMessage": "End date is out of range",
+            "dxDateRangeBox-startDateLabel": "Datum za\u010detka",
+            "dxDateRangeBox-endDateLabel": "Datum konca",
             "dxFileUploader-selectFile": "Izberi datoteko",
             "dxFileUploader-dropFile": "ali spusti datoteko tukaj",
             "dxFileUploader-bytes": "bajtov",
@@ -92,6 +98,10 @@
             "dxForm-requiredMessage": "Podatek {0} je obvezen",
             "dxNumberBox-invalidValueMessage": "Vrednost mora biti \u0161tevilo",
             "dxNumberBox-noDataText": "Ni podatkov",
+            "dxDataGrid-emptyHeaderWithColumnChooserText": "Use {0} to display columns",
+            "dxDataGrid-emptyHeaderWithGroupPanelText": "Drag a column from the group panel here",
+            "dxDataGrid-emptyHeaderWithColumnChooserAndGroupPanelText": "Use {0} or drag a column from the group panel",
+            "dxDataGrid-emptyHeaderColumnChooserText": "column chooser",
             "dxDataGrid-columnChooserTitle": "Izbirnik stolpcev",
             "dxDataGrid-columnChooserEmptyText": "Povlecite stolpec sem, da ga skrijete",
             "dxDataGrid-groupContinuesMessage": "Nadaljevanje na naslednji strani",

@@ -196,9 +196,10 @@ namespace BlazorFeste.Pages
     {
       try
       {
-        var DatiOrdine = from r in datiOrdine.ordineRighe 
-                         join p in _UserInterfaceService.AnagrProdotti.Values.Where(w => w.IdLista == Lista.IdLista) on r.IdProdotto equals p.IdProdotto
-                         select new { r, p };
+        //var DatiOrdine1 = from r in datiOrdine.ordineRighe
+        //                 join p in _UserInterfaceService.AnagrProdotti.Values.Where(w => w.IdLista == Lista.IdLista) on r.IdProdotto equals p.IdProdotto
+        //                 select new { r, p };
+        var DatiOrdine = from r in datiOrdine.ordineRighe.Where(w => w.IdCategoria == Lista.IdLista) select r;
 
         if (DatiOrdine.Any())
         {
@@ -219,10 +220,12 @@ namespace BlazorFeste.Pages
     {
       try
       {
-        var DatiOrdine = from o in _UserInterfaceService.QryOrdini.Where(w => w.Key == idOrdine)
-                         join r in _UserInterfaceService.QryOrdiniRighe on o.Key equals r.Key.Item1
-                         join p in _UserInterfaceService.AnagrProdotti.Values.Where(w => w.IdLista == Lista.IdLista) on r.Value.IdProdotto equals p.IdProdotto
-                         select new { o, r, p };
+        //var DatiOrdine = from o in _UserInterfaceService.QryOrdini.Where(w => w.Key == idOrdine)
+        //                 join r in _UserInterfaceService.QryOrdiniRighe on o.Key equals r.Key.Item1
+        //                 join p in _UserInterfaceService.AnagrProdotti.Values.Where(w => w.IdLista == Lista.IdLista) on r.Value.IdProdotto equals p.IdProdotto
+        //                 select new { o, r, p };
+
+        var DatiOrdine = from r in _UserInterfaceService.QryOrdiniRighe.Where(w => (w.Key.Item1 == idOrdine) && (w.Value.IdCategoria == Lista.IdLista)) select r;
 
         if (DatiOrdine.Any())
         {
@@ -342,6 +345,7 @@ namespace BlazorFeste.Pages
         return (_Ordini.OrderBy(o => o.IdOrdine).Take(40).ToList());
       }
     }
+
     [JSInvokable("RefreshGridOrdiniHeaderAsync")]
     public string RefreshGridOrdiniHeaderAsync()
     {
@@ -380,6 +384,7 @@ namespace BlazorFeste.Pages
 
       return (JsonConvert.SerializeObject(RigaTotali));
     }
+
     [JSInvokable("SbloccaListeAsync")]
     public async Task SbloccaListeAsync(int IdOrdine)
     {
@@ -412,13 +417,12 @@ namespace BlazorFeste.Pages
         IdLista = Lista.IdLista,
         ClientIpAddress = clientInfo.IPAddress
       });
-
     }
+
     [JSInvokable("AggiornaDatiOrdineAsync")]
     public async Task<ArchOrdini> AggiornaDatiOrdineAsync(ListaOrdini _ordine)
     {
       ArchOrdini Ordine = _UserInterfaceService.QryOrdini.Where(w => w.Key == _ordine.IdOrdine).Select(s => s.Value).FirstOrDefault();
-      //ArchOrdini OrdinePre = Ordine;
 
       var isTavoloNumeric = int.TryParse(_ordine.Tavolo, out int n);
       if (isTavoloNumeric && Ordine.TipoOrdine != "SERVITO")
@@ -431,9 +435,6 @@ namespace BlazorFeste.Pages
       Ordine.Referente = _ordine.Referente;
 
       await festeDataAccess.UpdateArchOrdiniAsync(Ordine);
-
-      // Aggiorno il record dell'Ordine nella struttura di memoria
-      //var index = _UserInterfaceService.QryOrdini.TryUpdate(Ordine.IdOrdine, Ordine, OrdinePre);
 
       // Se arrivo qui significa che :
       //    Devo notificare le modifiche a chi lo desidera 

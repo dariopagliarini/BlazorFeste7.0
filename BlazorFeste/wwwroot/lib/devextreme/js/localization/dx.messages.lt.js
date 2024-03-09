@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.lt.js)
-* Version: 22.2.7
-* Build date: Mon Jun 19 2023
+* Version: 23.1.4
+* Build date: Fri Jul 14 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -70,6 +70,12 @@
             "dxDateBox-simulatedDataPickerTitleDate": "Pasirinkite dat\u0105",
             "dxDateBox-simulatedDataPickerTitleDateTime": "Pasirinkite dat\u0105 ir laik\u0105",
             "dxDateBox-validation-datetime": "Reik\u0161m\u0117 turi b\u016bti data arba laikas",
+            "dxDateRangeBox-invalidStartDateMessage": "Start value must be a date",
+            "dxDateRangeBox-invalidEndDateMessage": "End value must be a date",
+            "dxDateRangeBox-startDateOutOfRangeMessage": "Start date is out of range",
+            "dxDateRangeBox-endDateOutOfRangeMessage": "End date is out of range",
+            "dxDateRangeBox-startDateLabel": "Start Date",
+            "dxDateRangeBox-endDateLabel": "End Date",
             "dxFileUploader-selectFile": "Pasirinkite byl\u0105",
             "dxFileUploader-dropFile": "arba numeskite byl\u0105 \u010dia",
             "dxFileUploader-bytes": "baitai",
@@ -92,6 +98,10 @@
             "dxForm-requiredMessage": "{0} privalomas",
             "dxNumberBox-invalidValueMessage": "Reik\u0161m\u0117 turi b\u016bti skai\u010dius",
             "dxNumberBox-noDataText": "N\u0117ra duomen\u0173",
+            "dxDataGrid-emptyHeaderWithColumnChooserText": "Use {0} to display columns",
+            "dxDataGrid-emptyHeaderWithGroupPanelText": "Drag a column from the group panel here",
+            "dxDataGrid-emptyHeaderWithColumnChooserAndGroupPanelText": "Use {0} or drag a column from the group panel",
+            "dxDataGrid-emptyHeaderColumnChooserText": "column chooser",
             "dxDataGrid-columnChooserTitle": "Stulpeli\u0173 tvarkymas",
             "dxDataGrid-columnChooserEmptyText": "U\u017etempkite stulpel\u012f \u010dia, kad j\u012f pasl\u0117ptum\u0117te",
             "dxDataGrid-groupContinuesMessage": "T\u0119sinys kitame puslapyje",

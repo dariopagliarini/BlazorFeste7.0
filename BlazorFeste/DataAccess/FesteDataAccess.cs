@@ -8,6 +8,8 @@ using Serilog;
 using BlazorFeste.Classes;
 using Newtonsoft.Json;
 using BlazorFeste.Constants;
+using static NPOI.HSSF.Util.HSSFColor;
+using System.Threading;
 
 namespace BlazorFeste.DataAccess
 {
@@ -16,8 +18,8 @@ namespace BlazorFeste.DataAccess
     private readonly UserInterfaceService _UserInterfaceService;
     private readonly IWebHostEnvironment _Env;
 
-    //private readonly string _MySQL_connectionString = "Server=localhost;Database=cassa_feste;User=cassa_feste;Password=cassa_feste;Convert Zero Datetime=True;SslMode=none";
     private readonly string _MySQL_connectionString = "Server=localhost;Database=BlazorFeste;User=BlazorFeste;Password=BlazorFeste;Convert Zero Datetime=True;SslMode=none";
+//    private readonly string _MySQL_connectionString = "Server=192.168.1.45;Database=BlazorFeste;User=BlazorFeste;Password=BlazorFeste;Convert Zero Datetime=True;SslMode=none";
 
     public FesteDataAccess(UserInterfaceService userInterfaceService, IWebHostEnvironment env)
     {
@@ -188,8 +190,8 @@ namespace BlazorFeste.DataAccess
         {
           using (var transaction = await con.BeginTransactionAsync())
           {
-            string sql = @"INSERT INTO arch_ordini(Cassa, DataOra, TipoOrdine, Tavolo, NumeroCoperti, Referente, NoteOrdine, IdFesta, DataAssegnazione, IdStatoOrdine) 
-            VALUES(@Cassa, @DataOra, @TipoOrdine, @Tavolo, @NumeroCoperti, @Referente, @NoteOrdine, @IdFesta, @DataAssegnazione, @IdStatoOrdine); 
+            string sql = @"INSERT INTO arch_ordini(Cassa, DataOra, TipoOrdine, Tavolo, NumeroCoperti, Referente, NoteOrdine, IdFesta, PagamentoConPOS, DataAssegnazione, IdStatoOrdine) 
+            VALUES(@Cassa, @DataOra, @TipoOrdine, @Tavolo, @NumeroCoperti, @Referente, @NoteOrdine, @IdFesta,  @PagamentoConPOS, @DataAssegnazione, @IdStatoOrdine); 
             SELECT LAST_INSERT_ID();";
 
             var Params1 = new
@@ -203,6 +205,7 @@ namespace BlazorFeste.DataAccess
               NoteOrdine = archOrdine.NoteOrdine,
               IdFesta = archOrdine.IdFesta,
               DataAssegnazione = archOrdine.DataAssegnazione,
+              PagamentoConPOS = archOrdine.PagamentoConPOS,
               //ProgressivoSerata = archOrdine.ProgressivoSerata,
               IdStatoOrdine = archOrdine.IdStatoOrdine,
             };
@@ -391,6 +394,60 @@ namespace BlazorFeste.DataAccess
       }
       return 1;
     }
+
+    public async Task<DatiNotifyDashboard> GetDashBoardDataAsync(DateTime dtFestaInCorso, CancellationToken ct = default)
+    {
+      DatiNotifyDashboard datiDashboard = new();
+
+      var watch = System.Diagnostics.Stopwatch.StartNew();
+      try
+      {
+        datiDashboard.Festa = (await GetArchFesteAsync(dtFestaInCorso)).FirstOrDefault();
+
+        datiDashboard.AnagrListe = (await GetGenericQuery<AnagrListe>("SELECT * FROM anagr_liste WHERE Abilitata <> 0 AND IdListino = @IdListino ORDER BY IdLista ",
+          new { IdListino = datiDashboard.Festa.IdListino })).ToList();
+
+        datiDashboard.AnagrProdotti = (await GetGenericQuery<AnagrProdotti>("SELECT *, COUNT(IdProdotto) OVER (PARTITION BY IdLista ORDER BY IdProdotto) AS Ordine FROM anagr_prodotti WHERE IdListino = @IdListino ORDER BY IdProdotto ",
+          new { IdListino = datiDashboard.Festa.IdListino })).ToList();
+
+        datiDashboard.AnagrCasse = (await GetGenericQuery<AnagrCasse>("SELECT * FROM anagr_casse WHERE Abilitata <> 0 AND IdListino = @IdListino ORDER BY IdCassa ",
+          new { IdListino = datiDashboard.Festa.IdListino })).ToList();
+
+        datiDashboard.Ordini = (await GetGenericQuery<ArchOrdini>("SELECT * FROM arch_ordini WHERE DataAssegnazione = @DataAssegnazione",
+          new { DataAssegnazione = dtFestaInCorso })).ToList();
+
+        datiDashboard.OrdiniRighe = (await GetGenericQuery<ArchOrdiniRighe>("SELECT r.* FROM arch_ordini o JOIN arch_ordini_righe r ON o.IdOrdine = r.IdOrdine WHERE o.DataAssegnazione = @DataAssegnazione",
+          new { DataAssegnazione = dtFestaInCorso })).ToList();
+      }
+      catch (Exception ex)
+      {
+        Log.Error(ex, "GetDashBoardDataAsync");
+      }
+      watch.Stop();
+      datiDashboard.elapsed_GetDashBoardData = watch.ElapsedMilliseconds;
+
+      return datiDashboard;
+    }
+
+    public async Task<List<DatiCassa>> GetDatiCassaAsync(int _idCassa, DateTime dtFestaInCorso, CancellationToken ct = default)
+    {
+      var watch = System.Diagnostics.Stopwatch.StartNew();
+      List<DatiCassa> aaa = new List<DatiCassa>();
+      try
+      {
+        aaa = (await GetGenericQuery<DatiCassa>(@"SELECT o.Cassa, o.PagamentoConPOS, SUM(r.Importo) as Importo FROM arch_ordini o JOIN arch_ordini_righe r ON o.IdOrdine = r.IdOrdine 
+            WHERE o.DataAssegnazione = @DataAssegnazione AND o.Cassa = @IdCassa
+            GROUP BY o.PagamentoConPOS",
+            new { DataAssegnazione = dtFestaInCorso, IdCassa = _idCassa })).ToList();
+      }
+      catch (Exception ex)
+      {
+        Log.Error(ex, "GetDashBoardDataAsync");
+      }
+      watch.Stop();
+      return aaa;
+    }
+
 
     //public async Task<int> GetStatoOrdineAsync(ArchFeste datiFesta, ArchOrdini archOrdine, CancellationToken ct = default)
     //{

@@ -22,6 +22,7 @@ namespace BlazorFeste.Data.Models
     public string NoteOrdine { get; set; }
     public int ProgressivoSerata { get; set; }
     public int IdFesta { get; set; }
+    public bool PagamentoConPOS { get; set; }
 
     [Computed]
     public int IdCassa { get => int.Parse(Cassa); }

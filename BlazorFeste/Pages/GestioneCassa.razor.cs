@@ -10,12 +10,12 @@ using BlazorFeste.Util;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
 using Serilog;
 
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 
 namespace BlazorFeste.Pages
@@ -29,7 +29,7 @@ namespace BlazorFeste.Pages
     [Inject] public ClientInformationService clientInfo { get; init; }
     [Inject] public IToastService toastService { get; init; }
     [Inject] public UserInterfaceService _UserInterfaceService { get; init; }
-    [Inject] public FesteDataAccess festeDataAccess { get; init; }
+    [Inject] public FesteDataAccess _FesteDataAccess { get; init; }
     [Inject] public IJSRuntime JSRuntime { get; init; }
     #endregion
 
@@ -108,7 +108,7 @@ namespace BlazorFeste.Pages
 
     #region JSInvokable
     [JSInvokable("OnSaveToMySQLAsync")]
-    public async Task<long> OnSaveToMySQLAsync(bool _PrintEnabled, string _TipoOrdine, string _Tavolo, string _Coperti, string _NotaOrdine, string _Referente, List<RigaCassa> Righe)
+    public async Task<string> OnSaveToMySQLAsync(bool _PrintEnabled, string _TipoOrdine, string _Tavolo, string _Coperti, string _NotaOrdine, string _Referente, bool _PagamentoConPOS, List<RigaCassa> Righe)
     {
       // Inizializzazione Record ArchOrdini
       ArchOrdini _archOrdine = new ArchOrdini
@@ -119,6 +119,7 @@ namespace BlazorFeste.Pages
         NumeroCoperti = _Coperti,
         NoteOrdine = _NotaOrdine,
         Referente = _Referente,
+        PagamentoConPOS = _PagamentoConPOS,
         DataOra = DateTime.Now,
 
         // Prima venivano gestiti nel trigger
@@ -238,7 +239,7 @@ namespace BlazorFeste.Pages
 
             foreach (var riga in _archOrdineRighe.Where(w => Prodotto.Contains(w.IdProdotto)))
             {
-              riga.IdStatoRiga = (int)K_STATO_RIGA.PresaInCarico; 
+              riga.IdStatoRiga = (int)K_STATO_RIGA.PresaInCarico;
               riga.DataOra_RigaPresaInCarico = DateTime.Now;
             }
           }
@@ -253,7 +254,7 @@ namespace BlazorFeste.Pages
       }
 
       // Creo l'ordine nel database e assegno alle variabili di memoria l'idOrdine che mi arriva dal DB prima di creare l'ordine nelle liste globali
-      _archOrdine.IdOrdine = await festeDataAccess.InsertArchOrdiniAsync(_archOrdine, _archOrdineRighe); 
+      _archOrdine.IdOrdine = await _FesteDataAccess.InsertArchOrdiniAsync(_archOrdine, _archOrdineRighe);
 
       // Creo l'ordine nella lista in memoria
       if (_UserInterfaceService.QryOrdini.TryAdd(_archOrdine.IdOrdine, _archOrdine))
@@ -276,7 +277,7 @@ namespace BlazorFeste.Pages
       //    Devo notificare a chi lo desidera i dati del nuovo ordine
       //      _UserInterfaceService.OnNotifyStatoOrdine(idOrdine);
       _UserInterfaceService.OnNotifyNuovoOrdine(new DatiOrdine { ordine = _archOrdine, ordineRighe = _archOrdineRighe });
-      
+
       toastService.ShowSuccess($"Ordine #{_archOrdine.IdOrdine} creato con successo"); // , "Avanti il prossimo"
 
       #region Gestione Stampa 
@@ -332,7 +333,30 @@ namespace BlazorFeste.Pages
       #endregion
 
       Log.Information($"{clientInfo.IPAddress} - Nuovo Ordine - {_archOrdine.IdOrdine}, Cassa: {_archOrdine.Cassa}, RigheOrdine: {_archOrdineRighe.Count}");
-      return (_archOrdine.IdOrdine);
+
+      double ImportoContanti = 0.0;
+      double ImportoPOS = 0.0;
+
+      var DatiCassa = await _FesteDataAccess.GetDatiCassaAsync(_archOrdine.IdCassa, _archOrdine.DataAssegnazione);
+      if (DatiCassa.Any())
+      {
+        if (DatiCassa.Where(w => w.PagamentoConPOS == false).Count() > 0)
+        {
+          ImportoContanti = DatiCassa.Where(w => w.PagamentoConPOS == false).FirstOrDefault().Importo;
+        }
+
+        if (DatiCassa.Where(w => w.PagamentoConPOS == true).Count() > 0)
+        {
+          ImportoPOS = DatiCassa.Where(w => w.PagamentoConPOS == true).FirstOrDefault().Importo;
+        }
+      }
+
+      Dictionary<string, object> sendDict = new Dictionary<string, object>();
+      sendDict.Add("ultimoOrdine", _archOrdine.IdOrdine);
+      sendDict.Add("cassaContanti", ImportoContanti);
+      sendDict.Add("cassaPOS", ImportoPOS);
+
+      return (JsonConvert.SerializeObject(sendDict));
     }
 
     [JSInvokable("OnPrintRequest_StampaDiProva")]
@@ -443,7 +467,7 @@ namespace BlazorFeste.Pages
     }
     private int GetStatoOrdine(ArchOrdini archOrdine, List<ArchOrdiniRighe> archOrdineRighe)
     {
-      int Result = (int)K_STATO_ORDINE.InCorso; 
+      int Result = (int)K_STATO_ORDINE.InCorso;
 
       // Verifico se esistono righe dell'ordine con IdListaPadre > 0 (cioè con delle code a priorità maggiore ancora da smaltire)
       var RigheConListaPadre = from r in archOrdineRighe
@@ -454,7 +478,7 @@ namespace BlazorFeste.Pages
       foreach (var Riga in RigheConListaPadre)
       {
         // Verifico se esistono ancora prodotti da smaltire nella lista padre
-        var RigheListaPadre = from r in archOrdineRighe.Where(w => w.IdStatoRiga < (int)K_STATO_RIGA.OrdineEvaso) 
+        var RigheListaPadre = from r in archOrdineRighe.Where(w => w.IdStatoRiga < (int)K_STATO_RIGA.OrdineEvaso)
                               join p in _UserInterfaceService.AnagrProdotti.Values on r.IdProdotto equals p.IdProdotto
                               join l in _UserInterfaceService.AnagrListe.Where(w => w.IdLista == Riga.l.IdListaPadre) on p.IdLista equals l.IdLista
                               select new { r, p, l };
@@ -493,7 +517,7 @@ namespace BlazorFeste.Pages
       {
         // handle web exception
         toastService.ShowError($"{ex.Message}"); // "Errore Stampante"
-        Log.Error(ex, $"{clientInfo.IPAddress} - HttpRequestToPrinterController 1");
+        Log.Error(ex, $"{clientInfo.IPAddress} - HttpRequestToPrinterController 1 - WebException");
       }
       catch (TaskCanceledException ex)
       {
@@ -501,7 +525,7 @@ namespace BlazorFeste.Pages
         {
           // a real cancellation, triggered by the caller
           toastService.ShowError($"{ex.Message}"); // "Errore Stampante"
-          Log.Error(ex, $"{clientInfo.IPAddress} - HttpRequestToPrinterController 2");
+          Log.Error(ex, $"{clientInfo.IPAddress} - HttpRequestToPrinterController 2 - TaskCanceledException");
         }
         else
         {
@@ -818,7 +842,6 @@ namespace BlazorFeste.Pages
               Festa = _UserInterfaceService.ArchFesta,
 
               statoCassa = (from p in _UserInterfaceService.AnagrProdotti.Values
-
                             join r in _qryStatoProdotti on p.IdProdotto equals r.IdProdotto
                             orderby p.IdProdotto
                             //where p.Stato

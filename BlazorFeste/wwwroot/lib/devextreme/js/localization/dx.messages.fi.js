@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.fi.js)
-* Version: 22.2.7
-* Build date: Mon Jun 19 2023
+* Version: 23.1.4
+* Build date: Fri Jul 14 2023
 *
 * Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -70,6 +70,12 @@
             "dxDateBox-simulatedDataPickerTitleDate": "Valitse p\xe4iv\xe4m\xe4\xe4r\xe4",
             "dxDateBox-simulatedDataPickerTitleDateTime": "Valitse p\xe4iv\xe4m\xe4\xe4r\xe4 ja kellonaika",
             "dxDateBox-validation-datetime": "Arvon on oltava p\xe4iv\xe4ys tai aika",
+            "dxDateRangeBox-invalidStartDateMessage": "Start value must be a date",
+            "dxDateRangeBox-invalidEndDateMessage": "End value must be a date",
+            "dxDateRangeBox-startDateOutOfRangeMessage": "Start date is out of range",
+            "dxDateRangeBox-endDateOutOfRangeMessage": "End date is out of range",
+            "dxDateRangeBox-startDateLabel": "Alkamisp\xe4iv\xe4",
+            "dxDateRangeBox-endDateLabel": "P\xe4\xe4ttymisp\xe4iv\xe4",
             "dxFileUploader-selectFile": "Valitse tiedosto",
             "dxFileUploader-dropFile": "tai ved\xe4 ja pudota tiedosto t\xe4h\xe4n",
             "dxFileUploader-bytes": "tavua",
@@ -92,6 +98,10 @@
             "dxForm-requiredMessage": "{0} on pakollinen",
             "dxNumberBox-invalidValueMessage": "Arvon on oltava numero",
             "dxNumberBox-noDataText": "Ei dataa",
+            "dxDataGrid-emptyHeaderWithColumnChooserText": "Use {0} to display columns",
+            "dxDataGrid-emptyHeaderWithGroupPanelText": "Drag a column from the group panel here",
+            "dxDataGrid-emptyHeaderWithColumnChooserAndGroupPanelText": "Use {0} or drag a column from the group panel",
+            "dxDataGrid-emptyHeaderColumnChooserText": "column chooser",
             "dxDataGrid-columnChooserTitle": "Sarakkeenvalitsin",
             "dxDataGrid-columnChooserEmptyText": "Ved\xe4 sarake t\xe4\xe4ll\xe4 piilottaa sen",
             "dxDataGrid-groupContinuesMessage": "Jatkuu seuraavalla sivulla",

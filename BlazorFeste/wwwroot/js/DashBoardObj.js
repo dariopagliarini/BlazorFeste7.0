@@ -5,6 +5,7 @@ export var DashBoardObj = {
   gridListe: null,
   gridOrdini: null,
   chartCasse: null,
+  gridCasse: null,
   anagrCasse: null,
   anagrProdotti: null,
 
@@ -192,6 +193,55 @@ export var DashBoardObj = {
         },
       },
     });
+
+    if (DashBoardObj.gridCasse) {
+      DashBoardObj.gridCasse.dispose();
+    }
+    $("#myGridCasse").dxDataGrid({
+      dataSource: [],
+      height: "100%",
+      width: "100%",
+      keyExpr: "idCassa",
+      columns: [
+        {
+          caption: "Cassa", dataField: "idCassa", alignment: "center", 
+        },
+        {
+          caption: "Contanti", dataField: "importoContanti", format: { type: "currency", currency: "EUR", precision: 2 }, width: 80,
+        },
+        {
+          caption: "POS", dataField: "importoPOS", format: { type: "currency", currency: "EUR", precision: 2 }, width: 80,
+        },
+        {
+          caption: "Totale", dataField: "importo", format: { type: "currency", currency: "EUR", precision: 2 }, width: 80,
+        },
+      ],
+      noDataText: "Nessun Dato Disponibile",
+      focusedRowEnabled: false,
+      showRowLines: true,
+      rowAlternationEnabled: true,
+      columnAutoWidth: true,
+      wordWrapEnabled: false,
+      showBorders: true,
+      hoverStateEnabled: true,
+      paging: { enabled: false },
+      scrolling: {
+        mode: "standard" // or "virtual" | "infinite"
+      },
+      onInitialized(e) {
+        DashBoardObj.gridCasse = e.component;
+      },
+      onRowPrepared: function (e) {
+        switch (e.rowType) {
+          case "header":
+            break;
+
+          case "data":
+            e.rowElement.find("td").css({ "vertical-align": "middle" });
+            break;
+        }
+      },
+    });
   },
 
   dispose: () => {
@@ -215,6 +265,10 @@ export var DashBoardObj = {
       if ("qryStatoCasse" in dati) {
         var _qryStatoCasse = dati["qryStatoCasse"];
         if (_qryStatoCasse.length > 0) {
+          DashBoardObj.gridCasse.beginUpdate();
+          DashBoardObj.gridCasse.option("dataSource", _qryStatoCasse);
+          DashBoardObj.gridCasse.endUpdate();
+
           const chart = Chart.getChart("myChartCasse");
 
           if (chart) {
@@ -230,6 +284,8 @@ export var DashBoardObj = {
                 chart.data.datasets[0].backgroundColor.push(_cassa.backColor);
               }
               chart.data.datasets[0].data.push(cassa.importo);
+              //chart.data.datasets[1].data.push(cassa.importoContanti);
+              //chart.data.datasets[2].data.push(cassa.importoPOS);
             });
             chart.update();
           }

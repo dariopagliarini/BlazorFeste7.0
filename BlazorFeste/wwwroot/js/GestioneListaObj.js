@@ -800,6 +800,11 @@ export var GestioneListaObj = {
         sFontSize = "12px";
         iWidth = 75;
         break;
+
+      case (numProdotti <= 15):
+        sFontSize = "11px";
+        iWidth = 70;
+        break;
     }
 
     // console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - gestisciColonne - Prodotti: " + _Prodotti.length.toString());
