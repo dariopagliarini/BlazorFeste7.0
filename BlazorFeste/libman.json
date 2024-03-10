@@ -7,7 +7,7 @@
       "destination": "wwwroot/lib/devextreme/"
     },
     {
-      "library": "devextreme-quill@1.6.2",
+      "library": "devextreme-quill@1.7.0",
       "destination": "wwwroot/lib/devextreme-quill/"
     },
     {
@@ -15,7 +15,7 @@
       "destination": "wwwroot/lib/html2pdf/"
     },
     {
-      "library": "exceljs@4.3.0",
+      "library": "exceljs@4.4.0",
       "destination": "wwwroot/lib/exceljs/"
     },
     {
@@ -23,7 +23,7 @@
       "destination": "wwwroot/lib/FileSaver.js/"
     },
     {
-      "library": "Chart.js@4.4.0",
+      "library": "Chart.js@4.4.1",
       "destination": "wwwroot/lib/Chart.js/"
     },
     {
@@ -43,7 +43,7 @@
       "destination": "wwwroot/lib/Chart.js/plugin/"
     },
     {
-      "library": "moment.js@2.29.4",
+      "library": "moment.js@2.30.1",
       "destination": "wwwroot/lib/moment.js/",
       "files": [
         "moment.min.js",
