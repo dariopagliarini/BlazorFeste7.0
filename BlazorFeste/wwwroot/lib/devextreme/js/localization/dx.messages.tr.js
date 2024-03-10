@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.tr.js)
-* Version: 23.1.4
-* Build date: Fri Jul 14 2023
+* Version: 23.1.8
+* Build date: Thu Jan 25 2024
 *
-* Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -79,9 +79,9 @@
             "dxFileUploader-selectFile": "Dosya se\xe7",
             "dxFileUploader-dropFile": "veya Dosyay\u0131 buraya b\u0131rak\u0131n",
             "dxFileUploader-bytes": "bytes",
-            "dxFileUploader-kb": "kb",
-            "dxFileUploader-Mb": "Mb",
-            "dxFileUploader-Gb": "Gb",
+            "dxFileUploader-kb": "KB",
+            "dxFileUploader-Mb": "MB",
+            "dxFileUploader-Gb": "GB",
             "dxFileUploader-upload": "Y\xfckleme",
             "dxFileUploader-uploaded": "Y\xfcklenen",
             "dxFileUploader-readyToUpload": "Y\xfcklemeye haz\u0131r",
@@ -181,11 +181,12 @@
             "dxDataGrid-ariaSelectAll": "Hepsini se\xe7",
             "dxDataGrid-ariaSelectRow": "Sat\u0131r\u0131 se\xe7",
             "dxDataGrid-ariaToolbar": "Data grid toolbar",
+            "dxDataGrid-ariaEditForm": "Edit form",
             "dxDataGrid-filterBuilderPopupTitle": "Filtre Olu\u015fturucu",
             "dxDataGrid-filterPanelCreateFilter": "Filtre Olu\u015ftur",
             "dxDataGrid-filterPanelClearFilter": "Temizle",
             "dxDataGrid-filterPanelFilterEnabledHint": "Filtreyi etkinle\u015ftir",
-            "dxTreeList-ariaTreeList": "A\u011fa\xe7 listesi",
+            "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Search in the tree list",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
             "dxTreeList-editingAddRowToNode": "Ekle",
@@ -383,6 +384,16 @@
             "dxHtmlEditor-right": "Right",
             "dxHtmlEditor-indent": "Indent",
             "dxHtmlEditor-justify": "Justify",
+            "dxHtmlEditor-borderStyleNone": "none",
+            "dxHtmlEditor-borderStyleHidden": "hidden",
+            "dxHtmlEditor-borderStyleDotted": "dotted",
+            "dxHtmlEditor-borderStyleDashed": "dashed",
+            "dxHtmlEditor-borderStyleSolid": "solid",
+            "dxHtmlEditor-borderStyleDouble": "double",
+            "dxHtmlEditor-borderStyleGroove": "groove",
+            "dxHtmlEditor-borderStyleRidge": "ridge",
+            "dxHtmlEditor-borderStyleInset": "inset",
+            "dxHtmlEditor-borderStyleOutset": "outset",
             "dxFileManager-newDirectoryName": "Untitled directory",
             "dxFileManager-rootDirectoryName": "Files",
             "dxFileManager-errorNoAccess": "Eri\u015fim reddedildi. \u0130\u015flem tamamlanam\u0131yor.",

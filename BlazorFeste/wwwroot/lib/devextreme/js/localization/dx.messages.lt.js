@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.lt.js)
-* Version: 23.1.4
-* Build date: Fri Jul 14 2023
+* Version: 23.1.8
+* Build date: Thu Jan 25 2024
 *
-* Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -79,9 +79,9 @@
             "dxFileUploader-selectFile": "Pasirinkite byl\u0105",
             "dxFileUploader-dropFile": "arba numeskite byl\u0105 \u010dia",
             "dxFileUploader-bytes": "baitai",
-            "dxFileUploader-kb": "kb",
-            "dxFileUploader-Mb": "Mb",
-            "dxFileUploader-Gb": "Gb",
+            "dxFileUploader-kb": "KB",
+            "dxFileUploader-Mb": "MB",
+            "dxFileUploader-Gb": "GB",
             "dxFileUploader-upload": "\u012ekelti",
             "dxFileUploader-uploaded": "\u012ekelta",
             "dxFileUploader-readyToUpload": "Paruo\u0161ta \u012fk\u0117limui",
@@ -181,11 +181,12 @@
             "dxDataGrid-ariaSelectAll": "Pasirinkti visk\u0105",
             "dxDataGrid-ariaSelectRow": "Pasirinkti eilut\u0119",
             "dxDataGrid-ariaToolbar": "Duomen\u0173 lentel\u0117s \u012franki\u0173 juosta",
+            "dxDataGrid-ariaEditForm": "Edit form",
             "dxDataGrid-filterBuilderPopupTitle": "Filtr\u0173 konstruktorius",
             "dxDataGrid-filterPanelCreateFilter": "Sukurti filtr\u0105",
             "dxDataGrid-filterPanelClearFilter": "I\u0161valyti",
             "dxDataGrid-filterPanelFilterEnabledHint": "Aktyvuoti filtr\u0105",
-            "dxTreeList-ariaTreeList": "Duomen\u0173 medis",
+            "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Ie\u0161koti duomen\u0173 medyje",
             "dxTreeList-ariaToolbar": "Duomen\u0173 med\u017eio \u012franki\u0173 juosta",
             "dxTreeList-editingAddRowToNode": "Prid\u0117ti",
@@ -383,6 +384,16 @@
             "dxHtmlEditor-right": "De\u0161in\u0117",
             "dxHtmlEditor-indent": "\u012etrauka",
             "dxHtmlEditor-justify": "\u012e plot\u012f",
+            "dxHtmlEditor-borderStyleNone": "none",
+            "dxHtmlEditor-borderStyleHidden": "hidden",
+            "dxHtmlEditor-borderStyleDotted": "dotted",
+            "dxHtmlEditor-borderStyleDashed": "dashed",
+            "dxHtmlEditor-borderStyleSolid": "solid",
+            "dxHtmlEditor-borderStyleDouble": "double",
+            "dxHtmlEditor-borderStyleGroove": "groove",
+            "dxHtmlEditor-borderStyleRidge": "ridge",
+            "dxHtmlEditor-borderStyleInset": "inset",
+            "dxHtmlEditor-borderStyleOutset": "outset",
             "dxFileManager-newDirectoryName": "Nepavadintas aplankas",
             "dxFileManager-rootDirectoryName": "Bylos",
             "dxFileManager-errorNoAccess": "N\u0117ra prieigos. Veiksmas negali b\u016bti atliktas.",

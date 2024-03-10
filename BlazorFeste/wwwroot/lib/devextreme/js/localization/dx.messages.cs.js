@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.cs.js)
-* Version: 23.1.4
-* Build date: Fri Jul 14 2023
+* Version: 23.1.8
+* Build date: Thu Jan 25 2024
 *
-* Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -79,9 +79,9 @@
             "dxFileUploader-selectFile": "Vyberte soubor",
             "dxFileUploader-dropFile": "nebo p\u0159eneste soubor sem",
             "dxFileUploader-bytes": "byt\u016f",
-            "dxFileUploader-kb": "kb",
-            "dxFileUploader-Mb": "Mb",
-            "dxFileUploader-Gb": "Gb",
+            "dxFileUploader-kb": "KB",
+            "dxFileUploader-Mb": "MB",
+            "dxFileUploader-Gb": "GB",
             "dxFileUploader-upload": "Nahr\xe1t",
             "dxFileUploader-uploaded": "Nahr\xe1no",
             "dxFileUploader-readyToUpload": "P\u0159ipraveno k nahr\xe1n\xed",
@@ -181,11 +181,12 @@
             "dxDataGrid-ariaSelectAll": "Vybrat v\u0161e",
             "dxDataGrid-ariaSelectRow": "Vybrat \u0159\xe1dek",
             "dxDataGrid-ariaToolbar": "Data grid toolbar",
+            "dxDataGrid-ariaEditForm": "Edit form",
             "dxDataGrid-filterBuilderPopupTitle": "Tvorba Filtru",
             "dxDataGrid-filterPanelCreateFilter": "Vytvo\u0159it Filtr",
             "dxDataGrid-filterPanelClearFilter": "Smazat",
             "dxDataGrid-filterPanelFilterEnabledHint": "Povolit Filtr",
-            "dxTreeList-ariaTreeList": "Hierarchick\xe9 zobrazen\xed",
+            "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Search in the tree list",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
             "dxTreeList-editingAddRowToNode": "P\u0159idat",
@@ -383,6 +384,16 @@
             "dxHtmlEditor-right": "Right",
             "dxHtmlEditor-indent": "Indent",
             "dxHtmlEditor-justify": "Justify",
+            "dxHtmlEditor-borderStyleNone": "none",
+            "dxHtmlEditor-borderStyleHidden": "hidden",
+            "dxHtmlEditor-borderStyleDotted": "dotted",
+            "dxHtmlEditor-borderStyleDashed": "dashed",
+            "dxHtmlEditor-borderStyleSolid": "solid",
+            "dxHtmlEditor-borderStyleDouble": "double",
+            "dxHtmlEditor-borderStyleGroove": "groove",
+            "dxHtmlEditor-borderStyleRidge": "ridge",
+            "dxHtmlEditor-borderStyleInset": "inset",
+            "dxHtmlEditor-borderStyleOutset": "outset",
             "dxFileManager-newDirectoryName": "Nepojmenovan\xe1 slo\u017eka",
             "dxFileManager-rootDirectoryName": "Soubory",
             "dxFileManager-errorNoAccess": "P\u0159\xedstup zablokov\xe1n. Operace nem\u016f\u017ee b\xfdt dokon\u010dena.",

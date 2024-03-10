@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.pt.js)
-* Version: 23.1.4
-* Build date: Fri Jul 14 2023
+* Version: 23.1.8
+* Build date: Thu Jan 25 2024
 *
-* Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -79,9 +79,9 @@
             "dxFileUploader-selectFile": "Selecionar arquivo",
             "dxFileUploader-dropFile": "ou Soltar arquivo aqui",
             "dxFileUploader-bytes": "bytes",
-            "dxFileUploader-kb": "kb",
-            "dxFileUploader-Mb": "Mb",
-            "dxFileUploader-Gb": "Gb",
+            "dxFileUploader-kb": "KB",
+            "dxFileUploader-Mb": "MB",
+            "dxFileUploader-Gb": "GB",
             "dxFileUploader-upload": "Upload",
             "dxFileUploader-uploaded": "Upload conclu\xeddo",
             "dxFileUploader-readyToUpload": "Pronto para upload",
@@ -181,11 +181,12 @@
             "dxDataGrid-ariaSelectAll": "Selecionar todos",
             "dxDataGrid-ariaSelectRow": "Selecionar linha",
             "dxDataGrid-ariaToolbar": "Data grid toolbar",
+            "dxDataGrid-ariaEditForm": "Edit form",
             "dxDataGrid-filterBuilderPopupTitle": "Construtor de filtro",
             "dxDataGrid-filterPanelCreateFilter": "Criar filtro",
             "dxDataGrid-filterPanelClearFilter": "Limpar",
             "dxDataGrid-filterPanelFilterEnabledHint": "Habilitar o filtro",
-            "dxTreeList-ariaTreeList": "Lista em \xe1rvore",
+            "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Pesquisar na lista de \xe1rvores",
             "dxTreeList-ariaToolbar": "Barra de ferramentas da lista de \xe1rvores",
             "dxTreeList-editingAddRowToNode": "Adicionar",
@@ -383,6 +384,16 @@
             "dxHtmlEditor-right": "Direita",
             "dxHtmlEditor-indent": "Recuar",
             "dxHtmlEditor-justify": "Justificar",
+            "dxHtmlEditor-borderStyleNone": "none",
+            "dxHtmlEditor-borderStyleHidden": "hidden",
+            "dxHtmlEditor-borderStyleDotted": "dotted",
+            "dxHtmlEditor-borderStyleDashed": "dashed",
+            "dxHtmlEditor-borderStyleSolid": "solid",
+            "dxHtmlEditor-borderStyleDouble": "double",
+            "dxHtmlEditor-borderStyleGroove": "groove",
+            "dxHtmlEditor-borderStyleRidge": "ridge",
+            "dxHtmlEditor-borderStyleInset": "inset",
+            "dxHtmlEditor-borderStyleOutset": "outset",
             "dxFileManager-newDirectoryName": "Diret\xf3rio sem t\xedtulo",
             "dxFileManager-rootDirectoryName": "Arquivos",
             "dxFileManager-errorNoAccess": "Acesso negado. A opera\xe7\xe3o n\xe3o p\xf4de ser conclu\xedda.",

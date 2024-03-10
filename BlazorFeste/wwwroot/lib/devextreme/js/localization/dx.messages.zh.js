@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.zh.js)
-* Version: 23.1.4
-* Build date: Fri Jul 14 2023
+* Version: 23.1.8
+* Build date: Thu Jan 25 2024
 *
-* Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -79,9 +79,9 @@
             "dxFileUploader-selectFile": "\u9009\u62e9\u6587\u4ef6",
             "dxFileUploader-dropFile": "\u6216\u8005\u628a\u6587\u4ef6\u653e\u5728\u6b64\u5904",
             "dxFileUploader-bytes": "bytes",
-            "dxFileUploader-kb": "kb",
-            "dxFileUploader-Mb": "Mb",
-            "dxFileUploader-Gb": "Gb",
+            "dxFileUploader-kb": "KB",
+            "dxFileUploader-Mb": "MB",
+            "dxFileUploader-Gb": "GB",
             "dxFileUploader-upload": "\u4e0a\u4f20",
             "dxFileUploader-uploaded": "\u5df2\u4e0a\u4f20",
             "dxFileUploader-readyToUpload": "\u51c6\u5907\u4e0a\u4f20",
@@ -181,11 +181,12 @@
             "dxDataGrid-ariaSelectAll": "\u5168\u9009",
             "dxDataGrid-ariaSelectRow": "\u9009\u62e9\u884c",
             "dxDataGrid-ariaToolbar": "Data grid toolbar",
+            "dxDataGrid-ariaEditForm": "Edit form",
             "dxDataGrid-filterBuilderPopupTitle": "\u8fc7\u6ee4\u5668\u751f\u6210\u5668",
             "dxDataGrid-filterPanelCreateFilter": "\u521b\u5efa\u8fc7\u6ee4\u5668",
             "dxDataGrid-filterPanelClearFilter": "\u6e05\u7a7a",
             "dxDataGrid-filterPanelFilterEnabledHint": "\u542f\u7528\u8be5\u8fc7\u6ee4\u5668",
-            "dxTreeList-ariaTreeList": "\u6811\u72b6\u5217\u8868",
+            "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Search in the tree list",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
             "dxTreeList-editingAddRowToNode": "\u6dfb\u52a0",
@@ -383,6 +384,16 @@
             "dxHtmlEditor-right": "Right",
             "dxHtmlEditor-indent": "Indent",
             "dxHtmlEditor-justify": "Justify",
+            "dxHtmlEditor-borderStyleNone": "none",
+            "dxHtmlEditor-borderStyleHidden": "hidden",
+            "dxHtmlEditor-borderStyleDotted": "dotted",
+            "dxHtmlEditor-borderStyleDashed": "dashed",
+            "dxHtmlEditor-borderStyleSolid": "solid",
+            "dxHtmlEditor-borderStyleDouble": "double",
+            "dxHtmlEditor-borderStyleGroove": "groove",
+            "dxHtmlEditor-borderStyleRidge": "ridge",
+            "dxHtmlEditor-borderStyleInset": "inset",
+            "dxHtmlEditor-borderStyleOutset": "outset",
             "dxFileManager-newDirectoryName": "Untitled directory",
             "dxFileManager-rootDirectoryName": "Files",
             "dxFileManager-errorNoAccess": "Access Denied. Operation could not be completed.",

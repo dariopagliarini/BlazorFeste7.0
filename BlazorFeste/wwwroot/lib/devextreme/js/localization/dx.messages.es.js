@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.es.js)
-* Version: 23.1.4
-* Build date: Fri Jul 14 2023
+* Version: 23.1.8
+* Build date: Thu Jan 25 2024
 *
-* Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -79,9 +79,9 @@
             "dxFileUploader-selectFile": "Seleccionar archivo",
             "dxFileUploader-dropFile": "o arrastre un archivo aqu\xed",
             "dxFileUploader-bytes": "bytes",
-            "dxFileUploader-kb": "kb",
-            "dxFileUploader-Mb": "Mb",
-            "dxFileUploader-Gb": "Gb",
+            "dxFileUploader-kb": "KB",
+            "dxFileUploader-Mb": "MB",
+            "dxFileUploader-Gb": "GB",
             "dxFileUploader-upload": "Subir",
             "dxFileUploader-uploaded": "Subido",
             "dxFileUploader-readyToUpload": "Listo para subir",
@@ -181,11 +181,12 @@
             "dxDataGrid-ariaSelectAll": "Seleccionar todo",
             "dxDataGrid-ariaSelectRow": "Seleccionar fila",
             "dxDataGrid-ariaToolbar": "Data grid toolbar",
+            "dxDataGrid-ariaEditForm": "Edit form",
             "dxDataGrid-filterBuilderPopupTitle": "Constructor de filtro",
             "dxDataGrid-filterPanelCreateFilter": "Crear filtro",
             "dxDataGrid-filterPanelClearFilter": "Limpiar filtro",
             "dxDataGrid-filterPanelFilterEnabledHint": "Habilitar filtro",
-            "dxTreeList-ariaTreeList": "Lista de \xe1rbol",
+            "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Search in the tree list",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
             "dxTreeList-editingAddRowToNode": "A\xf1adir",
@@ -383,6 +384,16 @@
             "dxHtmlEditor-right": "Right",
             "dxHtmlEditor-indent": "Indent",
             "dxHtmlEditor-justify": "Justify",
+            "dxHtmlEditor-borderStyleNone": "none",
+            "dxHtmlEditor-borderStyleHidden": "hidden",
+            "dxHtmlEditor-borderStyleDotted": "dotted",
+            "dxHtmlEditor-borderStyleDashed": "dashed",
+            "dxHtmlEditor-borderStyleSolid": "solid",
+            "dxHtmlEditor-borderStyleDouble": "double",
+            "dxHtmlEditor-borderStyleGroove": "groove",
+            "dxHtmlEditor-borderStyleRidge": "ridge",
+            "dxHtmlEditor-borderStyleInset": "inset",
+            "dxHtmlEditor-borderStyleOutset": "outset",
             "dxFileManager-newDirectoryName": "Sin t\xedtulo",
             "dxFileManager-rootDirectoryName": "Archivos",
             "dxFileManager-errorNoAccess": "Acceso denegado. La operaci\xf3n no se puede completar.",

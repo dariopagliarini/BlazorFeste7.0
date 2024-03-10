@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.ro.js)
-* Version: 23.1.4
-* Build date: Fri Jul 14 2023
+* Version: 23.1.8
+* Build date: Thu Jan 25 2024
 *
-* Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -79,9 +79,9 @@
             "dxFileUploader-selectFile": "Selecteaz\u0103 fi\u0219ierul",
             "dxFileUploader-dropFile": "sau plasa\u021bi fi\u0219ierul aici",
             "dxFileUploader-bytes": "bytes",
-            "dxFileUploader-kb": "kb",
-            "dxFileUploader-Mb": "Mb",
-            "dxFileUploader-Gb": "Gb",
+            "dxFileUploader-kb": "KB",
+            "dxFileUploader-Mb": "MB",
+            "dxFileUploader-Gb": "GB",
             "dxFileUploader-upload": "\xcencarc\u0103",
             "dxFileUploader-uploaded": "\xcenc\u0103rcat",
             "dxFileUploader-readyToUpload": "Gata pentru \xeenc\u0103rcare",
@@ -181,11 +181,12 @@
             "dxDataGrid-ariaSelectAll": "Selecteaz\u0103 tot",
             "dxDataGrid-ariaSelectRow": "Selecteaz\u0103 r\xe2nd",
             "dxDataGrid-ariaToolbar": "Data grid toolbar",
+            "dxDataGrid-ariaEditForm": "Edit form",
             "dxDataGrid-filterBuilderPopupTitle": "Filtreaz\u0103 Constructor",
             "dxDataGrid-filterPanelCreateFilter": "Creaz\u0103 Fi\u0219ier",
             "dxDataGrid-filterPanelClearFilter": "Cur\u0103\u021b\u0103",
             "dxDataGrid-filterPanelFilterEnabledHint": "Activa\u021bi filtrul",
-            "dxTreeList-ariaTreeList": "Structur\u0103 arbore\u0219cent\u0103",
+            "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Search in the tree list",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
             "dxTreeList-editingAddRowToNode": "Adaug\u0103",
@@ -383,6 +384,16 @@
             "dxHtmlEditor-right": "Right",
             "dxHtmlEditor-indent": "Indent",
             "dxHtmlEditor-justify": "Justify",
+            "dxHtmlEditor-borderStyleNone": "none",
+            "dxHtmlEditor-borderStyleHidden": "hidden",
+            "dxHtmlEditor-borderStyleDotted": "dotted",
+            "dxHtmlEditor-borderStyleDashed": "dashed",
+            "dxHtmlEditor-borderStyleSolid": "solid",
+            "dxHtmlEditor-borderStyleDouble": "double",
+            "dxHtmlEditor-borderStyleGroove": "groove",
+            "dxHtmlEditor-borderStyleRidge": "ridge",
+            "dxHtmlEditor-borderStyleInset": "inset",
+            "dxHtmlEditor-borderStyleOutset": "outset",
             "dxFileManager-newDirectoryName": "Director f\u0103r\u0103 titlu",
             "dxFileManager-rootDirectoryName": "Fi\u015fiere",
             "dxFileManager-errorNoAccess": "Acces interzis. Opera\u021biunea nu a putut fi finalizat\u0103.",

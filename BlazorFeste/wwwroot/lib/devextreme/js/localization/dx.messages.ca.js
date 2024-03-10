@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.ca.js)
-* Version: 23.1.4
-* Build date: Fri Jul 14 2023
+* Version: 23.1.8
+* Build date: Thu Jan 25 2024
 *
-* Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -79,7 +79,7 @@
             "dxFileUploader-selectFile": "Seleccioneu un fitxer",
             "dxFileUploader-dropFile": "o deixar un fitxer aqu\xed",
             "dxFileUploader-bytes": "bytes",
-            "dxFileUploader-kb": "kb",
+            "dxFileUploader-kb": "KB",
             "dxFileUploader-Mb": "MB",
             "dxFileUploader-Gb": "GB",
             "dxFileUploader-upload": "Penjar",
@@ -181,11 +181,12 @@
             "dxDataGrid-ariaSelectAll": "Seleccionar tot",
             "dxDataGrid-ariaSelectRow": "Seleccioneu la fila",
             "dxDataGrid-ariaToolbar": "Barra d\u2019eines de quadr\xedcula de dades",
+            "dxDataGrid-ariaEditForm": "Edit form",
             "dxDataGrid-filterBuilderPopupTitle": "Creador de filtres",
             "dxDataGrid-filterPanelCreateFilter": "Crea un filtre",
             "dxDataGrid-filterPanelClearFilter": "Clar",
             "dxDataGrid-filterPanelFilterEnabledHint": "Activa el filtre",
-            "dxTreeList-ariaTreeList": "Llista",
+            "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Cerqueu a la llista d\u2019arbres",
             "dxTreeList-ariaToolbar": "Barra d\u2019eines de llista d\u2019arbres",
             "dxTreeList-editingAddRowToNode": "Addiccionar",
@@ -383,6 +384,16 @@
             "dxHtmlEditor-right": "Dret",
             "dxHtmlEditor-indent": "Sagnat",
             "dxHtmlEditor-justify": "Justificar",
+            "dxHtmlEditor-borderStyleNone": "none",
+            "dxHtmlEditor-borderStyleHidden": "hidden",
+            "dxHtmlEditor-borderStyleDotted": "dotted",
+            "dxHtmlEditor-borderStyleDashed": "dashed",
+            "dxHtmlEditor-borderStyleSolid": "solid",
+            "dxHtmlEditor-borderStyleDouble": "double",
+            "dxHtmlEditor-borderStyleGroove": "groove",
+            "dxHtmlEditor-borderStyleRidge": "ridge",
+            "dxHtmlEditor-borderStyleInset": "inset",
+            "dxHtmlEditor-borderStyleOutset": "outset",
             "dxFileManager-newDirectoryName": "Directori sense t\xedtol",
             "dxFileManager-rootDirectoryName": "Fitxers",
             "dxFileManager-errorNoAccess": "Acc\xe9s denegat. L'operaci\xf3 no s'ha pogut completar.",

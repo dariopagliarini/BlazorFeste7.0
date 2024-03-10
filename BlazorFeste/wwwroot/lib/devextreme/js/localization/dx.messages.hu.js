@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.hu.js)
-* Version: 23.1.4
-* Build date: Fri Jul 14 2023
+* Version: 23.1.8
+* Build date: Thu Jan 25 2024
 *
-* Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -79,9 +79,9 @@
             "dxFileUploader-selectFile": "V\xe1lasszon f\xe1jlt",
             "dxFileUploader-dropFile": "vagy h\xfazza a f\xe1jlt ide",
             "dxFileUploader-bytes": "b\xe1jt",
-            "dxFileUploader-kb": "kb",
-            "dxFileUploader-Mb": "Mb",
-            "dxFileUploader-Gb": "Gb",
+            "dxFileUploader-kb": "KB",
+            "dxFileUploader-Mb": "MB",
+            "dxFileUploader-Gb": "GB",
             "dxFileUploader-upload": "Felt\xf6lt\xe9s",
             "dxFileUploader-uploaded": "Felt\xf6ltve",
             "dxFileUploader-readyToUpload": "Felt\xf6lt\xe9sre k\xe9sz",
@@ -181,11 +181,12 @@
             "dxDataGrid-ariaSelectAll": "\xd6sszes kiv\xe1laszt\xe1sa",
             "dxDataGrid-ariaSelectRow": "Sor kiv\xe1laszt\xe1sa",
             "dxDataGrid-ariaToolbar": "Data grid toolbar",
+            "dxDataGrid-ariaEditForm": "Edit form",
             "dxDataGrid-filterBuilderPopupTitle": "Sz\u0171r\u0151k\xe9sz\xedt\u0151",
             "dxDataGrid-filterPanelCreateFilter": "Sz\u0171r\u0151 l\xe9trehoz\xe1sa",
             "dxDataGrid-filterPanelClearFilter": "T\xf6rl\xe9s",
             "dxDataGrid-filterPanelFilterEnabledHint": "Sz\u0171r\u0151 enged\xe9lyez\xe9se",
-            "dxTreeList-ariaTreeList": "Fa lista",
+            "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Search in the tree list",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
             "dxTreeList-editingAddRowToNode": "Hozz\xe1ad\xe1s",
@@ -383,6 +384,16 @@
             "dxHtmlEditor-right": "Right",
             "dxHtmlEditor-indent": "Indent",
             "dxHtmlEditor-justify": "Justify",
+            "dxHtmlEditor-borderStyleNone": "none",
+            "dxHtmlEditor-borderStyleHidden": "hidden",
+            "dxHtmlEditor-borderStyleDotted": "dotted",
+            "dxHtmlEditor-borderStyleDashed": "dashed",
+            "dxHtmlEditor-borderStyleSolid": "solid",
+            "dxHtmlEditor-borderStyleDouble": "double",
+            "dxHtmlEditor-borderStyleGroove": "groove",
+            "dxHtmlEditor-borderStyleRidge": "ridge",
+            "dxHtmlEditor-borderStyleInset": "inset",
+            "dxHtmlEditor-borderStyleOutset": "outset",
             "dxFileManager-newDirectoryName": "N\xe9vtelen k\xf6nyvt\xe1r",
             "dxFileManager-rootDirectoryName": "F\xe1jlok",
             "dxFileManager-errorNoAccess": "Hozz\xe1f\xe9r\xe9s megtagadva. A m\u0171veletet nem lehet befejezni.",

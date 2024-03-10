@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.it.js)
-* Version: 23.1.4
-* Build date: Fri Jul 14 2023
+* Version: 23.1.8
+* Build date: Thu Jan 25 2024
 *
-* Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -79,9 +79,9 @@
             "dxFileUploader-selectFile": "Seleziona file",
             "dxFileUploader-dropFile": "o trascina il file qui",
             "dxFileUploader-bytes": "bytes",
-            "dxFileUploader-kb": "kb",
-            "dxFileUploader-Mb": "Mb",
-            "dxFileUploader-Gb": "Gb",
+            "dxFileUploader-kb": "KB",
+            "dxFileUploader-Mb": "MB",
+            "dxFileUploader-Gb": "GB",
             "dxFileUploader-upload": "Carica",
             "dxFileUploader-uploaded": "Caricato",
             "dxFileUploader-readyToUpload": "Pronto per caricare",
@@ -181,11 +181,12 @@
             "dxDataGrid-ariaSelectAll": "Seleziona tutti",
             "dxDataGrid-ariaSelectRow": "Seleziona riga",
             "dxDataGrid-ariaToolbar": "Barra degli strumenti griglia",
+            "dxDataGrid-ariaEditForm": "Edit form",
             "dxDataGrid-filterBuilderPopupTitle": "Composizione filtro",
             "dxDataGrid-filterPanelCreateFilter": "Nuovo filtro",
             "dxDataGrid-filterPanelClearFilter": "Cancella",
             "dxDataGrid-filterPanelFilterEnabledHint": "Attiva il filtro",
-            "dxTreeList-ariaTreeList": "Albero",
+            "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Ricerca nell'albero",
             "dxTreeList-ariaToolbar": "Barra degli strumenti albero",
             "dxTreeList-editingAddRowToNode": "Aggiungi",
@@ -383,6 +384,16 @@
             "dxHtmlEditor-right": "Destra",
             "dxHtmlEditor-indent": "Rientro",
             "dxHtmlEditor-justify": "Giustificato",
+            "dxHtmlEditor-borderStyleNone": "none",
+            "dxHtmlEditor-borderStyleHidden": "hidden",
+            "dxHtmlEditor-borderStyleDotted": "dotted",
+            "dxHtmlEditor-borderStyleDashed": "dashed",
+            "dxHtmlEditor-borderStyleSolid": "solid",
+            "dxHtmlEditor-borderStyleDouble": "double",
+            "dxHtmlEditor-borderStyleGroove": "groove",
+            "dxHtmlEditor-borderStyleRidge": "ridge",
+            "dxHtmlEditor-borderStyleInset": "inset",
+            "dxHtmlEditor-borderStyleOutset": "outset",
             "dxFileManager-newDirectoryName": "Nuova cartella",
             "dxFileManager-rootDirectoryName": "Files",
             "dxFileManager-errorNoAccess": "Permesso di accesso negato. Impossibile proseguire.",

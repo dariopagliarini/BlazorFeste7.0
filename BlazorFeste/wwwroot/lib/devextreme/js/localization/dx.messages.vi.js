@@ -1,9 +1,9 @@
 /*!
 * DevExtreme (dx.messages.vi.js)
-* Version: 23.1.4
-* Build date: Fri Jul 14 2023
+* Version: 23.1.8
+* Build date: Thu Jan 25 2024
 *
-* Copyright (c) 2012 - 2023 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
@@ -79,9 +79,9 @@
             "dxFileUploader-selectFile": "Ch\u1ecdn t\u1eadp tin",
             "dxFileUploader-dropFile": "ho\u1eb7c Th\u1ea3 t\u1eadp tin v\xe0o \u0111\xe2y",
             "dxFileUploader-bytes": "byte",
-            "dxFileUploader-kb": "kb",
-            "dxFileUploader-Mb": "Mb",
-            "dxFileUploader-Gb": "Gb",
+            "dxFileUploader-kb": "KB",
+            "dxFileUploader-Mb": "MB",
+            "dxFileUploader-Gb": "GB",
             "dxFileUploader-upload": "Upload",
             "dxFileUploader-uploaded": "\u0110\xe3 upload",
             "dxFileUploader-readyToUpload": "S\u1eb5n s\xe0ng \u0111\u1ec3 upload",
@@ -181,11 +181,12 @@
             "dxDataGrid-ariaSelectAll": "Ch\u1ecdn t\u1ea5t c\u1ea3",
             "dxDataGrid-ariaSelectRow": "Ch\u1ecdn h\xe0ng",
             "dxDataGrid-ariaToolbar": "Data grid toolbar",
+            "dxDataGrid-ariaEditForm": "Edit form",
             "dxDataGrid-filterBuilderPopupTitle": "Tr\xecnh d\u1ef1ng B\u1ed9 l\u1ecdc",
             "dxDataGrid-filterPanelCreateFilter": "T\u1ea1o B\u1ed9 l\u1ecdc",
             "dxDataGrid-filterPanelClearFilter": "Lo\u1ea1i b\u1ecf",
             "dxDataGrid-filterPanelFilterEnabledHint": "K\xedch ho\u1ea1t B\u1ed9 l\u1ecdc",
-            "dxTreeList-ariaTreeList": "Danh s\xe1ch c\xe2y",
+            "dxTreeList-ariaTreeList": "Tree list with {0} rows and {1} columns",
             "dxTreeList-ariaSearchInGrid": "Search in the tree list",
             "dxTreeList-ariaToolbar": "Tree list toolbar",
             "dxTreeList-editingAddRowToNode": "Th\xeam",
@@ -383,6 +384,16 @@
             "dxHtmlEditor-right": "Right",
             "dxHtmlEditor-indent": "Indent",
             "dxHtmlEditor-justify": "Justify",
+            "dxHtmlEditor-borderStyleNone": "none",
+            "dxHtmlEditor-borderStyleHidden": "hidden",
+            "dxHtmlEditor-borderStyleDotted": "dotted",
+            "dxHtmlEditor-borderStyleDashed": "dashed",
+            "dxHtmlEditor-borderStyleSolid": "solid",
+            "dxHtmlEditor-borderStyleDouble": "double",
+            "dxHtmlEditor-borderStyleGroove": "groove",
+            "dxHtmlEditor-borderStyleRidge": "ridge",
+            "dxHtmlEditor-borderStyleInset": "inset",
+            "dxHtmlEditor-borderStyleOutset": "outset",
             "dxFileManager-newDirectoryName": "Th\u01b0 m\u1ee5c kh\xf4ng t\xean",
             "dxFileManager-rootDirectoryName": "C\xe1c t\u1eadp tin",
             "dxFileManager-errorNoAccess": "T\u1eeb ch\u1ed1i truy c\u1eadp. Thao t\xe1c kh\xf4ng th\u1ec3 ho\xe0n t\u1ea5t.",
