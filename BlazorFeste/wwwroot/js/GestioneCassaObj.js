@@ -25,6 +25,7 @@ export var GestioneCassaObj = {
 
   switchPagamentoConPOS: null,
   PagamentoConPOS: null,
+  POS_Disponibile: null,
 
   edtContanti: null,
   edtResto: null,
@@ -108,6 +109,7 @@ export var GestioneCassaObj = {
     });
 
     GestioneCassaObj.PagamentoConPOS = false;
+    GestioneCassaObj.POS_Disponibile = _Cassa.pos;
 
     GestioneCassaObj.scontrino_data = [];
     GestioneCassaObj.scontrino_store = new DevExpress.data.ArrayStore({
@@ -316,6 +318,7 @@ export var GestioneCassaObj = {
             onInitialized: function (e) {
               GestioneCassaObj.switchPagamentoConPOS = e.component;
               e.component.option("value", GestioneCassaObj.PagamentoConPOS);
+              e.component.option("disabled", !GestioneCassaObj.POS_Disponibile);
             },
             onValueChanged: function (e) {
               GestioneCassaObj.PagamentoConPOS = e.value;

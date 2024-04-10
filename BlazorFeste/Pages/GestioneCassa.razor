@@ -3,230 +3,230 @@
 @layout FullScreenLayout
 
 <style type="text/css">
-    div {
-        --cardTitoloHeight: 24px;
-        --cardFormOrdineHeight: 110px;
-        --cardtoolbarScontrinoHeight: 52px;
-        --cardFormOrdineMargin: 3px;
+  div {
+    --cardTitoloHeight: 24px;
+    --cardFormOrdineHeight: 110px;
+    --cardtoolbarScontrinoHeight: 52px;
+    --cardFormOrdineMargin: 3px;
+  }
+
+  .cardTitolo {
+    position: relative;
+    padding: 0px;
+    height: var(--cardTitoloHeight);
+    color: white;
+  }
+
+  .cardGridOrdine {
+    position: relative;
+    padding: 2px;
+    height: calc(630px - var(--cardTitoloHeight) - var(--cardFormOrdineHeight) - var(--cardFormOrdineMargin) - var(--cardtoolbarScontrinoHeight) );
+  }
+
+  .cardFormOrdine {
+    position: relative;
+    padding: 1px;
+    height: var(--cardFormOrdineHeight);
+  }
+
+  .cardtoolbarScontrino {
+    position: relative;
+    padding: 1px;
+    height: var(--cardtoolbarScontrinoHeight);
+  }
+
+  .child_top_right {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    font-size: 10px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 4px;
+    padding-right: 4px;
+    background-color: rgba(0, 0, 0, 1.0);
+    color: gray;
+  }
+
+  .child_lblDaEvadere {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    /*font-size: 10px;*/
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 4px;
+    padding-right: 4px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: yellow;
+  }
+
+  #toolbarCassa .toolbar-label, #toolbarCassa .toolbar-label > b {
+    font-size: 20px;
+  }
+
+  .quantity-value {
+    font-size: 20px;
+  }
+
+  .total-value {
+    font-size: 20px;
+  }
+
+  .count-notif {
+    vertical-align: bottom;
+    float: left;
+    margin-left: 0px;
+    margin-bottom: 0px;
+    font-size: 12px;
+  }
+
+  .badge-success1 {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+
+  #gridScontrino .dx-datagrid {
+    font-family: Tahoma, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+  }
+
+  #gridScontrino .dx-header-row > td[role="columnheader"] {
+    font-size: 11px;
+    font-weight: bold;
+    vertical-align: middle;
+    text-align: center !important;
+  }
+
+  #gridScontrino td[role="columnheader"] {
+    text-align: center !important
+  }
+
+  #gridScontrino .dx-datagrid-nodata {
+    font-size: 18px;
+    white-space: normal;
+  }
+
+  #gridScontrino .dx-datagrid-total-footer {
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+    #gridScontrino .dx-datagrid-total-footer > .dx-datagrid-content {
+      padding: 0px;
     }
 
-    .cardTitolo {
-        position: relative;
-        padding: 0px;
-        height: var(--cardTitoloHeight);
-        color: white;
+  #gridScontrino .dx-datagrid .dx-row > td, .dx-datagrid .dx-row > tr > td {
+    padding: 1px;
+  }
+
+  #gridScontrino .dx-datagrid-header-panel {
+    padding: 0px;
+    background-color: rgba(213, 51, 67, 1.0);
+  }
+
+    #gridScontrino .dx-datagrid-header-panel .dx-toolbar {
+      margin: 0;
+      padding-right: 6px;
+      background-color: transparent;
     }
 
-    .cardGridOrdine {
-        position: relative;
-        padding: 2px;
-        height: calc(630px - var(--cardTitoloHeight) - var(--cardFormOrdineHeight) - var(--cardFormOrdineMargin) - var(--cardtoolbarScontrinoHeight) );
+    #gridScontrino .dx-datagrid-header-panel .dx-toolbar-items-container {
+      height: 50px;
     }
 
-    .cardFormOrdine {
-        position: relative;
-        padding: 1px;
-        height: var(--cardFormOrdineHeight);
+    #gridScontrino .dx-datagrid-header-panel .dx-toolbar-before .dx-toolbar-item:last-child {
+      padding-right: 10px;
     }
 
-    .cardtoolbarScontrino {
-        position: relative;
-        padding: 1px;
-        height: var(--cardtoolbarScontrinoHeight);
+    #gridScontrino .dx-datagrid-header-panel .dx-selectbox {
+      margin: auto 10px;
     }
 
-    .child_top_right {
-        position: absolute;
-        bottom: 1px;
-        right: 1px;
-        font-size: 10px;
-        padding-top: 0px;
-        padding-bottom: 0px;
-        padding-left: 4px;
-        padding-right: 4px;
-        background-color: rgba(0, 0, 0, 1.0);
-        color: gray;
+    #gridScontrino .dx-datagrid-header-panel .dx-button {
+      margin: auto 0;
     }
 
-    .child_lblDaEvadere {
-        position: absolute;
-        top: 1px;
-        left: 1px;
-        /*font-size: 10px;*/
-        padding-top: 0px;
-        padding-bottom: 0px;
-        padding-left: 4px;
-        padding-right: 4px;
-        background-color: rgba(0, 0, 0, 0.8);
-        color: yellow;
+  #toolbarScontrino.dx-toolbar {
+    margin: 0;
+    padding-right: 6px;
+    background-color: transparent;
+  }
+
+  #toolbarScontrino .dx-toolbar-items-container {
+    height: 52px;
+  }
+
+  #toolbarScontrino .dx-toolbar-before .dx-toolbar-item:last-child {
+    padding-right: 5px;
+  }
+
+  #toolbarScontrino .dx-toolbar-before .dx-toolbar-item:first-child {
+    padding-left: 5px;
+  }
+
+  #toolbarScontrino .informer {
+    height: 50px;
+    width: 50px;
+    font-size: 20px;
+    padding-left: 6px;
+    text-align: left;
+    color: #fff;
+  }
+
+  #toolbarScontrino .count {
+    padding-top: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  #toolbarScontrino .dx-button {
+    font-size: 11px;
+    font-weight: bold;
+  }
+
+  #toolbarScontrino .dx-button-text {
+    line-height: 1.2858;
+    overflow: hidden;
+    white-space: normal;
+  }
+
+  #toolbarScontrino .dx-button.dx-button-verde {
+    color: white;
+    background-color: rgba(24,130,81, 0.9);
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+  }
+
+    #toolbarScontrino .dx-button.dx-button-verde.dx-state-hover {
+      background-color: rgba(92,184,92, 1.0);
     }
 
-    #toolbarCassa .toolbar-label, #toolbarCassa .toolbar-label > b {
-        font-size: 20px;
+  #toolbarScontrino .dx-button.dx-button-giallo {
+    background-color: rgba(255,193,7, 0.9);
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+  }
+
+    #toolbarScontrino .dx-button.dx-button-giallo.dx-state-hover {
+      background-color: rgba(255,193,7, 1.0);
     }
 
-    .quantity-value {
-        font-size: 20px;
-    }
+  #toolbarScontrino .dx-button-has-text .dx-button-content {
+    overflow: hidden;
+    white-space: normal;
+    padding: 3px;
+  }
 
-    .total-value {
-        font-size: 20px;
-    }
+  #formOrdine .dx-layout-manager .dx-field-item:not(.dx-last-col) {
+    padding-right: 3px;
+  }
 
-    .count-notif {
-        vertical-align: bottom;
-        float: left;
-        margin-left: 0px;
-        margin-bottom: 0px;
-        font-size: 12px;
-    }
-
-    .badge-success1 {
-        padding-top: 3px;
-        padding-bottom: 3px;
-        padding-left: 3px;
-        padding-right: 3px;
-    }
-
-    #gridScontrino .dx-datagrid {
-        font-family: Tahoma, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
-    }
-
-    #gridScontrino .dx-header-row > td[role="columnheader"] {
-        font-size: 11px;
-        font-weight: bold;
-        vertical-align: middle;
-        text-align: center !important;
-    }
-
-    #gridScontrino td[role="columnheader"] {
-        text-align: center !important
-    }
-
-    #gridScontrino .dx-datagrid-nodata {
-        font-size: 18px;
-        white-space: normal;
-    }
-
-    #gridScontrino .dx-datagrid-total-footer {
-        font-weight: bold;
-        font-size: 20px;
-    }
-
-        #gridScontrino .dx-datagrid-total-footer > .dx-datagrid-content {
-            padding: 0px;
-        }
-
-    #gridScontrino .dx-datagrid .dx-row > td, .dx-datagrid .dx-row > tr > td {
-        padding: 1px;
-    }
-
-    #gridScontrino .dx-datagrid-header-panel {
-        padding: 0px;
-        background-color: rgba(213, 51, 67, 1.0);
-    }
-
-        #gridScontrino .dx-datagrid-header-panel .dx-toolbar {
-            margin: 0;
-            padding-right: 6px;
-            background-color: transparent;
-        }
-
-        #gridScontrino .dx-datagrid-header-panel .dx-toolbar-items-container {
-            height: 50px;
-        }
-
-        #gridScontrino .dx-datagrid-header-panel .dx-toolbar-before .dx-toolbar-item:last-child {
-            padding-right: 10px;
-        }
-
-        #gridScontrino .dx-datagrid-header-panel .dx-selectbox {
-            margin: auto 10px;
-        }
-
-        #gridScontrino .dx-datagrid-header-panel .dx-button {
-            margin: auto 0;
-        }
-
-    #toolbarScontrino.dx-toolbar {
-        margin: 0;
-        padding-right: 6px;
-        background-color: transparent;
-    }
-
-    #toolbarScontrino .dx-toolbar-items-container {
-        height: 52px;
-    }
-
-    #toolbarScontrino .dx-toolbar-before .dx-toolbar-item:last-child {
-        padding-right: 5px;
-    }
-
-    #toolbarScontrino .dx-toolbar-before .dx-toolbar-item:first-child {
-        padding-left: 5px;
-    }
-
-    #toolbarScontrino .informer {
-        height: 50px;
-        width: 50px;
-        font-size: 20px;
-        padding-left: 6px;
-        text-align: left;
-        color: #fff;
-    }
-
-    #toolbarScontrino .count {
-        padding-top: 5px;
-        font-size: 12px;
-        font-weight: bold;
-        margin: 0;
-    }
-
-    #toolbarScontrino .dx-button {
-        font-size: 11px;
-        font-weight: bold;
-    }
-
-    #toolbarScontrino .dx-button-text {
-        line-height: 1.2858;
-        overflow: hidden;
-        white-space: normal;
-    }
-
-    #toolbarScontrino .dx-button.dx-button-verde {
-        color: white;
-        background-color: rgba(24,130,81, 0.9);
-        -moz-border-radius: 4px;
-        border-radius: 4px;
-    }
-
-        #toolbarScontrino .dx-button.dx-button-verde.dx-state-hover {
-            background-color: rgba(92,184,92, 1.0);
-        }
-
-    #toolbarScontrino .dx-button.dx-button-giallo {
-        background-color: rgba(255,193,7, 0.9);
-        -moz-border-radius: 4px;
-        border-radius: 4px;
-    }
-
-        #toolbarScontrino .dx-button.dx-button-giallo.dx-state-hover {
-            background-color: rgba(255,193,7, 1.0);
-        }
-
-    #toolbarScontrino .dx-button-has-text .dx-button-content {
-        overflow: hidden;
-        white-space: normal;
-        padding: 3px;
-    }
-
-    #formOrdine .dx-layout-manager .dx-field-item:not(.dx-last-col) {
-        padding-right: 3px;
-    }
-
-    #formOrdine .dx-layout-manager .dx-field-item:not(.dx-first-col) {
-        padding-left: 3px;
-    }
+  #formOrdine .dx-layout-manager .dx-field-item:not(.dx-first-col) {
+    padding-left: 3px;
+  }
 
   #toolbarScontrino .dx-switch-container {
     height: 100%;
@@ -246,45 +246,45 @@
 
 <div id="confirmPopup"></div>
 <div style="max-width:1120px">
-    <table>
-        <tr>
-            <td colspan=2>
-                <div id="toolbarCassa" class="card m-0 p-1 bg-light"></div>
-            </td>
-        </tr>
-        <tr>
-            <td style="vertical-align: top;">
-                <div id="tableProdotti" class="card m-0 bg-light"></div>
-            </td>
-            <td style="vertical-align: top;">
-                <div class="card m-0 bg-light">
-                    <div class="card-body p-0">
-                        <div class="cardTitolo bg-danger" style="width:100%; padding-left:6px">
-                            Dati Ordine
-                        </div>
-                        <div class="cardFormOrdine bg-light" id="formOrdine">
-                            <table style="width:100%">
-                                <tr>
-                                    <td style="width:90px"><div id="edtTavolo"></div></td>
-                                    <td style="width:65px"><div id="edtCoperti"></div></td>
-                                    <td><div id="edtReferente"></div></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3"><div id="edtNotaOrdine"></div></td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="cardGridOrdine" id="gridOrdine" style="width:100%">
-                            <div id="gridScontrino"></div>
-                        </div>
-                        <div class="cardtoolbarScontrino bg-danger" style="width:100%">
-                            <div id="toolbarScontrino"></div>
-                        </div>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </table>
+  <table>
+    <tr>
+      <td colspan=2>
+        <div id="toolbarCassa" class="card m-0 p-1 bg-light"></div>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">
+        <div id="tableProdotti" class="card m-0 bg-light"></div>
+      </td>
+      <td style="vertical-align: top;">
+        <div class="card m-0 bg-light">
+          <div class="card-body p-0">
+            <div class="cardTitolo bg-danger" style="width:100%; padding-left:6px">
+              Dati Ordine
+            </div>
+            <div class="cardFormOrdine bg-light" id="formOrdine">
+              <table style="width:100%">
+                <tr>
+                  <td style="width:90px"><div id="edtTavolo"></div></td>
+                  <td style="width:65px"><div id="edtCoperti"></div></td>
+                  <td><div id="edtReferente"></div></td>
+                </tr>
+                <tr>
+                  <td colspan="3"><div id="edtNotaOrdine"></div></td>
+                </tr>
+              </table>
+            </div>
+            <div class="cardGridOrdine" id="gridOrdine" style="width:100%">
+              <div id="gridScontrino"></div>
+            </div>
+            <div class="cardtoolbarScontrino bg-danger" style="width:100%">
+              <div id="toolbarScontrino"></div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
 </div>
 
 @code {

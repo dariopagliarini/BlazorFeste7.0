@@ -23,7 +23,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://192.168.100.199:5253"
+      "applicationUrl": "http://192.168.1.21:5253"
     },
     "BlazorFeste Cremona": {
       "commandName": "Project",

@@ -284,7 +284,7 @@ namespace BlazorFeste.DataAccess
 
           JsonConvert.PopulateObject(change.Data.ToString(), Cassa);
 
-          var ElencoCasse = (await con.QueryAsync<int>("SELECT IdCassa FROM anagr_casse WHERE IdListino = @IdListino ORDER BY IdLista ",
+          var ElencoCasse = (await con.QueryAsync<int>("SELECT IdCassa FROM anagr_casse WHERE IdListino = @IdListino",
             new { IdListino = _UserInterfaceService.ArchFesta.IdListino })).ToList();
           int firstAvailable = Enumerable.Range(1, int.MaxValue)
                                           .Except(ElencoCasse)

@@ -16,6 +16,7 @@ namespace BlazorFeste.Data.Models
     public string Cassa { get; set; }
     public bool? Abilitata { get; set; }
     public bool? Visibile { get; set; }
+    public bool? POS { get; set; }
     public string PortName { get; set; }
     public bool? IsRemote { get; set; }
     public string RemoteAddress { get; set; }
