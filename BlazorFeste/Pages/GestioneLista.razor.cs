@@ -316,7 +316,8 @@ namespace BlazorFeste.Pages
                                      Righe = new ArchOrdiniRighe[ProdottiInLista],
                                      RigheHTML = CreaRigheHTML(o.Value),
                                      Priorità = Lista.Priorità,
-                                     StatoRighe = new int[] { 0, 0, 0, 0 }
+                                     StatoRighe = new int[] { 0, 0, 0, 0 },
+                                     AppIdOrdine = o.Value.AppIdOrdine
                                    }).ToList();
 
       foreach (var itemR in RigheOrdini_SerataInCorso)

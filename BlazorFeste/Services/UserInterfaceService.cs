@@ -12,6 +12,9 @@ namespace BlazorFeste.Services
     private readonly IWebHostEnvironment _IWebHostEnvironment;
 
     public DateTime DtFestaInCorso { get; set; }
+
+    public List<AnagrClients> AnagrClients { get; set; } = new List<AnagrClients>();
+    public List<AnagrMenu> AnagrMenu { get; set; } = new List<AnagrMenu>();
     public ArchFeste ArchFesta { get; set; }
     public List<AnagrCasse> AnagrCasse { get; set; } = new List<AnagrCasse>();
     public List<AnagrListe> AnagrListe { get; set; } = new List<AnagrListe>();

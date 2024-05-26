@@ -19,7 +19,6 @@ namespace PrinterServerAPI.Services
     {
       RescanSerialPorts(true);
     }
-
     public void RescanSerialPorts(bool LogEnabled)
     {
       string[] ports;

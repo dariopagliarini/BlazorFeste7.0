@@ -15,5 +15,6 @@
     public string RigheHTML { get; set; }
     public int? Priorità { get; set; }
     public int[] StatoRighe { get; set; } = new int[4];
+    public long AppIdOrdine { get; set; } // IdOrdine da webApp
   }
 }

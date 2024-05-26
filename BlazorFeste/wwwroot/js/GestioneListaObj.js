@@ -713,7 +713,7 @@ export var GestioneListaObj = {
             GestioneListaObj.Ordine = e.data;
             GestioneListaObj.OrdineToBeUpdated = false;
 
-            GestioneListaObj.popupEditOrdine.option("title", "Dati Ordine #" + e.data.progressivoSerata + " (" + e.data.idOrdine + ") delle ore " + e.data.dataOra + " - Cassa: " + e.data.cassa );
+            GestioneListaObj.popupEditOrdine.option("title", "Dati Ordine #" + e.data.progressivoSerata + " (" + e.data.idOrdine + "/" + e.data.appIdOrdine + ") delle ore " + e.data.dataOra + " - Cassa: " + e.data.cassa );
             GestioneListaObj.formEditOrdine.dxForm("instance").option("formData", e.data);
             GestioneListaObj.popupEditOrdine.show();
           }

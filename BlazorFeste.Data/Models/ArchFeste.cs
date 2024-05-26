@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace BlazorFeste.Data.Models
 {
@@ -18,6 +17,6 @@ namespace BlazorFeste.Data.Models
     public string Ricevuta_Riga2 { get; set; }
     public string Ricevuta_Riga3 { get; set; }
     public string Ricevuta_Riga4 { get; set; }
-
+    public bool WebAppAttiva { get; set; }
   }
 }

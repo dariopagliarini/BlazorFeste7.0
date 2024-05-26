@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace BlazorFeste.Data.Models
+﻿namespace BlazorFeste.Data.Models
 {
   public class StampaOrdine_RawData
   {

@@ -8,6 +8,9 @@ using Newtonsoft.Json.Serialization;
 using Serilog;
 using Newtonsoft.Json.Linq;
 using BlazorFeste.DataAccess;
+using Blazored.Toast.Services;
+using System.Net;
+using System.Text;
 
 namespace BlazorFeste.Components
 {
@@ -22,7 +25,6 @@ namespace BlazorFeste.Components
     [JsonProperty("data")]
     public object Data { get; set; }
   }
-
   public partial class GestioneAnagrProdotti : IDisposable
   {
     #region Inject
@@ -101,7 +103,6 @@ namespace BlazorFeste.Components
 
         if (change.Type == "update")
         {
-
           prodotto = _UserInterfaceService.AnagrProdotti.First(p => p.Key == change.Key).Value;
 
           JsonConvert.PopulateObject(change.Data.ToString(), prodotto);

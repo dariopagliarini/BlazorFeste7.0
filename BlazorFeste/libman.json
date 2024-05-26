@@ -3,7 +3,7 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "devextreme-dist@23.1.8",
+      "library": "devextreme-dist@23.1.9",
       "destination": "wwwroot/lib/devextreme/"
     },
     {

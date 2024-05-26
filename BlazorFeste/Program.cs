@@ -2,6 +2,7 @@ using Blazored.Toast;
 
 using BlazorFeste.DataAccess;
 using BlazorFeste.Services;
+using BlazorFeste.Services.AppOrdini;
 
 using Serilog;
 
@@ -48,19 +49,21 @@ try
   builder.Services.AddLocalization();
   builder.Services.AddBlazoredToast();
 
-  builder.Services.AddSingleton<FesteDataAccess>();
-  builder.Services.AddSingleton<UserInterfaceService>();
+  builder.Services.AddSingleton<FesteDataAccess>()
+                  .AddSingleton<UserInterfaceService>()
+                  .AddSingleton<IAppOrdiniService, AppOrdiniService>()
 
-  builder.Services.AddHostedService<ClockTimerService>();
-  builder.Services.AddHostedService<DatabaseTimerService>();
+                  .AddHostedService<ClockTimerService>()
+                  .AddHostedService<DatabaseTimerService>()
+                  .AddHostedService<AppOrdiniHandlerService>()
 
-  builder.Services.AddScoped<ClientInformationService>();
+                  .AddScoped<ClientInformationService>();
 
   var app = builder.Build();
 
   app.UseStaticFiles();
   app.UseRouting();
-  app.UseRequestLocalization("it-IT");  // "en-US"
+  app.UseRequestLocalization("it-IT");  
   CultureInfo.CurrentCulture = new CultureInfo("it-IT");
 
   app.MapBlazorHub();

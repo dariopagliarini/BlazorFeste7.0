@@ -3,6 +3,7 @@
 export var GestioneCassaObj = {
   objRef: null,
 
+  webAppAttiva: false,
   confirmPopup: null,
   toolbarCassa: null,
   toolbarScontrino: null,
@@ -26,6 +27,13 @@ export var GestioneCassaObj = {
   switchPagamentoConPOS: null,
   PagamentoConPOS: null,
   POS_Disponibile: null,
+  RichiestaCreazioneOrdineInCorso: false,
+
+  popupGetFromCloud: null,
+  edtOrdineDaApp: null,
+  gridOrdini: null,
+  edtOrdineDaQRCode: null,
+  APPIdOrdine: null,
 
   edtContanti: null,
   edtResto: null,
@@ -40,12 +48,16 @@ export var GestioneCassaObj = {
   edtReferente: "",
   edtNote: "",
 
-  init: (_objRef, _Cassa) => {
+  edtAPPIdOrdine: 0,
+
+  init: (_objRef, _Cassa, _WebAppAttiva) => {
     console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneCassaObj - init - Ordini: " + _Cassa.ordiniDellaCassa + " (" + _Cassa.idUltimoOrdine + ")");
 
     document.addEventListener('keydown', GestioneCassaObj.keyHandler);
 
     GestioneCassaObj.objRef = _objRef;
+    GestioneCassaObj.webAppAttiva = _WebAppAttiva;
+
     GestioneCassaObj.idUltimoOrdine = _Cassa.idUltimoOrdine;
 
     GestioneCassaObj.flagStampaAbilitata = _Cassa.scontrinoAbilitato;
@@ -107,6 +119,258 @@ export var GestioneCassaObj = {
         GestioneCassaObj.confirmPopup = e.component;
       },
     });
+
+    GestioneCassaObj.popupGetFromCloud = $("#myGetFromCloudPopup").dxPopup({
+      visible: false,
+      title: 'Importa Ordine',
+      position: {
+        my: 'center top',
+        at: 'center top',
+        of: window
+      },
+      dragEnabled: true,
+      contentTemplate: function (e) {
+        e.append(
+          $("<table style='width:100%'>").append(
+            $("<tr style='vertical-align:top'>").append(
+              $("<td>").append(
+                $("<div />").attr("id", "edtOrdineDaApp").dxNumberBox({
+                  label: "Ordine da Identificativo",
+                  stylingMode: "filled",
+                  mode: "number",
+                  step: 1,
+                  width: 236,
+                  height: 56,
+                  inputAttr: {
+                    style: "font-size: 18px"
+                  },
+                  onInitialized(e) {
+                    GestioneCassaObj.edtOrdineDaApp = e.component;
+                  },
+                  onEnterKey: function () {
+                    GestioneCassaObj.APPIdOrdine = GestioneCassaObj.edtOrdineDaApp.option("value");
+                    GestioneCassaObj.btnCancellaOrdineOnClick();
+
+                    _objRef.invokeMethodAsync("OnGetOrderFromCloud_Async", GestioneCassaObj.APPIdOrdine)
+                      .then(_retvalue => {
+                        try {
+                          if (GestioneCassaObj.APPIdOrdine > 0) {
+                            var retvalue = JSON.parse(_retvalue);
+
+                            GestioneCassaObj.JsonDaCloud(retvalue);
+                            GestioneCassaObj.popupGetFromCloud.hide();
+                          } else if (GestioneCassaObj.APPIdOrdine == 0) {
+                            var retvalue = JSON.parse(_retvalue);
+
+                            GestioneCassaObj.gridOrdini.beginUpdate();
+                            GestioneCassaObj.gridOrdini.option("dataSource", retvalue);
+                            GestioneCassaObj.gridOrdini.endUpdate();
+                          } else if (GestioneCassaObj.APPIdOrdine < 0) {
+                            var retvalue = JSON.parse(_retvalue);
+
+                            GestioneCassaObj.gridOrdini.beginUpdate();
+                            GestioneCassaObj.gridOrdini.option("dataSource", retvalue);
+                            GestioneCassaObj.gridOrdini.endUpdate();
+                          }
+                        } catch (error) {
+                        }
+                      });
+                  }
+                }),
+                $("<div />").attr("id", "gridOrdini").dxDataGrid({
+                  dataSource: [],
+                  height: "480px",
+                  keyExpr: "id",
+                  noDataText: "...",
+                  focusedRowEnabled: true,
+                  rowAlternationEnabled: true,
+                  showRowLines: true,
+                  showBorders: true,
+                  hoverStateEnabled: true,
+                  //                  sorting: { mode: "none" },
+                  headerFilter: {
+                    visible: true,
+                  },
+                  sorting: {
+                    mode: 'single',
+                  },
+                  selection: {
+                    mode: 'single',
+                  },
+                  scrolling: {
+                    mode: "virtual"
+                  },
+                  columns: [
+                    {
+                      type: "buttons",
+                      width: 40,
+                      buttons: [{
+                        //                        text: "My Command",
+                        icon: "import",
+                        hint: "Importa",
+                        onClick: function (e) {
+                          // Execute your command here
+                          GestioneCassaObj.APPIdOrdine = e.row.data.id;
+                          GestioneCassaObj.btnCancellaOrdineOnClick();
+
+                          _objRef.invokeMethodAsync("OnGetOrderFromCloud_Async", GestioneCassaObj.APPIdOrdine)
+                            .then(_retvalue => {
+                              try {
+                                var retvalue = JSON.parse(_retvalue);
+
+                                GestioneCassaObj.JsonDaCloud(retvalue);
+                                GestioneCassaObj.popupGetFromCloud.hide();
+                              } catch (error) {
+                              }
+                            });
+                        }
+                      }]
+                    },
+                    {
+                      caption: "#",
+                      dataField: 'id',
+                      dataType: "number",
+                      width: 70,
+                      alignment: 'center',
+                      allowFiltering: false,
+                    }, {
+                      caption: "Tavolo",
+                      dataField: 'table',
+                      dataType: "number",
+                      width: 120,
+                      alignment: 'center',
+                      cellTemplate: function (element, info) {
+                        $("<div style='font-size:13px; font-weight:bold'>" + info.value + "</div>").appendTo(element);
+                      },
+                    },
+                    {
+                      caption: "Coperti",
+                      dataField: 'coperti',
+                      alignment: 'center',
+                      width: 70,
+                      allowFiltering: false,
+                      allowSorting: false,
+                      cellTemplate: function (element, info) {
+                        $("<div style='font-size:13px; font-weight:bold; padding-left: 6px;text-overflow: ellipsis; overflow: hidden;'>" + info.value + "</div>").appendTo(element);
+                      },
+                    },
+                    {
+                      caption: "Referente al tavolo",
+                      dataField: 'referente',
+                      width: 140,
+                      allowFiltering: false,
+                      allowSorting: false,
+                      cellTemplate: function (element, info) {
+                        $("<div style='font-size:13px; font-weight:bold; padding-left: 6px;text-overflow: ellipsis; overflow: hidden;'>" + info.value + "</div>").appendTo(element);
+                      },
+                    },
+                    {
+                      caption: "Data Ordine",
+                      dataField: 'dataCloud',
+                      alignment: 'center',
+                      width: 160,
+                      allowFiltering: false,
+                      allowSorting: false,
+                    },
+                    {
+                      caption: "Evaso",
+                      dataField: 'evaso',
+                      visible: false,
+                      width: 60,
+                      alignment: 'center',
+                      allowFiltering: false,
+                      allowSorting: false,
+                    },
+                    {
+                      caption: "Note Ordine",
+                      dataField: 'note',
+                      width: 160,
+                      allowFiltering: false,
+                      allowSorting: false,
+                    },
+                  ],
+                  onInitialized: function (e) {
+                    GestioneCassaObj.gridOrdini = e.component;
+                  },
+                  onRowPrepared: function (e) {
+                    switch (e.rowType) {
+                      case "header":
+                        //e.rowElement.css({ height: 40 });
+                        break;
+                      case "data":
+                        //e.rowElement.css({ height: 33, "color" : "white", "background-color" : "red"});
+                        break;
+                    }
+                  },
+                  onCellDblClick: function (e) {
+                    GestioneCassaObj.APPIdOrdine = e.key;
+                    GestioneCassaObj.btnCancellaOrdineOnClick();
+
+                    _objRef.invokeMethodAsync("OnGetOrderFromCloud_Async", GestioneCassaObj.APPIdOrdine)
+                      .then(_retvalue => {
+                        try {
+                          var retvalue = JSON.parse(_retvalue);
+
+                          GestioneCassaObj.JsonDaCloud(retvalue);
+                          GestioneCassaObj.popupGetFromCloud.hide();
+                        } catch (error) {
+                        }
+                      });
+                  },
+                  //  onCellClick: function (e) {
+                  //    if (e.rowType == 'data' && e.column.name == "Bomba") {
+                  //    } else {
+                  //    }
+                  //  },
+                })
+              ),
+              $("<td>").append(
+                $("<div />").attr("id", "edtOrdineDaQRCode").dxTextBox({
+                  label: "Ordine da QRCode",
+                  stylingMode: "filled",
+                  width: 236,
+                  height: 56,
+                  inputAttr: {
+                    style: "font-size: 12px"
+                  },
+                  onInitialized: function (e) {
+                    GestioneCassaObj.edtOrdineDaQRCode = e.component;
+                  },
+                  onEnterKey: function () {
+                    GestioneCassaObj.btnCancellaOrdineOnClick();
+
+                    var _retvalue = GestioneCassaObj.edtOrdineDaQRCode.option("value");
+                    try {
+                      var retvalue = JSON.parse(_retvalue);
+
+                      GestioneCassaObj.JsonDaCloud(retvalue);
+                      GestioneCassaObj.popupGetFromCloud.hide();
+                    } catch (error) {
+                    }
+                  }
+                })
+              )
+            )
+          )
+        )
+      },
+      onShowing: function (e) {
+        GestioneCassaObj.edtOrdineDaApp.option("value", "");
+        GestioneCassaObj.edtOrdineDaQRCode.option("value", "");
+        GestioneCassaObj.gridOrdini.option("dataSource", []);
+        _objRef.invokeMethodAsync("OnGetOrderFromCloud_Async", 0)
+          .then(_retvalue => {
+            try {
+              var retvalue = JSON.parse(_retvalue);
+
+              GestioneCassaObj.gridOrdini.beginUpdate();
+              GestioneCassaObj.gridOrdini.option("dataSource", retvalue);
+              GestioneCassaObj.gridOrdini.endUpdate();
+            } catch (error) {
+            }
+          });
+      },
+    }).dxPopup("instance");
 
     GestioneCassaObj.PagamentoConPOS = false;
     GestioneCassaObj.POS_Disponibile = _Cassa.pos;
@@ -171,7 +435,7 @@ export var GestioneCassaObj = {
             onInitialized: function (e) {
               GestioneCassaObj.cbStampaAbilitata = e.component;
             },
-            
+
             onValueChanged: function (e) {
               GestioneCassaObj.flagStampaAbilitata = e.value;
 
@@ -203,7 +467,7 @@ export var GestioneCassaObj = {
               .append(
                 $('<div>')
                   .html('<div>Contanti</div>'),
-              $('<span>')
+                $('<span>')
                   .addClass('cassaContanti')
                   .html('<b>0.0</b> €'),
               );
@@ -228,6 +492,52 @@ export var GestioneCassaObj = {
         {
           location: 'after',
           widget: 'dxButton',
+          visible: GestioneCassaObj.webAppAttiva,
+          options: {
+            icon: 'fa-solid fa-list',
+            type: 'giallo',
+            hint: "Ordine da Identificativo",
+            onClick(e) {
+              GestioneCassaObj.popupGetFromCloud.option("width", 820);
+              GestioneCassaObj.popupGetFromCloud.option("height", 640);
+              GestioneCassaObj.popupGetFromCloud.show();
+              setTimeout(function () {
+                GestioneCassaObj.edtOrdineDaQRCode.option("visible", false);
+                GestioneCassaObj.edtOrdineDaApp.option("visible", false);
+                GestioneCassaObj.gridOrdini.option("visible", true);
+              }, 0);
+              setTimeout(function () {
+                GestioneCassaObj.gridOrdini.focus();
+              }, 500);
+            },
+          },
+        },
+        {
+          location: 'after',
+          widget: 'dxButton',
+          visible: GestioneCassaObj.webAppAttiva,
+          options: {
+            icon: 'fa-solid fa-qrcode',
+            type: 'giallo',
+            hint: "Ordine da QRCode",
+            onClick(e) {
+              GestioneCassaObj.popupGetFromCloud.option("width", 300);
+              GestioneCassaObj.popupGetFromCloud.option("height", 160);
+              GestioneCassaObj.popupGetFromCloud.show();
+              setTimeout(function () {
+                GestioneCassaObj.edtOrdineDaApp.option("visible", false);
+                GestioneCassaObj.gridOrdini.option("visible", false);
+                GestioneCassaObj.edtOrdineDaQRCode.option("visible", true);
+              }, 0);
+              setTimeout(function () {
+                GestioneCassaObj.edtOrdineDaQRCode.focus();
+              }, 500);
+            },
+          },
+        },
+        {
+          location: 'after',
+          widget: 'dxButton',
           visible: _Cassa.scontrinoAbilitato,
           options: {
             disabled: (GestioneCassaObj.idUltimoOrdine === 0),
@@ -235,7 +545,7 @@ export var GestioneCassaObj = {
             type: 'default',
             text: 'Ristampa',
             hint: "Ristampa Ultimo Ordine",
-            
+
             onInitialized: function (e) {
               GestioneCassaObj.btnRistampaOrdine = e.component;
             },
@@ -354,6 +664,9 @@ export var GestioneCassaObj = {
             onValueChanged(data) {
               GestioneCassaObj.calcolaResto();
             },
+            onEnterKey: function () {
+              GestioneCassaObj.calcolaResto();
+            }
           },
         },
         {
@@ -395,19 +708,25 @@ export var GestioneCassaObj = {
             },
 
             onClick(e) {
-              if (GestioneCassaObj.flagChiediConferma | GestioneCassaObj.PagamentoConPOS) {
-                var testoConferma = "<i>Confermi l'operazione?</i>"
-                if (GestioneCassaObj.PagamentoConPOS) {
-                  testoConferma = "<i>Confermi che il Pagamento Elettronico è andato a buon fine?</i>"
-                }
-                var result = DevExpress.ui.dialog.confirm(testoConferma, "Chiusura Ordine");
-                result.done(function (dialogResult) {
-                  if (dialogResult) {
-                    GestioneCassaObj.btnSaveToMySQL('SERVITO');
+              if (GestioneCassaObj.RichiestaCreazioneOrdineInCorso == false) {
+                GestioneCassaObj.RichiestaCreazioneOrdineInCorso = true;
+
+                if (GestioneCassaObj.flagChiediConferma | GestioneCassaObj.PagamentoConPOS) {
+                  var testoConferma = "<i>Confermi l'operazione?</i>"
+                  if (GestioneCassaObj.PagamentoConPOS) {
+                    testoConferma = "<i>Confermi che il Pagamento Elettronico è andato a buon fine?</i>"
                   }
-                });
+                  var result = DevExpress.ui.dialog.confirm(testoConferma, "Chiusura Ordine");
+                  result.done(function (dialogResult) {
+                    if (dialogResult) {
+                      GestioneCassaObj.btnSaveToMySQL('SERVITO');
+                    }
+                  });
+                } else {
+                  GestioneCassaObj.btnSaveToMySQL('SERVITO');
+                }
               } else {
-                GestioneCassaObj.btnSaveToMySQL('SERVITO');
+                console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneCassaObj - onClick - SERVITO: Click con ordine già in creazione");
               }
             },
           },
@@ -425,19 +744,25 @@ export var GestioneCassaObj = {
               GestioneCassaObj.btnBanco = e.component;
             },
             onClick(e) {
-              if (GestioneCassaObj.flagChiediConferma | GestioneCassaObj.PagamentoConPOS) {
-                var testoConferma = "<i>Confermi l'operazione?</i>"
-                if (GestioneCassaObj.PagamentoConPOS) {
-                  testoConferma = "<i>Confermi che il Pagamento Elettronico è andato a buon fine?</i>"
-                }
-                var result = DevExpress.ui.dialog.confirm(testoConferma, "Chiusura Ordine");
-                result.done(function (dialogResult) {
-                  if (dialogResult) {
-                    GestioneCassaObj.btnSaveToMySQL('BANCO');
+              if (GestioneCassaObj.RichiestaCreazioneOrdineInCorso == false) {
+                GestioneCassaObj.RichiestaCreazioneOrdineInCorso = true;
+
+                if (GestioneCassaObj.flagChiediConferma | GestioneCassaObj.PagamentoConPOS) {
+                  var testoConferma = "<i>Confermi l'operazione?</i>"
+                  if (GestioneCassaObj.PagamentoConPOS) {
+                    testoConferma = "<i>Confermi che il Pagamento Elettronico è andato a buon fine?</i>"
                   }
-                });
+                  var result = DevExpress.ui.dialog.confirm(testoConferma, "Chiusura Ordine");
+                  result.done(function (dialogResult) {
+                    if (dialogResult) {
+                      GestioneCassaObj.btnSaveToMySQL('BANCO');
+                    }
+                  });
+                } else {
+                  GestioneCassaObj.btnSaveToMySQL('BANCO');
+                }
               } else {
-                GestioneCassaObj.btnSaveToMySQL('BANCO');
+                console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneCassaObj - onClick - BANCO: Click con ordine già in creazione");
               }
             },
           },
@@ -447,7 +772,7 @@ export var GestioneCassaObj = {
         GestioneCassaObj.toolbarScontrino = e.component;
       },
     });
-    
+
     $("#gridScontrino").dxDataGrid({
       dataSource: GestioneCassaObj.scontrino_store,
       showColumnHeaders: true,
@@ -479,26 +804,26 @@ export var GestioneCassaObj = {
           width: 85,
           type: "buttons",
           buttons: [{
-              icon: "minus",
-              hint: "Decrementa quantità",
-              onClick: function (e) {
-                GestioneCassaObj.minusClick("decr", e.row.data);
-              }
-            },
-            {
-              icon: "trash",
-              hint: "Elimina riga dall'ordine",
-              onClick: function (e) {
-                GestioneCassaObj.minusClick("delete", e.row.data);
-              }
-            },
-            {
-              icon: "plus",
-              hint: "Incrementa quantità",
-              onClick: function (e) {
-                GestioneCassaObj.minusClick("incr", e.row.data);
-              }
+            icon: "minus",
+            hint: "Decrementa quantità",
+            onClick: function (e) {
+              GestioneCassaObj.minusClick("decr", e.row.data);
             }
+          },
+          {
+            icon: "trash",
+            hint: "Elimina riga dall'ordine",
+            onClick: function (e) {
+              GestioneCassaObj.minusClick("delete", e.row.data);
+            }
+          },
+          {
+            icon: "plus",
+            hint: "Incrementa quantità",
+            onClick: function (e) {
+              GestioneCassaObj.minusClick("incr", e.row.data);
+            }
+          }
           ]
         },
         {
@@ -522,11 +847,11 @@ export var GestioneCassaObj = {
             summaryType: 'count',
             alignment: "right",
             customizeText(data) {
-                return "Totale:";
-              },
+              return "Totale:";
             },
-            { column: 'quantitàProdotto', summaryType: 'sum', valueFormat: { type: "fixedPoint", precision: 0 }, displayFormat: "{0}" },
-            { column: 'totale', summaryType: 'sum', valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
+          },
+          { column: 'quantitàProdotto', summaryType: 'sum', valueFormat: { type: "fixedPoint", precision: 0 }, displayFormat: "{0}" },
+          { column: 'totale', summaryType: 'sum', valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: "{0}" },
           ],
       },
       noDataText: "Selezionare un prodotto con il mouse per iniziare un nuovo ordine. Quando l'ordine è concluso cliccare \"SERVITO AL TAVOLO\" o \"RITIRO AL BANCO\" per chiuderlo e stamparlo. Nel caso di ordine \"SERVITO AL TAVOLO\" ricordate di inserire anche i dati relativi al \"Tavolo\" ed al n° dei \"Coperti\". Il campo \"Signor\" dovrebbe essere compilato in ogni caso.",
@@ -540,7 +865,7 @@ export var GestioneCassaObj = {
       scrolling: { mode: "standard" },
       selection: { mode: 'single', },
       sorting: { mode: "none" },
-      onKeyDown: function(e) {
+      onKeyDown: function (e) {
         switch (e.event.key) {
           case "-":
             var selectedData = e.component.getSelectedRowsData();
@@ -595,6 +920,9 @@ export var GestioneCassaObj = {
         }
         GestioneCassaObj.updateButtonState();
       },
+      onEnterKey: function () {
+        $("#edtCoperti").dxSelectBox("instance").focus();
+      }
     });
 
     $("#edtCoperti").dxSelectBox({
@@ -613,6 +941,9 @@ export var GestioneCassaObj = {
           GestioneCassaObj.edtCoperti = "";
         }
       },
+      onEnterKey: function () {
+        $("#edtReferente").dxTextBox("instance").focus();
+      }
     });
 
     $("#edtReferente").dxTextBox({
@@ -626,6 +957,9 @@ export var GestioneCassaObj = {
           GestioneCassaObj.edtReferente = "";
         }
       },
+      onEnterKey: function () {
+        $("#edtNotaOrdine").dxTextArea("instance").focus();
+      }
     });
 
     $("#edtNotaOrdine").dxTextArea({
@@ -664,7 +998,7 @@ export var GestioneCassaObj = {
           .done(function (result) {
             $("#edtContanti").dxNumberBox("instance").option("value", Math.ceil(result / 5) * 5);
           });
-        
+
         break;
       default:  //Fallback to default browser behaviour
         return true;
@@ -736,7 +1070,7 @@ export var GestioneCassaObj = {
           F_LABEL = 10;
           break;
       }
-      H_CELL = Math.trunc((630 / K_ROW) - 2);  
+      H_CELL = Math.trunc((630 / K_ROW) - 2);
       W_CELL = Math.trunc((665 / K_COL) - 2);
 
       console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneCassaObj - createButtons: " + H_CELL + "x" + W_CELL);
@@ -803,13 +1137,9 @@ export var GestioneCassaObj = {
       GestioneCassaObj.scontrino_store.totalCount()
         .done(function (count) {
           if (GestioneCassaObj.edtTavolo === "") {
-//            GestioneCassaObj.btnBanco.option("disabled", count <= 0);
-//            GestioneCassaObj.btnServito.option("disabled", true);
             GestioneCassaObj.btnBanco.option("visible", count > 0);
             GestioneCassaObj.btnServito.option("visible", false);
           } else {
-//            GestioneCassaObj.btnBanco.option("disabled", true);
-//            GestioneCassaObj.btnServito.option("disabled", count <= 0);
             GestioneCassaObj.btnBanco.option("visible", false);
             GestioneCassaObj.btnServito.option("visible", count > 0);
           }
@@ -821,8 +1151,6 @@ export var GestioneCassaObj = {
         })
         .fail(function (error) {
           // Handle the "error" here
-//          GestioneCassaObj.btnServito.option("disabled", true);
-//          GestioneCassaObj.btnBanco.option("disabled", true);
           GestioneCassaObj.btnCancellaOrdine.option("disabled", true);
           GestioneCassaObj.switchPagamentoConPOS.option("visible", false);
           GestioneCassaObj.edtContanti.option("visible", false);
@@ -869,6 +1197,9 @@ export var GestioneCassaObj = {
     GestioneCassaObj.edtNote = "";
 
     GestioneCassaObj.PagamentoConPOS = false;
+    GestioneCassaObj.RichiestaCreazioneOrdineInCorso = false;
+
+    GestioneCassaObj.edtAPPIdOrdine = 0;
 
     $("#edtTavolo").dxSelectBox("instance").reset();
     $("#edtCoperti").dxSelectBox("instance").reset();
@@ -880,7 +1211,6 @@ export var GestioneCassaObj = {
     GestioneCassaObj.gridScontrino.refresh();
     GestioneCassaObj.updateButtonState();
 
-    //GestioneCassaObj.edtContanti.option("value", 0);
     $("#edtContanti").dxNumberBox("instance").option("value", 0);
 
     GestioneCassaObj.switchPagamentoConPOS.option("value", GestioneCassaObj.PagamentoConPOS);
@@ -891,20 +1221,14 @@ export var GestioneCassaObj = {
   btnSaveToMySQL: (strTipoOrdine) => {
     var righeOrdine = GestioneCassaObj.scontrino_store._array;
 
+    //GestioneCassaObj.btnServito.option("disabled", true);
+    //GestioneCassaObj.btnBanco.option("disabled", true);
+
     DevExpress.data.query(righeOrdine)
       .filter(["quantitàProdotto", ">", 0])
       .count()
       .done(function (result) {
         if (result > 0) {
-//          GestioneCassaObj.btnServito.option("disabled", true);
-//          GestioneCassaObj.btnBanco.option("disabled", true);
-
-/*
-          GestioneCassaObj.btnServito.option("visible", false);
-          GestioneCassaObj.btnBanco.option("visible", false);
-          GestioneCassaObj.switchPagamentoConPOS.option("visible", false);
-          GestioneCassaObj.btnCancellaOrdine.option("disabled", true);
-*/
           GestioneCassaObj.objRef.invokeMethodAsync("OnSaveToMySQLAsync",
             GestioneCassaObj.flagStampaAbilitata,
             strTipoOrdine,
@@ -913,6 +1237,7 @@ export var GestioneCassaObj = {
             GestioneCassaObj.edtNote,
             GestioneCassaObj.edtReferente,
             GestioneCassaObj.PagamentoConPOS,
+            GestioneCassaObj.edtAPPIdOrdine,
             righeOrdine)
             .then(_retvalue => {
               var retvalue = JSON.parse(_retvalue);
@@ -921,7 +1246,7 @@ export var GestioneCassaObj = {
                 var _idUltimoOrdine = retvalue["ultimoOrdine"];
 
                 GestioneCassaObj.idUltimoOrdine = _idUltimoOrdine;
-                GestioneCassaObj.btnRistampaOrdine.option("disabled", ((_idUltimoOrdine === 0) || (!GestioneCassaObj.flagStampaAbilitata))); 
+                GestioneCassaObj.btnRistampaOrdine.option("disabled", ((_idUltimoOrdine === 0) || (!GestioneCassaObj.flagStampaAbilitata)));
               }
 
               if ("cassaContanti" in retvalue) {
@@ -953,11 +1278,17 @@ export var GestioneCassaObj = {
                   });
               }
               GestioneCassaObj.btnCancellaOrdineOnClick();
-            });
+            })
+            .catch(err => {
+//              console.error(err.toString())
+            }
+          )
         } else {
           GestioneCassaObj.btnCancellaOrdineOnClick();
           DevExpress.ui.notify("Nessuna riga valida - Ordine Annullato", "error", 2500);
         }
+        GestioneCassaObj.btnServito.option("disabled", false);
+        GestioneCassaObj.btnBanco.option("disabled", false);
       });
   },
 
@@ -982,7 +1313,42 @@ export var GestioneCassaObj = {
           DevExpress.ui.notify("Variazione Anagrafica Prodotti", "success", 4000);
         }
       });
-   },
+  },
+
+  JsonDaCloud: (retvalue) => {
+    var aaa = moment(retvalue.dataCloud).local().format("YYYY-MM-DD HH:mm:ss");
+
+    $("#edtTavolo").dxSelectBox("instance").option("value", retvalue.tavolo);
+    $("#edtCoperti").dxSelectBox("instance").option("value", retvalue.coperti);
+    $("#edtReferente").dxTextBox("instance").option("value", retvalue.referente);
+    $("#edtNotaOrdine").dxTextArea("instance").option("value", retvalue.note);
+
+    //GestioneCassaObj.edtTavolo = retvalue.tavolo;
+    //GestioneCassaObj.edtCoperti = retvalue.coperti;
+    //GestioneCassaObj.edtReferente = retvalue.referente;
+
+    GestioneCassaObj.PagamentoConPOS = (retvalue.pos == 1);
+    GestioneCassaObj.edtAPPIdOrdine = retvalue.orderId;
+
+    retvalue.righe.forEach(riga => {
+      var prodotto = GestioneCassaObj.Prodotti.find(o => o.idProdotto === riga.id);
+      if (prodotto) {
+        for (var i = 0; i < riga.qta; i++) {
+          GestioneCassaObj.btnClicked(prodotto);
+        }
+      }
+    });
+
+    GestioneCassaObj.switchPagamentoConPOS.option("value", GestioneCassaObj.PagamentoConPOS);
+    GestioneCassaObj.switchPagamentoConPOS.option("disabled", !GestioneCassaObj.POS_Disponibile);
+    GestioneCassaObj.edtContanti.option("visible", GestioneCassaObj.switchPagamentoConPOS.option("visible") && (!GestioneCassaObj.PagamentoConPOS));
+    GestioneCassaObj.edtResto.option("visible", GestioneCassaObj.switchPagamentoConPOS.option("visible") && (!GestioneCassaObj.PagamentoConPOS));
+
+    GestioneCassaObj.updateButtonState();
+
+    $("#edtNotaOrdine").dxTextArea("instance").focus();
+  },
+
 
   updateDataOra: (_adesso) => {
     $('#lblDataOra').text(_adesso);
@@ -995,10 +1361,10 @@ export var GestioneCassaObj = {
       DevExpress.data.query(GestioneCassaObj.scontrino_store._array)
         .sum("totale")
         .done(function (result) {
-          $("#edtResto").dxNumberBox("instance").option("value", _contanti - result); 
+          $("#edtResto").dxNumberBox("instance").option("value", _contanti - result);
         });
     } else {
-      $("#edtResto").dxNumberBox("instance").option("value", 0); 
+      $("#edtResto").dxNumberBox("instance").option("value", 0);
     }
   },
 

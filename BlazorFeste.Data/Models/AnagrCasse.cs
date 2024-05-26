@@ -1,6 +1,5 @@
 ﻿using Dapper.Contrib.Extensions;
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 

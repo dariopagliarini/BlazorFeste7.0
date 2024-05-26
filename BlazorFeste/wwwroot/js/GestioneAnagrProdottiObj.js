@@ -48,6 +48,10 @@ export var GestioneAnagrProdottiObj = {
           width: 80,
         },
         {
+          caption: "Menù", dataField: "idMenu", alignment: "center",
+          width: 80,
+        },
+        {
           dataType: "number",
           editorOptions: {
             min: 0,

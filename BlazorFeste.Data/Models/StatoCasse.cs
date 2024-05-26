@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace BlazorFeste.Data.Models
+﻿namespace BlazorFeste.Data.Models
 {
   public record StatoCasse
   {

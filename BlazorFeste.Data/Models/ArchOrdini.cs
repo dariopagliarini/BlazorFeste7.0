@@ -1,7 +1,6 @@
 ﻿using Dapper.Contrib.Extensions;
 
 using System;
-using System.Collections.Generic;
 
 namespace BlazorFeste.Data.Models
 {
@@ -23,6 +22,7 @@ namespace BlazorFeste.Data.Models
     public int ProgressivoSerata { get; set; }
     public int IdFesta { get; set; }
     public bool PagamentoConPOS { get; set; }
+    public long AppIdOrdine { get; set; } // IdOrdine da webApp
 
     [Computed]
     public int IdCassa { get => int.Parse(Cassa); }

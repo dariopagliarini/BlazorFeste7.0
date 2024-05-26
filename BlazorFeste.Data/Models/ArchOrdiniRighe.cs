@@ -1,5 +1,6 @@
-﻿using System;
-using Dapper.Contrib.Extensions;
+﻿using Dapper.Contrib.Extensions;
+
+using System;
 
 namespace BlazorFeste.Data.Models
 {

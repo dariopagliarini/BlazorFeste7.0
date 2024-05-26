@@ -5,6 +5,7 @@ using BlazorFeste.Data.Models;
 using BlazorFeste.DataAccess;
 using BlazorFeste.lib;
 using BlazorFeste.Services;
+using BlazorFeste.Services.AppOrdini;
 using BlazorFeste.Util;
 
 using Microsoft.AspNetCore.Components;
@@ -15,7 +16,6 @@ using Newtonsoft.Json;
 using Serilog;
 
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 
 namespace BlazorFeste.Pages
@@ -31,6 +31,7 @@ namespace BlazorFeste.Pages
     [Inject] public UserInterfaceService _UserInterfaceService { get; init; }
     [Inject] public FesteDataAccess _FesteDataAccess { get; init; }
     [Inject] public IJSRuntime JSRuntime { get; init; }
+    [Inject] public IAppOrdiniService appOrdiniState { get; init; }
     #endregion
 
     #region Variabili
@@ -71,7 +72,7 @@ namespace BlazorFeste.Pages
         if (!(Cassa is null))
         {
           await Module.InvokeVoidAsync("GestioneCassaObj.createButtons", IdCassa, TabellaProdotti);
-          await Module.InvokeVoidAsync("GestioneCassaObj.init", objRef, Cassa);
+          await Module.InvokeVoidAsync("GestioneCassaObj.init", objRef, Cassa, _UserInterfaceService.ArchFesta.WebAppAttiva);
 
           if (Cassa.ScontrinoAbilitato.Value)
             await RescanSerialPorts(Cassa, true);
@@ -108,7 +109,16 @@ namespace BlazorFeste.Pages
 
     #region JSInvokable
     [JSInvokable("OnSaveToMySQLAsync")]
-    public async Task<string> OnSaveToMySQLAsync(bool _PrintEnabled, string _TipoOrdine, string _Tavolo, string _Coperti, string _NotaOrdine, string _Referente, bool _PagamentoConPOS, List<RigaCassa> Righe)
+    public async Task<string> OnSaveToMySQLAsync(
+        bool _PrintEnabled
+      , string _TipoOrdine
+      , string _Tavolo
+      , string _Coperti
+      , string _NotaOrdine
+      , string _Referente
+      , bool _PagamentoConPOS
+      , int _APPIdOrdine
+      , List<RigaCassa> Righe)
     {
       // Inizializzazione Record ArchOrdini
       ArchOrdini _archOrdine = new ArchOrdini
@@ -121,6 +131,7 @@ namespace BlazorFeste.Pages
         Referente = _Referente,
         PagamentoConPOS = _PagamentoConPOS,
         DataOra = DateTime.Now,
+        AppIdOrdine = _APPIdOrdine,
 
         // Prima venivano gestiti nel trigger
         IdFesta = _UserInterfaceService.ArchFesta.IdFesta,
@@ -279,6 +290,12 @@ namespace BlazorFeste.Pages
       _UserInterfaceService.OnNotifyNuovoOrdine(new DatiOrdine { ordine = _archOrdine, ordineRighe = _archOrdineRighe });
 
       toastService.ShowSuccess($"Ordine #{_archOrdine.IdOrdine} creato con successo"); // , "Avanti il prossimo"
+
+      // Evado l'eventuale ordine su Cloud
+      if (_archOrdine.AppIdOrdine > 0)
+      {
+        appOrdiniState.AddOrdineDaEvadere((int)_archOrdine.AppIdOrdine);
+      }
 
       #region Gestione Stampa 
       try
@@ -447,6 +464,42 @@ namespace BlazorFeste.Pages
         //Log.Fatal(ex, "I/O error:");
       }
     }
+
+    [JSInvokable("OnGetOrderFromCloud_Async")]
+    public async Task<string> OnGetOrderFromCloud_Async(int idOrdine)
+    {
+      string jsonResponse = string.Empty;
+
+      //if (idOrdine == 0)
+      //{
+      //  jsonResponse = appOrdiniState.GetListaOrdini();
+      //}
+      //else
+      //{
+      //  string ClientIPAddress = "https://ghqb.galileicrema.org/brolo/api";
+      //  try
+      //  {
+      //    jsonResponse = await HttpRequestToCloud_Order<string>(ClientIPAddress, idOrdine);
+      //  }
+      //  catch (Exception ex)
+      //  {
+      //    toastService.ShowError(ex.Message);
+      //    Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
+      //  }
+      //}
+      string ClientIPAddress = "https://ghqb.galileicrema.org/brolo/api";
+      try
+      {
+        jsonResponse = await HttpRequestToCloud_Order<string>(ClientIPAddress, idOrdine);
+      }
+      catch (Exception ex)
+      {
+        toastService.ShowError(ex.Message);
+        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
+      }
+
+      return (jsonResponse);
+    }
     #endregion
 
     #region Metodi
@@ -605,7 +658,6 @@ namespace BlazorFeste.Pages
     private async Task<HttpResponseMessage> RichiediStampaScontrino(ArchOrdini _ordine, List<ArchOrdiniRighe> _archOrdiniRighe)
     {
       HttpResponseMessage result = new HttpResponseMessage();
-
       try
       {
         List<AnagrListe> _listeDaStampare = new List<AnagrListe>();
@@ -901,6 +953,67 @@ namespace BlazorFeste.Pages
       }
       return (result);
     }
+
+    #region Ordini da WebApp 
+    private async Task<string> HttpRequestToCloud_Order<T>(string _ClientIPAddress, int _idOrdine, int _TimeOutMSec = 5000)
+    {
+      HttpResponseMessage result = new HttpResponseMessage();
+
+      HttpClient httpClient = new HttpClient();
+      httpClient.Timeout = TimeSpan.FromMilliseconds(_TimeOutMSec);
+      httpClient.DefaultRequestHeaders.Clear();
+      httpClient.DefaultRequestHeaders.Add("key", "b0ZWHe8M+Whk8RO24cJiL4CQPKM");
+
+      string jsonResponse = string.Empty;
+
+      var cts = new CancellationTokenSource();
+      try
+      {
+        // Lettura Dati Ordine
+        var values = new Dictionary<string, string>
+        {
+          {"idO", $"{_idOrdine}" }
+        };
+        var content = new FormUrlEncodedContent(values);
+        using HttpResponseMessage response = await httpClient.PostAsync($"{_ClientIPAddress}/export.php", content);
+        jsonResponse = await response.Content.ReadAsStringAsync();
+
+        result = response;
+        switch (result.StatusCode)
+        {
+          case HttpStatusCode.NotFound:
+            toastService.ShowInfo($"HttpRequestToPrinterController - Verificare la stampante"); // "Errore Stampante"
+            break;
+
+          default:
+            break;
+        }
+      }
+      catch (WebException ex)
+      {
+        // handle web exception
+        toastService.ShowError($"{ex.Message}"); // "Errore Stampante"
+        Log.Error(ex, $"{clientInfo.IPAddress} - HttpRequestToPrinterController 1 - WebException");
+      }
+      catch (TaskCanceledException ex)
+      {
+        if (ex.CancellationToken == cts.Token)
+        {
+          // a real cancellation, triggered by the caller
+          toastService.ShowError($"{ex.Message}"); // "Errore Stampante"
+          Log.Error(ex, $"{clientInfo.IPAddress} - HttpRequestToPrinterController 2 - TaskCanceledException");
+        }
+        else
+        {
+          // a web request timeout (possibly other things!?)
+          toastService.ShowError($"Problemi Accesso PrinterServer - {_ClientIPAddress}"); // "Errore Stampante"
+          //Log.Error(ex, $"{clientInfo.IPAddress} - HttpRequestToPrinterController 3");
+        }
+      }
+      return (jsonResponse);
+    }
+    #endregion
+
     private async void OnNotifyDataOraServer(object sender, DateTime adesso)
     {
       try

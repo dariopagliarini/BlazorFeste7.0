@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BlazorFeste.Data.Models
+﻿namespace BlazorFeste.Data.Models
 {
   public class StampaOrdine_StatoCassa
   {

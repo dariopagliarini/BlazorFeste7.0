@@ -71,7 +71,35 @@ export var ServizioObj = {
           text: 'Reload Anagrafiche',
           hint: "Reload Anagrafiche",
           onClick() {
-            _objRef.invokeMethodAsync('RefreshAnagrafiche')
+            _objRef.invokeMethodAsync('RefreshAnagrafiche', 0)
+              .catch(err => console.error(err.toString()));
+          },
+        },
+      },
+      {
+        location: 'before',
+        widget: 'dxButton',
+        options: {
+          icon: 'fa-solid fa-globe',
+          type: 'default',
+          text: 'Aggiorna Stato Prodotti Cloud',
+          hint: "Aggiorna Stato Prodotti Cloud",
+          onClick() {
+            _objRef.invokeMethodAsync('RefreshAnagrafiche', 1)
+              .catch(err => console.error(err.toString()));
+          },
+        },
+      },
+      {
+        location: 'before',
+        widget: 'dxButton',
+        options: {
+          icon: 'fa-solid fa-globe',
+          type: 'default',
+          text: 'Aggiorna Anagrafica Prodotti Cloud',
+          hint: "Aggiorna Anagrafica Prodotti Cloud",
+          onClick() {
+            _objRef.invokeMethodAsync('RefreshAnagrafiche', 2)
               .catch(err => console.error(err.toString()));
           },
         },

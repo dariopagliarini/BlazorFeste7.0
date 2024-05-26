@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.de.js)
-* Version: 23.1.8
-* Build date: Thu Jan 25 2024
+* Version: 23.1.9
+* Build date: Mon Mar 11 2024
 *
 * Copyright (c) 2012 - 2024 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -70,12 +70,12 @@
             "dxDateBox-simulatedDataPickerTitleDate": "Datum ausw\xe4hlen",
             "dxDateBox-simulatedDataPickerTitleDateTime": "Datum und Zeit ausw\xe4hlen",
             "dxDateBox-validation-datetime": "Der Wert muss ein Datum oder eine Uhrzeit sein",
-            "dxDateRangeBox-invalidStartDateMessage": "Start value must be a date",
-            "dxDateRangeBox-invalidEndDateMessage": "End value must be a date",
-            "dxDateRangeBox-startDateOutOfRangeMessage": "Start date is out of range",
-            "dxDateRangeBox-endDateOutOfRangeMessage": "End date is out of range",
-            "dxDateRangeBox-startDateLabel": "Anfangszeit",
-            "dxDateRangeBox-endDateLabel": "Endzeit",
+            "dxDateRangeBox-invalidStartDateMessage": "Anfangsdatum muss ein Datum sein",
+            "dxDateRangeBox-invalidEndDateMessage": "Enddatum muss ein Datum sein",
+            "dxDateRangeBox-startDateOutOfRangeMessage": "Anfangsdatum ist ausserhalb des g\xfcltigen Bereichs",
+            "dxDateRangeBox-endDateOutOfRangeMessage": "Enddatum ist ausserhalb des g\xfcltigen Bereichs",
+            "dxDateRangeBox-startDateLabel": "Anfangsdatum",
+            "dxDateRangeBox-endDateLabel": "Enddatum",
             "dxFileUploader-selectFile": "Datei ausw\xe4hlen",
             "dxFileUploader-dropFile": "oder hierher ziehen",
             "dxFileUploader-bytes": "Bytes",

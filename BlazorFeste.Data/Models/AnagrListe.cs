@@ -2,7 +2,7 @@
 
 namespace BlazorFeste.Data.Models
 {
-  [Table("anagr_liste")] 
+  [Table("anagr_liste")]
   public class AnagrListe
   {
     [Key]

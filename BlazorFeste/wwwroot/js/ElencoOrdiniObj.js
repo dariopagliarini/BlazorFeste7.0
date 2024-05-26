@@ -30,12 +30,14 @@ export var ElencoOrdiniObj = {
       columns: [
         {
           dataField: "idOrdine",
-          visible: false
+          width: 120,
+//          visible: true
         },
         {
           dataField: "dataOra",
           caption: "Scontrino",
           alignment: "center",
+          width: 120,
         },
         {
           caption: "Cassa",

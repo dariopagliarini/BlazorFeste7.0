@@ -18,7 +18,7 @@ namespace BlazorFeste.DataAccess
     private readonly UserInterfaceService _UserInterfaceService;
     private readonly IWebHostEnvironment _Env;
 
-    private readonly string _MySQL_connectionString = "Server=localhost;Database=BlazorFeste;User=BlazorFeste;Password=BlazorFeste;Convert Zero Datetime=True;SslMode=none";
+    private readonly string _MySQL_connectionString = "Server=localhost;Port=3306;Database=BlazorFeste;User=BlazorFeste;Password=BlazorFeste;Convert Zero Datetime=True;SslMode=none";
 //    private readonly string _MySQL_connectionString = "Server=192.168.1.45;Database=BlazorFeste;User=BlazorFeste;Password=BlazorFeste;Convert Zero Datetime=True;SslMode=none";
 
     public FesteDataAccess(UserInterfaceService userInterfaceService, IWebHostEnvironment env)
@@ -110,6 +110,7 @@ namespace BlazorFeste.DataAccess
       }
       return retList;
     }
+
     public async Task<int> DeleteArchOrdiniAsync(ArchOrdini archOrdine, CancellationToken ct = default)
     {
       using (var con = new MySqlConnection(_MySQL_connectionString))
@@ -190,8 +191,8 @@ namespace BlazorFeste.DataAccess
         {
           using (var transaction = await con.BeginTransactionAsync())
           {
-            string sql = @"INSERT INTO arch_ordini(Cassa, DataOra, TipoOrdine, Tavolo, NumeroCoperti, Referente, NoteOrdine, IdFesta, PagamentoConPOS, DataAssegnazione, IdStatoOrdine) 
-            VALUES(@Cassa, @DataOra, @TipoOrdine, @Tavolo, @NumeroCoperti, @Referente, @NoteOrdine, @IdFesta,  @PagamentoConPOS, @DataAssegnazione, @IdStatoOrdine); 
+            string sql = @"INSERT INTO arch_ordini(Cassa, DataOra, TipoOrdine, Tavolo, NumeroCoperti, Referente, NoteOrdine, IdFesta, PagamentoConPOS, APPIdOrdine, DataAssegnazione, IdStatoOrdine) 
+            VALUES(@Cassa, @DataOra, @TipoOrdine, @Tavolo, @NumeroCoperti, @Referente, @NoteOrdine, @IdFesta, @PagamentoConPOS, @APPIdOrdine, @DataAssegnazione, @IdStatoOrdine); 
             SELECT LAST_INSERT_ID();";
 
             var Params1 = new
@@ -206,6 +207,7 @@ namespace BlazorFeste.DataAccess
               IdFesta = archOrdine.IdFesta,
               DataAssegnazione = archOrdine.DataAssegnazione,
               PagamentoConPOS = archOrdine.PagamentoConPOS,
+              APPIdOrdine = archOrdine.AppIdOrdine,
               //ProgressivoSerata = archOrdine.ProgressivoSerata,
               IdStatoOrdine = archOrdine.IdStatoOrdine,
             };

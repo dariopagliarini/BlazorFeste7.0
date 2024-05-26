@@ -70,6 +70,12 @@ namespace BlazorFeste.Services
           // Recupero la Data della giornata in corso 
           _UserInterfaceService.DtFestaInCorso = _UserInterfaceService.GetCurrentDataAssegnazione();
 
+          // Recupero l'anagrafica dei Clients
+          _UserInterfaceService.AnagrClients = (await _FesteDataAccess.GetFromMySQLAsync<AnagrClients>(cancellationToken)).ToList();
+
+          // Recupero l'anagrafica dei Menù
+          _UserInterfaceService.AnagrMenu = (await _FesteDataAccess.GetFromMySQLAsync<AnagrMenu>(cancellationToken)).ToList();
+
           // Recupero le informazioni della Festa in corso
           _UserInterfaceService.ArchFesta = (await _FesteDataAccess.GetArchFesteAsync(_UserInterfaceService.DtFestaInCorso)).FirstOrDefault();
 
