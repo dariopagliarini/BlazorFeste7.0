@@ -9,6 +9,7 @@ using BlazorFeste.Services.AppOrdini;
 using BlazorFeste.Util;
 
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.JSInterop;
 
 using Newtonsoft.Json;
@@ -26,7 +27,8 @@ namespace BlazorFeste.Pages
     public int IdCassa { get; set; }
 
     #region Inject
-    [Inject] public ClientInformationService clientInfo { get; init; }
+    [Inject] public ClientInformationService _clientInfo { get; init; }
+    [Inject] public IWebHostEnvironment _iWebHostEnvironment { get; init; }
     [Inject] public IToastService toastService { get; init; }
     [Inject] public UserInterfaceService _UserInterfaceService { get; init; }
     [Inject] public FesteDataAccess _FesteDataAccess { get; init; }
@@ -51,6 +53,7 @@ namespace BlazorFeste.Pages
     protected override Task OnInitializedAsync()
     {
       _UserInterfaceService.NotifyDataOraServer += OnNotifyDataOraServer;
+      _UserInterfaceService.NotifyStatoOrdine += OnNotifyStatoOrdine;
       _UserInterfaceService.NotifyStatoProdotti += OnNotifyStatoProdotti;
       _UserInterfaceService.NotifyAnagrProdotti += OnNotifyAnagrProdotti;
 
@@ -72,7 +75,8 @@ namespace BlazorFeste.Pages
         if (!(Cassa is null))
         {
           await Module.InvokeVoidAsync("GestioneCassaObj.createButtons", IdCassa, TabellaProdotti);
-          await Module.InvokeVoidAsync("GestioneCassaObj.init", objRef, Cassa, _UserInterfaceService.ArchFesta.WebAppAttiva);
+          await Module.InvokeVoidAsync("GestioneCassaObj.init", objRef, Cassa, _UserInterfaceService.ArchFesta.WebAppAttiva
+            , _iWebHostEnvironment.IsDevelopment() || _UserInterfaceService.AnagrClients.Where(w => w.Livello > 0).Select(s => s.IndirizzoIP).Contains(_clientInfo.IPAddress));
 
           if (Cassa.ScontrinoAbilitato.Value)
             await RescanSerialPorts(Cassa, true);
@@ -88,7 +92,7 @@ namespace BlazorFeste.Pages
       {
         strTitolo = $"Gestione {Cassa.Cassa}";
 
-        AggiornaDatiCassa(_UserInterfaceService.AnagrProdotti.Values.ToList());
+        TabellaProdotti = _UserInterfaceService.AnagrProdotti.Values.Where(w => Cassa.prodottiVisibili.Contains(w.IdProdotto)).ToList();
 
         flagInizializza = true;
       }
@@ -98,6 +102,7 @@ namespace BlazorFeste.Pages
     public void Dispose()
     {
       _UserInterfaceService.NotifyDataOraServer -= OnNotifyDataOraServer;
+      _UserInterfaceService.NotifyStatoOrdine -= OnNotifyStatoOrdine;
       _UserInterfaceService.NotifyStatoProdotti -= OnNotifyStatoProdotti;
       _UserInterfaceService.NotifyAnagrProdotti -= OnNotifyAnagrProdotti;
 
@@ -286,7 +291,6 @@ namespace BlazorFeste.Pages
 
       // Se arrivo qui significa che :
       //    Devo notificare a chi lo desidera i dati del nuovo ordine
-      //      _UserInterfaceService.OnNotifyStatoOrdine(idOrdine);
       _UserInterfaceService.OnNotifyNuovoOrdine(new DatiOrdine { ordine = _archOrdine, ordineRighe = _archOrdineRighe });
 
       toastService.ShowSuccess($"Ordine #{_archOrdine.IdOrdine} creato con successo"); // , "Avanti il prossimo"
@@ -342,21 +346,23 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
+        Log.Error(ex, $"{_clientInfo.IPAddress} - Code Exception");
         //_ = ex;
         //Console.WriteLine("I/O error");
         //Log.Fatal(ex, "I/O error:");
       }
       #endregion
 
-      Log.Information($"{clientInfo.IPAddress} - Nuovo Ordine - {_archOrdine.IdOrdine}, Cassa: {_archOrdine.Cassa}, RigheOrdine: {_archOrdineRighe.Count}");
+      Log.Information($"{_clientInfo.IPAddress} - Nuovo Ordine - {_archOrdine.IdOrdine}, Cassa: {_archOrdine.Cassa}, RigheOrdine: {_archOrdineRighe.Count}");
 
       double ImportoContanti = 0.0;
       double ImportoPOS = 0.0;
+      int NumeroOrdini = 0;
 
       var DatiCassa = await _FesteDataAccess.GetDatiCassaAsync(_archOrdine.IdCassa, _archOrdine.DataAssegnazione);
-      if (DatiCassa.Any())
+      if (DatiCassa.Count() > 0)
       {
+        NumeroOrdini = DatiCassa.Sum(s => s.NumeroOrdini);
         if (DatiCassa.Where(w => w.PagamentoConPOS == false).Count() > 0)
         {
           ImportoContanti = DatiCassa.Where(w => w.PagamentoConPOS == false).FirstOrDefault().Importo;
@@ -367,6 +373,10 @@ namespace BlazorFeste.Pages
           ImportoPOS = DatiCassa.Where(w => w.PagamentoConPOS == true).FirstOrDefault().Importo;
         }
       }
+
+      Cassa.OrdiniDellaCassa = NumeroOrdini;
+      if (Cassa.OrdiniDellaCassa > 0)
+        Cassa.idUltimoOrdine = _archOrdine.IdOrdine;
 
       Dictionary<string, object> sendDict = new Dictionary<string, object>();
       sendDict.Add("ultimoOrdine", _archOrdine.IdOrdine);
@@ -396,7 +406,7 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
+        Log.Error(ex, $"{_clientInfo.IPAddress} - Code Exception");
       }
     }
 
@@ -430,7 +440,7 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
+        Log.Error(ex, $"{_clientInfo.IPAddress} - Code Exception");
 
         //_ = ex;
         //Console.WriteLine("I/O error");
@@ -458,7 +468,7 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
+        Log.Error(ex, $"{_clientInfo.IPAddress} - Code Exception");
         //_ = ex;
         //Console.WriteLine("I/O error");
         //Log.Fatal(ex, "I/O error:");
@@ -495,29 +505,38 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
+        Log.Error(ex, $"{_clientInfo.IPAddress} - Code Exception");
       }
 
       return (jsonResponse);
     }
+
+    [JSInvokable("OnEvadiOrderFromCloud_Async")]
+    public void OnEvadiOrderFromCloud_Async(int idOrdine)
+    {
+      appOrdiniState.AddOrdineDaEvadere((int)idOrdine);     
+    }
     #endregion
 
     #region Metodi
-    private void AggiornaDatiCassa(List<AnagrProdotti> statoProdotti)
-    {
-      //Cassa = _UserInterfaceService.AnagrCasse.Where(w => w.IdCassa == IdCassa).FirstOrDefault();
+    //private void AggiornaDatiCassa(List<AnagrProdotti> statoProdotti)
+    //{
+    //  //Cassa = _UserInterfaceService.AnagrCasse.Where(w => w.IdCassa == IdCassa).FirstOrDefault();
 
-      if (Cassa != null)
-      {
-        IEnumerable<ArchOrdini> ordiniDellaCassa = _UserInterfaceService.QryOrdini.Where(w => (w.Value.IdCassa == IdCassa)).Select(s => s.Value);
-        Cassa.OrdiniDellaCassa = ordiniDellaCassa.Count();
-        if (Cassa.OrdiniDellaCassa > 0)
-        {
-          Cassa.idUltimoOrdine = ordiniDellaCassa.OrderByDescending(o => o.IdOrdine).FirstOrDefault().IdOrdine;
-        }
-        TabellaProdotti = statoProdotti.Where(w => Cassa.prodottiVisibili.Contains(w.IdProdotto)).ToList();
-      }
-    }
+    //  if (Cassa != null)
+    //  {
+    //    IEnumerable<ArchOrdini> ordiniDellaCassa = _UserInterfaceService.QryOrdini.Where(w => (w.Value.IdCassa == IdCassa)).Select(s => s.Value);
+    //    if (ordiniDellaCassa != null)
+    //    {
+    //      Cassa.OrdiniDellaCassa = ordiniDellaCassa.Count();
+    //      if (Cassa.OrdiniDellaCassa > 0)
+    //      {
+    //        Cassa.idUltimoOrdine = ordiniDellaCassa.OrderByDescending(o => o.IdOrdine).FirstOrDefault().IdOrdine;
+    //      }
+    //    }
+    //    TabellaProdotti = statoProdotti.Where(w => Cassa.prodottiVisibili.Contains(w.IdProdotto)).ToList();
+    //  }
+    //}
     private int GetStatoOrdine(ArchOrdini archOrdine, List<ArchOrdiniRighe> archOrdineRighe)
     {
       int Result = (int)K_STATO_ORDINE.InCorso;
@@ -570,7 +589,7 @@ namespace BlazorFeste.Pages
       {
         // handle web exception
         toastService.ShowError($"{ex.Message}"); // "Errore Stampante"
-        Log.Error(ex, $"{clientInfo.IPAddress} - HttpRequestToPrinterController 1 - WebException");
+        Log.Error(ex, $"{_clientInfo.IPAddress} - HttpRequestToPrinterController 1 - WebException");
       }
       catch (TaskCanceledException ex)
       {
@@ -578,7 +597,7 @@ namespace BlazorFeste.Pages
         {
           // a real cancellation, triggered by the caller
           toastService.ShowError($"{ex.Message}"); // "Errore Stampante"
-          Log.Error(ex, $"{clientInfo.IPAddress} - HttpRequestToPrinterController 2 - TaskCanceledException");
+          Log.Error(ex, $"{_clientInfo.IPAddress} - HttpRequestToPrinterController 2 - TaskCanceledException");
         }
         else
         {
@@ -602,14 +621,14 @@ namespace BlazorFeste.Pages
         else
         {
           // Se la stampante è Locale significa che è attaccata al PC Client da cui stò compilando l'ordine quindi la devo cercare sull'indirizzo del client
-          ClientIPAddress = clientInfo.IPAddress;
+          ClientIPAddress = _clientInfo.IPAddress;
         }
         await HttpRequestToPrinterController<bool>(ClientIPAddress, "rescanSerialPorts", LogEnabled);
       }
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
+        Log.Error(ex, $"{_clientInfo.IPAddress} - Code Exception");
       }
     }
     private async Task<HttpResponseMessage> RichiediStampaDiProva(AnagrCasse _cassa)
@@ -629,7 +648,7 @@ namespace BlazorFeste.Pages
         {
           // Se la stampante è Locale significa che è attaccata al PC Client da cui stò compilando l'ordine
           // quindi la devo cercare sull'indirizzo del client
-          ClientIPAddress = clientInfo.IPAddress;
+          ClientIPAddress = _clientInfo.IPAddress;
         }
 
         // La stampa è gestita dal programma "PrinterServerAPI" che deve essere in esecuzione
@@ -651,7 +670,7 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
+        Log.Error(ex, $"{_clientInfo.IPAddress} - Code Exception");
       }
       return (result);
     }
@@ -705,7 +724,7 @@ namespace BlazorFeste.Pages
         }
         catch (Exception ex)
         {
-          Log.Error(ex, $"{clientInfo.IPAddress} - stampaOrdine - Code Exception");
+          Log.Error(ex, $"{_clientInfo.IPAddress} - stampaOrdine - Code Exception");
         }
 
         // Locale o Remota deve essere interpretato dal punto di vista della Cassa (cioè del Client)
@@ -719,7 +738,7 @@ namespace BlazorFeste.Pages
         {
           // Se la stampante è Locale significa che è attaccata al PC Client da cui stò compilando l'ordine
           // quindi la devo cercare sull'indirizzo del client
-          ClientIPAddress = clientInfo.IPAddress;
+          ClientIPAddress = _clientInfo.IPAddress;
         }
 
         // La stampa è gestita dal programma "PrinterServerAPI" che deve essere in esecuzione
@@ -738,7 +757,7 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
+        Log.Error(ex, $"{_clientInfo.IPAddress} - Code Exception");
       }
       return (result);
     }
@@ -786,7 +805,7 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
+        Log.Error(ex, $"{_clientInfo.IPAddress} - Code Exception");
       }
       return (result);
     }
@@ -830,7 +849,7 @@ namespace BlazorFeste.Pages
                                      });
             consumiGiornata = new StampaOrdine_ConsumiGiornata
             {
-              IPAddress = clientInfo.IPAddress,
+              IPAddress = _clientInfo.IPAddress,
               strNomeGiornata = $"{_UserInterfaceService.DtFestaInCorso.ToString("ddd dd/MM").ToUpper()} - {(_UserInterfaceService.DtFestaInCorso.Hour == 12 ? "PRANZO" : "CENA")}",
               flagCumulativo = _flagCumulativo,
               Cassa = _cassa,
@@ -886,7 +905,7 @@ namespace BlazorFeste.Pages
 
             consumiGiornata = new StampaOrdine_ConsumiGiornata
             {
-              IPAddress = clientInfo.IPAddress,
+              IPAddress = _clientInfo.IPAddress,
               //strNomeGiornata = _UserInterfaceService.DtFestaInCorso.ToString("ddd dd/MM/yyyy HH:mm"),
               strNomeGiornata = $"{_UserInterfaceService.DtFestaInCorso.ToString("ddd dd/MM").ToUpper()} - {(_UserInterfaceService.DtFestaInCorso.Hour == 12 ? "PRANZO" : "CENA")}",
               flagCumulativo = _flagCumulativo,
@@ -929,7 +948,7 @@ namespace BlazorFeste.Pages
           {
             // Se la stampante è Locale significa che è attaccata al PC Client da cui stò compilando l'ordine
             // quindi la devo cercare sull'indirizzo del client
-            ClientIPAddress = clientInfo.IPAddress;
+            ClientIPAddress = _clientInfo.IPAddress;
           }
 
           // La stampa è gestita dal programma "PrinterServerAPI" che deve essere in esecuzione
@@ -949,7 +968,7 @@ namespace BlazorFeste.Pages
       catch (Exception ex)
       {
         toastService.ShowError(ex.Message);
-        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
+        Log.Error(ex, $"{_clientInfo.IPAddress} - Code Exception");
       }
       return (result);
     }
@@ -993,7 +1012,7 @@ namespace BlazorFeste.Pages
       {
         // handle web exception
         toastService.ShowError($"{ex.Message}"); // "Errore Stampante"
-        Log.Error(ex, $"{clientInfo.IPAddress} - HttpRequestToPrinterController 1 - WebException");
+        Log.Error(ex, $"{_clientInfo.IPAddress} - HttpRequestToPrinterController 1 - WebException");
       }
       catch (TaskCanceledException ex)
       {
@@ -1001,7 +1020,7 @@ namespace BlazorFeste.Pages
         {
           // a real cancellation, triggered by the caller
           toastService.ShowError($"{ex.Message}"); // "Errore Stampante"
-          Log.Error(ex, $"{clientInfo.IPAddress} - HttpRequestToPrinterController 2 - TaskCanceledException");
+          Log.Error(ex, $"{_clientInfo.IPAddress} - HttpRequestToPrinterController 2 - TaskCanceledException");
         }
         else
         {
@@ -1026,26 +1045,51 @@ namespace BlazorFeste.Pages
       catch (TaskCanceledException tEx) { _ = tEx; }
       catch (Exception ex)
       {
-        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
+        Log.Error(ex, $"{_clientInfo.IPAddress} - OnNotifyDataOraServer - Code Exception");
       }
     }
-    private async void OnNotifyStatoProdotti(object sender, DatiNotifyStatoProdotti datiNotifyStatoProdotti)
+    private async void OnNotifyStatoOrdine(object sender, List<int> idProdotto)
     {
       try
       {
-        AggiornaDatiCassa(datiNotifyStatoProdotti.statoProdotti);
-
-        if (Module is not null)
+        if (Cassa != null)
         {
-          await Module.InvokeVoidAsync("GestioneCassaObj.updateStatoProdotti", TabellaProdotti);
+          // Se è cambiato lo stato di un ordine devo aggiornare lo stato dei prodotti
+//          TabellaProdotti = _UserInterfaceService.AnagrProdotti.Values.Where(w => Cassa.prodottiVisibili.Contains(w.IdProdotto)).ToList();
+          var ProdottiDaAggiornare = _UserInterfaceService.AnagrProdotti.Values.Where(w => idProdotto.Contains(w.IdProdotto)).ToList();
+          if (Module is not null)
+          {
+            await Module.InvokeVoidAsync("GestioneCassaObj.updateStatoProdotti", ProdottiDaAggiornare);
+          }
         }
       }
       catch (TaskCanceledException tEx) { _ = tEx; }
       catch (Exception ex)
       {
-        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
+        Log.Error(ex, $"{_clientInfo.IPAddress} - OnNotifyStatoOrdine - Code Exception");
       }
     }
+    private async void OnNotifyStatoProdotti(object sender, bool refresh)
+    {
+      try
+      {
+        if (Cassa != null)
+        {
+          // Se è cambiato lo stato di un ordine devo aggiornare lo stato dei prodotti
+          TabellaProdotti = _UserInterfaceService.AnagrProdotti.Values.Where(w => Cassa.prodottiVisibili.Contains(w.IdProdotto)).ToList();
+          if (Module is not null)
+          {
+            await Module.InvokeVoidAsync("GestioneCassaObj.updateStatoProdotti", TabellaProdotti);
+          }
+        }
+      }
+      catch (TaskCanceledException tEx) { _ = tEx; }
+      catch (Exception ex)
+      {
+        Log.Error(ex, $"{_clientInfo.IPAddress} - OnNotifyStatoProdotti - Code Exception");
+      }
+    }
+
     private async void OnNotifyAnagrProdotti(object sender, bool _refresh)
     {
       if (Cassa is null)
@@ -1065,7 +1109,7 @@ namespace BlazorFeste.Pages
       catch (TaskCanceledException tEx) { _ = tEx; }
       catch (Exception ex)
       {
-        Log.Error(ex, $"{clientInfo.IPAddress} - Code Exception");
+        Log.Error(ex, $"{_clientInfo.IPAddress} - Code Exception");
       }
     }
     #endregion

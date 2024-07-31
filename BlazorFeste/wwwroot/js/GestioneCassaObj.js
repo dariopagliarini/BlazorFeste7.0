@@ -50,7 +50,7 @@ export var GestioneCassaObj = {
 
   edtAPPIdOrdine: 0,
 
-  init: (_objRef, _Cassa, _WebAppAttiva) => {
+  init: (_objRef, _Cassa, _WebAppAttiva, _IsDevelopment) => {
     console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneCassaObj - init - Ordini: " + _Cassa.ordiniDellaCassa + " (" + _Cassa.idUltimoOrdine + ")");
 
     document.addEventListener('keydown', GestioneCassaObj.keyHandler);
@@ -182,7 +182,8 @@ export var GestioneCassaObj = {
                   height: "480px",
                   keyExpr: "id",
                   noDataText: "...",
-                  focusedRowEnabled: true,
+                  //focusedRowEnabled: true,
+                  //focusedRowIndex: 0, // focus the first row
                   rowAlternationEnabled: true,
                   showRowLines: true,
                   showBorders: true,
@@ -203,28 +204,56 @@ export var GestioneCassaObj = {
                   columns: [
                     {
                       type: "buttons",
-                      width: 40,
-                      buttons: [{
-                        //                        text: "My Command",
-                        icon: "import",
-                        hint: "Importa",
-                        onClick: function (e) {
-                          // Execute your command here
-                          GestioneCassaObj.APPIdOrdine = e.row.data.id;
-                          GestioneCassaObj.btnCancellaOrdineOnClick();
+                      width: _IsDevelopment ? 70 : 35,
+                      buttons: [
+                        {
+                          icon: "import",
+                          hint: "Importa Ordine",
+                          onClick: function (e) {
+                            GestioneCassaObj.APPIdOrdine = e.row.data.id;
+                            GestioneCassaObj.btnCancellaOrdineOnClick();
 
-                          _objRef.invokeMethodAsync("OnGetOrderFromCloud_Async", GestioneCassaObj.APPIdOrdine)
-                            .then(_retvalue => {
-                              try {
-                                var retvalue = JSON.parse(_retvalue);
+                            _objRef.invokeMethodAsync("OnGetOrderFromCloud_Async", GestioneCassaObj.APPIdOrdine)
+                              .then(_retvalue => {
+                                try {
+                                  var retvalue = JSON.parse(_retvalue);
 
-                                GestioneCassaObj.JsonDaCloud(retvalue);
-                                GestioneCassaObj.popupGetFromCloud.hide();
-                              } catch (error) {
+                                  GestioneCassaObj.JsonDaCloud(retvalue);
+                                  GestioneCassaObj.popupGetFromCloud.hide();
+                                } catch (error) {
+                                }
+                              });
+                          }
+                        },
+                        {
+                          icon: "exportselected",
+                          hint: "Evadi Ordine",
+                          visible: _IsDevelopment,
+                          onClick: function (e) {
+                            var result = DevExpress.ui.dialog.confirm("<i>Confermi l'operazione sull'ordine selezionato?</i>", "Evasione Ordine");
+                            result.done(function (dialogResult) {
+                              if (dialogResult) {
+                                _objRef.invokeMethodAsync("OnEvadiOrderFromCloud_Async", e.row.data.id);
+
+                                // Aspetto alcuni millisecondi prima di fare il refresh della grid
+                                setTimeout(function () {
+                                  _objRef.invokeMethodAsync("OnGetOrderFromCloud_Async", 0)
+                                    .then(_retvalue => {
+                                      try {
+                                        var retvalue = JSON.parse(_retvalue);
+
+                                        GestioneCassaObj.gridOrdini.beginUpdate();
+                                        GestioneCassaObj.gridOrdini.option("dataSource", retvalue);
+                                        GestioneCassaObj.gridOrdini.endUpdate();
+                                      } catch (error) {
+                                      }
+                                    });
+                                }, 250);
                               }
                             });
-                        }
-                      }]
+                          }
+                        },
+                      ]
                     },
                     {
                       caption: "#",
@@ -233,7 +262,8 @@ export var GestioneCassaObj = {
                       width: 70,
                       alignment: 'center',
                       allowFiltering: false,
-                    }, {
+                    },
+                    {
                       caption: "Tavolo",
                       dataField: 'table',
                       dataType: "number",
@@ -273,18 +303,9 @@ export var GestioneCassaObj = {
                       allowSorting: false,
                     },
                     {
-                      caption: "Evaso",
-                      dataField: 'evaso',
-                      visible: false,
-                      width: 60,
-                      alignment: 'center',
-                      allowFiltering: false,
-                      allowSorting: false,
-                    },
-                    {
                       caption: "Note Ordine",
                       dataField: 'note',
-                      width: 160,
+                      width: _IsDevelopment ? 140 : 170,
                       allowFiltering: false,
                       allowSorting: false,
                     },
@@ -316,12 +337,7 @@ export var GestioneCassaObj = {
                         } catch (error) {
                         }
                       });
-                  },
-                  //  onCellClick: function (e) {
-                  //    if (e.rowType == 'data' && e.column.name == "Bomba") {
-                  //    } else {
-                  //    }
-                  //  },
+                  }
                 })
               ),
               $("<td>").append(
@@ -462,7 +478,7 @@ export var GestioneCassaObj = {
         {
           location: 'after',
           template() {
-            return $('<div style="padding-right:30px">')
+            return $('<div style="padding-right:20px">')
               .addClass('informer')
               .append(
                 $('<div>')
@@ -477,7 +493,7 @@ export var GestioneCassaObj = {
         {
           location: 'after',
           template() {
-            return $('<div style="padding-right:60px">')
+            return $('<div style="padding-right:20px">')
               .addClass('informer')
               .append(
                 $('<div>')
@@ -492,7 +508,7 @@ export var GestioneCassaObj = {
         {
           location: 'after',
           widget: 'dxButton',
-          visible: GestioneCassaObj.webAppAttiva,
+          visible: GestioneCassaObj.webAppAttiva && _Cassa.soloBanco == false,
           options: {
             icon: 'fa-solid fa-list',
             type: 'giallo',
@@ -515,7 +531,7 @@ export var GestioneCassaObj = {
         {
           location: 'after',
           widget: 'dxButton',
-          visible: GestioneCassaObj.webAppAttiva,
+          visible: GestioneCassaObj.webAppAttiva && _Cassa.soloBanco == false,
           options: {
             icon: 'fa-solid fa-qrcode',
             type: 'giallo',
@@ -664,6 +680,15 @@ export var GestioneCassaObj = {
             onValueChanged(data) {
               GestioneCassaObj.calcolaResto();
             },
+            onFocusIn(e) {
+              if (e.component.option("value") == 0) {
+                DevExpress.data.query(GestioneCassaObj.scontrino_store._array)
+                  .sum("totale")
+                  .done(function (result) {
+                    e.component.option("value", Math.ceil(result / 5) * 5);
+                  });
+              }
+            },
             onEnterKey: function () {
               GestioneCassaObj.calcolaResto();
             }
@@ -720,6 +745,8 @@ export var GestioneCassaObj = {
                   result.done(function (dialogResult) {
                     if (dialogResult) {
                       GestioneCassaObj.btnSaveToMySQL('SERVITO');
+                    } else {
+                      GestioneCassaObj.RichiestaCreazioneOrdineInCorso = false;
                     }
                   });
                 } else {
@@ -992,13 +1019,6 @@ export var GestioneCassaObj = {
     switch (e.keyCode) {
       case 119: // FN8
         $("#edtContanti").dxNumberBox("instance").focus();
-
-        DevExpress.data.query(GestioneCassaObj.scontrino_store._array)
-          .sum("totale")
-          .done(function (result) {
-            $("#edtContanti").dxNumberBox("instance").option("value", Math.ceil(result / 5) * 5);
-          });
-
         break;
       default:  //Fallback to default browser behaviour
         return true;
@@ -1293,26 +1313,34 @@ export var GestioneCassaObj = {
   },
 
   updateStatoProdotti: (_Prodotti) => {
-    _Prodotti.forEach(prodotto => {
-      $('#lblMagazzino_' + prodotto.idProdotto).text(prodotto.magazzino - prodotto.consumoCumulativo);
-      $('#lblDaEvadere_' + prodotto.idProdotto).text(prodotto.consumo - prodotto.evaso);
-    });
+    if (_Prodotti != null) {
+      _Prodotti.forEach(prodotto => {
+        $('#lblMagazzino_' + prodotto.idProdotto).text(prodotto.magazzino - prodotto.consumoCumulativo);
+        $('#lblDaEvadere_' + prodotto.idProdotto).text(prodotto.consumo - prodotto.evaso);
+      });
+    }
   },
 
   updateAnagrProdotti: (_Cassa, _Prodotti) => {
-    GestioneCassaObj.createButtons(_Cassa, _Prodotti);
+    if (_Prodotti != null) {
+      GestioneCassaObj.createButtons(_Cassa, _Prodotti);
 
-    var righeOrdine = GestioneCassaObj.scontrino_store._array;
-    DevExpress.data.query(righeOrdine)
-      .filter(["quantitàProdotto", ">", 0])
-      .count()
-      .done(function (result) {
-        if (result > 0) {
-          DevExpress.ui.notify("Variazione Anagrafica Prodotti - Verificare l'ordine in corso", "warning", 6000);
-        } else {
-          DevExpress.ui.notify("Variazione Anagrafica Prodotti", "success", 4000);
-        }
-      });
+      var righeOrdine = GestioneCassaObj.scontrino_store._array;
+      DevExpress.data.query(righeOrdine)
+        .filter(["quantitàProdotto", ">", 0])
+        .count()
+        .done(function (result) {
+          if (result > 0) {
+            DevExpress.ui.notify("Variazione Anagrafica Prodotti - Verificare l'ordine in corso", "warning", 6000);
+          } else {
+            DevExpress.ui.notify("Variazione Anagrafica Prodotti", "success", 4000);
+          }
+        });
+    }
+  },
+
+  updateDataOra: (_adesso) => {
+    $('#lblDataOra').text(_adesso);
   },
 
   JsonDaCloud: (retvalue) => {
@@ -1333,8 +1361,10 @@ export var GestioneCassaObj = {
     retvalue.righe.forEach(riga => {
       var prodotto = GestioneCassaObj.Prodotti.find(o => o.idProdotto === riga.id);
       if (prodotto) {
-        for (var i = 0; i < riga.qta; i++) {
-          GestioneCassaObj.btnClicked(prodotto);
+        if (prodotto.stato) {
+          for (var i = 0; i < riga.qta; i++) {
+            GestioneCassaObj.btnClicked(prodotto);
+          }
         }
       }
     });
@@ -1347,11 +1377,6 @@ export var GestioneCassaObj = {
     GestioneCassaObj.updateButtonState();
 
     $("#edtNotaOrdine").dxTextArea("instance").focus();
-  },
-
-
-  updateDataOra: (_adesso) => {
-    $('#lblDataOra').text(_adesso);
   },
 
   calcolaResto: () => {
@@ -1401,6 +1426,5 @@ export var GestioneCassaObj = {
         // Handle the "error" here
       });
   },
-
 }
 

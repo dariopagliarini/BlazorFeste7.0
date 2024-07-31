@@ -35,18 +35,6 @@ namespace BlazorFeste.Components
     {
       if (firstRender)
       {
-        //List<string> SuperUsers = new List<string>();
-
-        //foreach (var client in _UserInterfaceService.AnagrClients.Where(w => w.Livello > 0))
-        //{
-        //  SuperUsers.Add(client.IndirizzoIP);
-        //}
-        //SuperUsers.Add("192.168.1.25");
-        //SuperUsers.Add("192.168.100.1");
-        //SuperUsers.Add("192.168.100.101");
-        //SuperUsers.Add("192.168.100.199");
-        //SuperUsers.Add("localhost");
-
         objRef = DotNetObjectReference.Create(this);
 
         Module = (await JsModule);

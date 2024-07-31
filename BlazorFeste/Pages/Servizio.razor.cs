@@ -1,18 +1,22 @@
 ﻿using Blazored.Toast.Services;
 
 using BlazorFeste.Components;
+using BlazorFeste.Data.Models;
 using BlazorFeste.DataAccess;
 using BlazorFeste.Services;
 using BlazorFeste.Util;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using System.Globalization;
 using System.Net;
 
 using System.Text;
+using System.Threading.Channels;
 
 namespace BlazorFeste.Pages
 {
@@ -21,6 +25,8 @@ namespace BlazorFeste.Pages
     #region Inject
     [Inject] public NavigationManager _NavigationManager { get; init; }
     [Inject] public UserInterfaceService _UserInterfaceService { get; init; }
+    [Inject] public FesteDataAccess _FesteDataAccess { get; init; }
+
     [Inject] public IJSRuntime JSRuntime { get; init; }
     #endregion
 
@@ -64,7 +70,6 @@ namespace BlazorFeste.Pages
       }
 
     }
-
     private async Task<string> HttpRequestToCloud_ProductUpdate<T>(string _ClientIPAddress = "https://ghqb.galileicrema.org/brolo/api", int _TimeOutMSec = 5000)
     {
       HttpResponseMessage result = new HttpResponseMessage();
@@ -206,7 +211,6 @@ namespace BlazorFeste.Pages
       }
       return (jsonResponse2);
     }
-
     #endregion
 
     #region LifeCycle
@@ -286,6 +290,17 @@ namespace BlazorFeste.Pages
           break;
       }
       return (jsonResponse);
+    }
+
+    [JSInvokable("StatoProdotti")]
+    public async Task StatoProdotti(bool nuovoStato)
+    {
+      foreach (var prodotto in _UserInterfaceService.AnagrProdotti.Values.Where(w => w.PrezzoUnitario != 0))
+      {
+        prodotto.Stato = nuovoStato;
+        await _FesteDataAccess.UpdateAnagrProdottiAsync(prodotto);
+      }
+      _UserInterfaceService.OnNotifyAnagrProdotti(false);
     }
     #endregion
   }

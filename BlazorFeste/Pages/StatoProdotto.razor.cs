@@ -72,20 +72,22 @@ namespace BlazorFeste.Pages
       }
     }
 
-    async void OnNotifyStatoOrdine(object sender, long idOrdine)
+    async void OnNotifyStatoOrdine(object sender, List<int> idProdotto)
     {
       try
       {
-        var DatiOrdine = from o in _UserInterfaceService.QryOrdini.Where(w => w.Key == idOrdine)
-                         join r in _UserInterfaceService.QryOrdiniRighe on o.Key equals r.Key.Item1
-                         join p in _UserInterfaceService.AnagrProdotti.Values.Where(w => w.IdProdotto == Prodotto.IdProdotto) on r.Value.IdProdotto equals p.IdProdotto
-                         select new { o, r, p };
+        //var DatiOrdine = from o in _UserInterfaceService.QryOrdini.Where(w => w.Key == idOrdine)
+        //                 join r in _UserInterfaceService.QryOrdiniRighe on o.Key equals r.Key.Item1
+        //                 join p in _UserInterfaceService.AnagrProdotti.Values.Where(w => w.IdProdotto == Prodotto.IdProdotto) on r.Value.IdProdotto equals p.IdProdotto
+        //                 select new { o, r, p };
+
+        var DatiOrdine = from p in idProdotto.Where(w => w.Equals(Prodotto.IdProdotto)) select p;
 
         if (DatiOrdine.Any())
         {
           // L'ordine ha qualcosa relativo al prodotto visualizzato
           //Log.Information($"Stato Prodotto - NotifyStatoOrdine - Mi interessa!");
-          Prodotto = DatiOrdine.Select(w => w.p).FirstOrDefault();
+          //Prodotto = DatiOrdine.Select(w => w.p).FirstOrDefault();
 
           await InvokeAsync(StateHasChanged);
         }
@@ -95,7 +97,6 @@ namespace BlazorFeste.Pages
       {
         Log.Error(ex, "Code Exception");
       }
-
     }
     #endregion
 

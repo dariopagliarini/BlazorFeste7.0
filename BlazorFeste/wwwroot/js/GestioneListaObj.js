@@ -240,8 +240,9 @@ export var GestioneListaObj = {
               if (GestioneListaObj.OrdineToBeUpdated) {
                 _objRef.invokeMethodAsync('AggiornaDatiOrdineAsync', GestioneListaObj.Ordine)
                   .then(_retvalue => {
+                    // TODO - Provare ad aggiornare nella grid solo il record modificato
                     //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - popupEditOrdine - onClick - Salva");
-                    GestioneListaObj.btnRefresh(); // TODO - Provare ad aggiornare nella grid solo il record modificato
+                    //GestioneListaObj.btnRefresh(); // GestioneListaObj.btnRefresh() viene già chiamata da OnNotifyStatoOrdine
                   })
                   .catch(err => console.error(err.toString()));
               }
@@ -744,10 +745,11 @@ export var GestioneListaObj = {
             //DevExpress.ui.notify('Evasione Ordine #' + e.data.idOrdine);
             _objRef.invokeMethodAsync('EvadiListaAsync',
               e.data.idOrdine).then(_retvalue => {
+                // TODO - Provare ad aggiornare nella grid solo il record modificato
             //    var retvalue = JSON.parse(_retvalue);
             //    listRefreshEvadiOrdine();
                 // console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - EvadiListaAsync");
-                GestioneListaObj.btnRefresh(); // TODO - Provare ad aggiornare nella grid solo il record modificato
+                //GestioneListaObj.btnRefresh(); // GestioneListaObj.btnRefresh() viene già chiamata da OnNotifyStatoOrdine
                 //GestioneListaObj.restartUpdateHeaderTimer(100);
               }
             ).catch(err => console.error(err.toString()));
@@ -765,8 +767,11 @@ export var GestioneListaObj = {
     GestioneListaObj.gridHeader.beginUpdate();
     GestioneListaObj.gridOrdini.beginUpdate();
 
-    GestioneListaObj.gridHeader.columnOption("Bomba", "visible", (_Prodotti.length > 5)); // Era 12
-    GestioneListaObj.gridOrdini.columnOption("Bomba", "visible", (_Prodotti.length > 5));
+    GestioneListaObj.gridHeader.columnOption("Bomba", "visible", true);
+    GestioneListaObj.gridOrdini.columnOption("Bomba", "visible", true);
+
+//    GestioneListaObj.gridHeader.columnOption("Bomba", "visible", (_Prodotti.length > 5)); // Era 12
+//    GestioneListaObj.gridOrdini.columnOption("Bomba", "visible", (_Prodotti.length > 5));
 
     let _PrimaColonnaProdotti = GestioneListaObj.gridHeader.option("columns").length;
     for (let i = _PrimaColonnaProdotti; GestioneListaObj.gridHeader.columnCount() - _PrimaColonnaProdotti; i++) {
@@ -883,7 +888,7 @@ export var GestioneListaObj = {
   },
 
   btnRefresh: () =>  {
-    //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - btnRefresh - Enter");
+//    console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - btnRefresh - Enter");
 
     //GestioneListaObj.startTime = performance.now();
     GestioneListaObj.objRef.invokeMethodAsync("RefreshGridOrdiniRowsAsync", GestioneListaObj.Filtro_StatoRiga)
@@ -894,11 +899,12 @@ export var GestioneListaObj = {
         //console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - btnRefresh - Exit - " + (GestioneListaObj.endTime - GestioneListaObj.startTime).toFixed(0) + ' msec');
       });
     GestioneListaObj.restartUpdateHeaderTimer(40);
+//    console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - btnRefresh - Leave");
   },
 
   onNotifyStatoOrdine: (_idOrdine) => {
     // TODO
-    console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - onNotifyStatoOrdine");
+    console.log(moment().format("HH:mm:ss.SSS") + " - " + " GestioneListaObj - onNotifyStatoOrdine - TODO");
   },
 
   onNotifyStatoLista: () => {

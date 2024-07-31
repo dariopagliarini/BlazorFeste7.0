@@ -76,7 +76,6 @@ export var TopBarObj = {
             },
           },
         },
-
       ],
       onInitialized(e) {
         TopBarObj.ToolBar = e.component;

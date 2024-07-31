@@ -437,7 +437,7 @@ namespace BlazorFeste.DataAccess
       List<DatiCassa> aaa = new List<DatiCassa>();
       try
       {
-        aaa = (await GetGenericQuery<DatiCassa>(@"SELECT o.Cassa, o.PagamentoConPOS, SUM(r.Importo) as Importo FROM arch_ordini o JOIN arch_ordini_righe r ON o.IdOrdine = r.IdOrdine 
+        aaa = (await GetGenericQuery<DatiCassa>(@"SELECT o.Cassa, o.PagamentoConPOS, SUM(r.Importo) as Importo, COUNT(o.IdOrdine) AS NumeroOrdini FROM arch_ordini o JOIN arch_ordini_righe r ON o.IdOrdine = r.IdOrdine 
             WHERE o.DataAssegnazione = @DataAssegnazione AND o.Cassa = @IdCassa
             GROUP BY o.PagamentoConPOS",
             new { DataAssegnazione = dtFestaInCorso, IdCassa = _idCassa })).ToList();

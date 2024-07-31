@@ -1,11 +1,7 @@
-﻿using Blazored.Toast.Services;
-
-using BlazorFeste.Constants;
+﻿using BlazorFeste.Constants;
 using BlazorFeste.Data.Models;
 using BlazorFeste.DataAccess;
-using BlazorFeste.lib;
 using BlazorFeste.Services;
-using BlazorFeste.Util;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -15,7 +11,6 @@ using Newtonsoft.Json.Serialization;
 
 using Serilog;
 
-using System.Net;
 using System.Text;
 
 namespace BlazorFeste.Pages
@@ -27,6 +22,7 @@ namespace BlazorFeste.Pages
 
     #region Inject
     [Inject] public ClientInformationService clientInfo { get; init; }
+    [Inject] public IWebHostEnvironment _iWebHostEnvironment { get; init; }
     [Inject] public UserInterfaceService _UserInterfaceService { get; init; }
     [Inject] public FesteDataAccess festeDataAccess { get; init; }
     [Inject] public IJSRuntime JSRuntime { get; init; }
@@ -152,7 +148,7 @@ namespace BlazorFeste.Pages
           {
             switch (Riga.Value.IdStatoRiga)
             {
-              
+
               case -1:
               case (int)K_STATO_RIGA.OrdineAppenaNato:  // 0
                 strBackColor = "#dc3545"; strForeColor = "white"; break;   // Rosso
@@ -162,7 +158,7 @@ namespace BlazorFeste.Pages
                 strBackColor = "#28a745"; strForeColor = "white"; break;   // Verde scuro
               case (int)K_STATO_RIGA.OrdineEvaso:       // 3: 
                 strBackColor = "#00cc00"; strForeColor = "black"; break;   // Verde Chiaro
-              default: 
+              default:
                 strBackColor = "#FF00FF"; strForeColor = "black"; break;  // Magenta
             };
           }
@@ -191,7 +187,7 @@ namespace BlazorFeste.Pages
       // Return the result.
       return sb.ToString();
     }
-    
+
     async void OnNotifyNuovoOrdine(object sender, DatiOrdine datiOrdine)
     {
       try
@@ -216,7 +212,7 @@ namespace BlazorFeste.Pages
       }
     }
 
-    async void OnNotifyStatoOrdine(object sender, long idOrdine)
+    async void OnNotifyStatoOrdine(object sender, List<int> idProdotto)
     {
       try
       {
@@ -225,7 +221,8 @@ namespace BlazorFeste.Pages
         //                 join p in _UserInterfaceService.AnagrProdotti.Values.Where(w => w.IdLista == Lista.IdLista) on r.Value.IdProdotto equals p.IdProdotto
         //                 select new { o, r, p };
 
-        var DatiOrdine = from r in _UserInterfaceService.QryOrdiniRighe.Where(w => (w.Key.Item1 == idOrdine) && (w.Value.IdCategoria == Lista.IdLista)) select r;
+        //        var DatiOrdine = from r in _UserInterfaceService.QryOrdiniRighe.Where(w => (w.Key.Item1 == idOrdine) && (w.Value.IdCategoria == Lista.IdLista)) select r;
+        var DatiOrdine = from p in _UserInterfaceService.AnagrProdotti.Values.Where(w => (idProdotto.Contains(w.IdProdotto)) && w.IdLista == Lista.IdLista) select p;
 
         if (DatiOrdine.Any())
         {
@@ -245,13 +242,12 @@ namespace BlazorFeste.Pages
     {
       try
       {
+        // Se qualcun altro ha aggiornato la lista che stò visualizzzando
         if (Lista.IdLista == datiNotifyStatoLista.IdLista)
         {
-          // E' stata aggiornata la lista che stò visualizzzando
           //Log.Information($"Aggiornamento Lista da {datiNotifyStatoLista.ClientIpAddress} - My IP address: {clientInfo.IPAddress}");
-          if (clientInfo.IPAddress != datiNotifyStatoLista.ClientIpAddress)
+          if (clientInfo.IPAddress != datiNotifyStatoLista.ClientIpAddress || _iWebHostEnvironment.IsDevelopment())
           {
-            // Dovrei scoprire come fare per sapere che non sono stato io a farlo
             await Module.InvokeVoidAsync("GestioneListaObj.onNotifyStatoLista");
           }
         }
@@ -382,7 +378,6 @@ namespace BlazorFeste.Pages
       }
       watch.Stop();
       //Log.Information($"{_clientInfo.IPAddress} - RefreshGridOrdiniHeaderAsync - {watch.ElapsedMilliseconds} msec");
-
       return (JsonConvert.SerializeObject(RigaTotali));
     }
 
@@ -411,7 +406,8 @@ namespace BlazorFeste.Pages
 
         await festeDataAccess.UpdateArchOrdiniRigheAsync(item.Value);
       }
-      _UserInterfaceService.OnNotifyStatoOrdine(IdOrdine);
+      var DatiOrdine = _UserInterfaceService.QryOrdiniRighe.Values.Where(w => w.IdOrdine == IdOrdine).Select(s => s.IdProdotto).ToList();
+      _UserInterfaceService.OnNotifyStatoOrdine(DatiOrdine);       // _UserInterfaceService.OnNotifyStatoOrdine(IdOrdine);
 
       _UserInterfaceService.OnNotifyStatoLista(new DatiNotifyStatoLista
       {
@@ -439,8 +435,8 @@ namespace BlazorFeste.Pages
 
       // Se arrivo qui significa che :
       //    Devo notificare le modifiche a chi lo desidera 
-      _UserInterfaceService.OnNotifyStatoOrdine(Ordine.IdOrdine);
-
+      var DatiOrdine = _UserInterfaceService.QryOrdiniRighe.Values.Where(w => w.IdOrdine == Ordine.IdOrdine).Select(s => s.IdProdotto).ToList();
+      _UserInterfaceService.OnNotifyStatoOrdine(DatiOrdine);
       return (Ordine);
     }
 
@@ -599,8 +595,10 @@ namespace BlazorFeste.Pages
       sendDict.Add("righe", righe);
       sendDict.Add("stato", StatoRighe);
 
-      _UserInterfaceService.OnNotifyStatoLista(new DatiNotifyStatoLista { 
-        IdLista = Lista.IdLista, ClientIpAddress = clientInfo.IPAddress
+      _UserInterfaceService.OnNotifyStatoLista(new DatiNotifyStatoLista
+      {
+        IdLista = Lista.IdLista,
+        ClientIpAddress = clientInfo.IPAddress
       });
 
       return (JsonConvert.SerializeObject(sendDict, new JsonSerializerSettings { ContractResolver = contractResolver }));
@@ -657,7 +655,7 @@ namespace BlazorFeste.Pages
 
       return (JsonConvert.SerializeObject(sendDict, new JsonSerializerSettings { ContractResolver = contractResolver }));
     }
-    
+
     [JSInvokable("EvadiListaAsync")]
     public async Task EvadiListaAsync(long IdOrdine)
     {
@@ -699,15 +697,8 @@ namespace BlazorFeste.Pages
           await festeDataAccess.UpdateArchOrdiniRigheAsync(item.Value);
         }
       }
-      _UserInterfaceService.OnNotifyStatoOrdine(IdOrdine);
-
-      // Notifico alla cassa che ha fatto l'ordine la sua evasione - TODO (verificare se serve)
-      _UserInterfaceService.OnNotifyStatoProdotti(new DatiNotifyStatoProdotti
-      {
-        idCassa = Ordine.IdCassa,
-        statoProdotti = _UserInterfaceService.AnagrProdotti.Values.ToList()
-      });
-
+      var DatiOrdine = _UserInterfaceService.QryOrdiniRighe.Values.Where(w => w.IdOrdine == IdOrdine).Select(s => s.IdProdotto).ToList();
+      _UserInterfaceService.OnNotifyStatoOrdine(DatiOrdine);       // _UserInterfaceService.OnNotifyStatoOrdine(IdOrdine);
     }
     #endregion
   }

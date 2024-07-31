@@ -60,7 +60,6 @@ namespace BlazorFeste.Components
     #region LifeCycle
     protected override Task OnInitializedAsync()
     {
-      _UserInterfaceService.NotifyUpdateListe += OnNotifyUpdateListe;
       _UserInterfaceService.NotifyDashboard += OnNotifyDashboard;
 
       return base.OnInitializedAsync();
@@ -79,7 +78,6 @@ namespace BlazorFeste.Components
     }
     public void Dispose()
     {
-      _UserInterfaceService.NotifyUpdateListe -= OnNotifyUpdateListe;
       _UserInterfaceService.NotifyDashboard -= OnNotifyDashboard;
 
       //_jsModule?.Result.InvokeVoidAsync("DashBoardObj.dispose");
@@ -246,20 +244,7 @@ namespace BlazorFeste.Components
         Log.Error(ex, $"{clientInfo.IPAddress} - ElaboraDashBoard");
       }
     }
-    async void OnNotifyUpdateListe(object sender, string ElapsedInfo)
-    {
-      try
-      {
-        strElapsed = $"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff")} - {ElapsedInfo} msec";
-        await InvokeAsync(StateHasChanged);
-      }
-      catch (TaskCanceledException tEx) { _ = tEx; }
-      catch (Exception ex)
-      {
-        Log.Error(ex, $"{clientInfo.IPAddress} - OnNotifyUpdateListe");
-      }
-    }
-        
+       
     async void OnNotifyDashboard(object sender, DatiNotifyDashboard _datiDashboard)
     {
       try

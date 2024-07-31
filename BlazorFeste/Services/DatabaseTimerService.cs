@@ -40,7 +40,6 @@ namespace BlazorFeste.Services
           _datiDashboard.elapsed_GetDatabaseData = _elapsed_GetDatabaseData;
           _UserInterfaceService.OnNotifyDashboard(_datiDashboard);
         }
-        //      _UserInterfaceService.OnNotifyUpdateListe($"{_UserInterfaceService.elapsed_GetDatabaseData} - {_UserInterfaceService.updatesQryOrdini}/{_UserInterfaceService.updatesQryOrdiniRighe}");
 
         // Ogni ora devo fare qualcosa ???  - TODO
         if (DateTime.UtcNow.Hour != memoOra)
@@ -246,11 +245,7 @@ namespace BlazorFeste.Services
               }
             }
             if (MustNotify)
-              _UserInterfaceService.OnNotifyStatoProdotti(new DatiNotifyStatoProdotti
-              {
-                idCassa = 0,
-                statoProdotti = _UserInterfaceService.AnagrProdotti.Values.ToList()
-              });
+              _UserInterfaceService.OnNotifyStatoProdotti(false);
           }
           catch (Exception ex)
           {

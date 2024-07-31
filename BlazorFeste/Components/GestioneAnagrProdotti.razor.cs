@@ -40,9 +40,9 @@ namespace BlazorFeste.Components
 
     private DotNetObjectReference<GestioneAnagrProdotti> objRef;
 
-    List<StatoCasse> _qryStatoCasse = new List<StatoCasse>();
-    List<StatoOrdini> _qryStatoOrdini = new List<StatoOrdini>();
-    List<AnagrProdotti > _qryStatoProdotti = new List<AnagrProdotti>();
+    //List<StatoCasse> _qryStatoCasse = new List<StatoCasse>();
+    //List<StatoOrdini> _qryStatoOrdini = new List<StatoOrdini>();
+    //List<AnagrProdotti > _qryStatoProdotti = new List<AnagrProdotti>();
 
     string JSON_qryStatoOrdini = string.Empty;
 

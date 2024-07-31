@@ -1,7 +1,5 @@
 ﻿using BlazorFeste.Data.Models;
 
-using NPOI.SS.Formula.Functions;
-
 using System.Collections.Concurrent;
 
 namespace BlazorFeste.Services
@@ -28,9 +26,8 @@ namespace BlazorFeste.Services
     public long updatesQryOrdiniRighe { get; set; } = 0;
 
     public event EventHandler<DateTime> NotifyDataOraServer = default!;
-    public event EventHandler<string> NotifyUpdateListe;
-    public event EventHandler<long> NotifyStatoOrdine;
-    public event EventHandler<DatiNotifyStatoProdotti> NotifyStatoProdotti;
+    public event EventHandler<List<int>> NotifyStatoOrdine;               // Elenco dei prodotti relativi all'ordine
+    public event EventHandler<bool> NotifyStatoProdotti;
     public event EventHandler<DatiNotifyStatoLista> NotifyStatoLista;
     public event EventHandler<bool> NotifyAnagrProdotti;
     public event EventHandler<bool> NotifyAnagrCasse;
@@ -38,7 +35,8 @@ namespace BlazorFeste.Services
 
     public event EventHandler<DatiOrdine> NotifyNuovoOrdine;
     public event EventHandler<DatiNotifyDashboard> NotifyDashboard;
-    public int NotifyDashboardCount {
+    public int NotifyDashboardCount
+    {
       get
       {
         int iCount = 0;
@@ -59,13 +57,9 @@ namespace BlazorFeste.Services
     {
       NotifyDataOraServer?.Invoke(this, adesso);
     }
-    public void OnNotifyUpdateListe(string ElapsedInfo)
+    public void OnNotifyStatoOrdine(List<int> idProdotto)
     {
-      NotifyUpdateListe?.Invoke(this, ElapsedInfo);
-    }
-    public void OnNotifyStatoOrdine(long idOrdine)
-    {
-      NotifyStatoOrdine?.Invoke(this, idOrdine);
+      NotifyStatoOrdine?.Invoke(this, idProdotto);
     }
     public void OnNotifyNuovoOrdine(DatiOrdine datiOrdine)
     {
@@ -75,9 +69,9 @@ namespace BlazorFeste.Services
     {
       NotifyDashboard?.Invoke(this, datiDashboard);
     }
-  public void OnNotifyStatoProdotti(DatiNotifyStatoProdotti datiNotifyStatoProdotti)
+    public void OnNotifyStatoProdotti(bool refresh)
     {
-      NotifyStatoProdotti?.Invoke(this, datiNotifyStatoProdotti);
+      NotifyStatoProdotti?.Invoke(this, refresh); //, datiNotifyStatoProdotti);
     }
     public void OnNotifyStatoLista(DatiNotifyStatoLista datiNotifyStatoLista)
     {

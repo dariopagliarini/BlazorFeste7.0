@@ -17,7 +17,7 @@ export var ServizioObj = {
           icon: 'fa-solid fa-cash-register',
           type: 'default',
           text: 'Lista 1',
-          hint: "Pagina Gestione Lista",
+          hint: "Pagina Gestione Lista 1",
           onClick() {
             _objRef.invokeMethodAsync("NavigateToPage", "GestioneLista/1")
               .catch(err => console.error(err.toString()));
@@ -73,6 +73,44 @@ export var ServizioObj = {
           onClick() {
             _objRef.invokeMethodAsync('RefreshAnagrafiche', 0)
               .catch(err => console.error(err.toString()));
+          },
+        },
+      },
+      {
+        location: 'before',
+        widget: 'dxButton',
+        options: {
+          icon: 'fa-solid fa-circle-xmark',
+          type: 'default',
+          text: 'Disabilita Prodotti',
+          hint: 'Disabilita Prodotti',
+          onClick() {
+            var result = DevExpress.ui.dialog.confirm("<i>Confermi l'operazione su tutti i prodotti?</i>", "Disabilita tutti i Prodotti");
+            result.done(function (dialogResult) {
+              if (dialogResult) {
+                _objRef.invokeMethodAsync('StatoProdotti', false)
+                  .catch(err => console.error(err.toString()));
+              }
+            });
+          },
+        },
+      },
+      {
+        location: 'before',
+        widget: 'dxButton',
+        options: {
+          icon: 'fa-solid fa-circle-check',
+          type: 'default',
+          text: 'Abilita Prodotti',
+          hint: 'Abilita Prodotti',
+          onClick() {
+            var result = DevExpress.ui.dialog.confirm("<i>Confermi l'operazione su tutti i prodotti?</i>", "Abilita tutti i Prodotti");
+            result.done(function (dialogResult) {
+              if (dialogResult) {
+                _objRef.invokeMethodAsync('StatoProdotti', true)
+                  .catch(err => console.error(err.toString()));
+              }
+            });
           },
         },
       },
